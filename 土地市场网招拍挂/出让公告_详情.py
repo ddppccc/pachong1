@@ -211,18 +211,22 @@ if __name__ == '__main__':
     for url in df.index:
         if url in has_spider_list:
             continue
-        item = {}
-        item['标题url'] = url
-        item['行政区'] = df.loc[[url]]['行政区'][0]
-        item['供应标题'] = df.loc[[url]]['供应标题'][0]
-        item['省份'] = df.loc[[url]]['省份'][0]
-        item['城市'] = df.loc[[url]]['城市'][0]
-        item['公告类型'] = df.loc[[url]]['公告类型'][0]
-        item['发布时间'] = df.loc[[url]]['公示日期'][0]
-        # print(url)
-        # parse_info(url,item)
-        future = threadPool.submit(parse_info, item['标题url'],item)
-        p.append(future)
+        try:
+            item = {}
+            item['标题url'] = url
+            item['行政区'] = df.loc[[url]]['行政区'][0]
+            item['供应标题'] = df.loc[[url]]['供应标题'][0]
+            item['省份'] = df.loc[[url]]['省份'][0]
+            item['城市'] = df.loc[[url]]['城市'][0]
+            item['公告类型'] = df.loc[[url]]['公告类型'][0]
+            item['发布时间'] = df.loc[[url]]['公示日期'][0]
+
+            # print(url)
+            # parse_info(url,item)
+            future = threadPool.submit(parse_info, item['标题url'],item)
+            p.append(future)
+        except:
+            continue
     #
     [i.result() for i in p]
     #
