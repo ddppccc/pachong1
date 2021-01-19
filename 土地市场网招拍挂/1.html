@@ -1,0 +1,777 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<HTML>
+	<HEAD>
+		<title>
+			中国土地市场网-土地市场|土地信息|土地公告|土地出让公告公示
+		</title>
+                <meta http-equiv="X-UA-Compatible" content="IE=5" >
+		<META http-equiv="Content-Type" content="text/html; charset=gb2312">
+		<meta content="土地市场|土地信息|土地公告|土地出让公告公示" name=keywords>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="C#" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<LINK href="Styles/global.css?aa=2" type="text/css" rel="stylesheet">
+
+		<script language="javascript" id="clientEventHandlersJS">
+<!--
+
+//-->
+		</script>
+	</HEAD>
+	<body language=javascript bgColor="f4f5f6"
+background="http://www.landchina.com/User/default/Upload/sysFrameImg/x_tdscw2013_bj_1.png" topMargin=0
+MS_POSITIONING="GridLayout" >
+		<form method="post" action="default.aspx?tabid=262" id="mainForm">
+<div class="aspNetHidden">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUJNjkzNzgyNTU4D2QWAmYPZBYIZg9kFgICAQ9kFgJmDxYCHgdWaXNpYmxlaGQCAQ9kFgICAQ8WAh4Fc3R5bGUFIEJBQ0tHUk9VTkQtQ09MT1I6I2YzZjVmNztDT0xPUjo7ZAICD2QWAgIBD2QWAmYPZBYCZg9kFgJmD2QWBGYPZBYCZg9kFgJmD2QWAmYPZBYCZg9kFgJmDxYEHwEFIENPTE9SOiNEM0QzRDM7QkFDS0dST1VORC1DT0xPUjo7HwBoFgJmD2QWAgIBD2QWAmYPDxYCHgRUZXh0ZWRkAgEPZBYCZg9kFgJmD2QWAmYPZBYEZg9kFgJmDxYEHwEFhwFDT0xPUjojRDNEM0QzO0JBQ0tHUk9VTkQtQ09MT1I6O0JBQ0tHUk9VTkQtSU1BR0U6dXJsKGh0dHA6Ly93d3cubGFuZGNoaW5hLmNvbS9Vc2VyL2RlZmF1bHQvVXBsb2FkL3N5c0ZyYW1lSW1nL3hfdGRzY3dfc3lfamhnZ18wMDAuZ2lmKTseBmhlaWdodAUBMxYCZg9kFgICAQ9kFgJmDw8WAh8CZWRkAgIPZBYCZg9kFgJmD2QWAmYPZBYCZg9kFgJmD2QWAmYPZBYEZg9kFgJmDxYEHwEFIENPTE9SOiNEM0QzRDM7QkFDS0dST1VORC1DT0xPUjo7HwBoFgJmD2QWAgIBD2QWAmYPDxYCHwJlZGQCAg9kFgJmD2QWBGYPZBYCZg9kFgJmD2QWAmYPZBYCZg9kFgJmD2QWAmYPFgQfAQUgQ09MT1I6I0QzRDNEMztCQUNLR1JPVU5ELUNPTE9SOjsfAGgWAmYPZBYCAgEPZBYCZg8PFgIfAmVkZAICD2QWBGYPZBYCZg9kFgJmD2QWAmYPZBYCAgEPZBYCZg8WBB8BBYYBQ09MT1I6I0QzRDNEMztCQUNLR1JPVU5ELUNPTE9SOjtCQUNLR1JPVU5ELUlNQUdFOnVybChodHRwOi8vd3d3LmxhbmRjaGluYS5jb20vVXNlci9kZWZhdWx0L1VwbG9hZC9zeXNGcmFtZUltZy94X3Rkc2N3X3p5X2RrZ3NfMDEuZ2lmKTsfAwUCNDYWAmYPZBYCAgEPZBYCZg8PFgIfAmVkZAIBD2QWAmYPZBYCZg9kFgJmD2QWAgIBD2QWAmYPFgQfAQUgQ09MT1I6I0QzRDNEMztCQUNLR1JPVU5ELUNPTE9SOjsfAGgWAmYPZBYCAgEPZBYCZg8PFgIfAmVkZAIDD2QWAgIDDxYEHglpbm5lcmh0bWwFiQw8UD48QlI+PC9QPjxUQUJMRT48VEJPRFk+PFRSIGNsYXNzPWZpcnN0Um93PjxURCBzdHlsZT0iQk9SREVSLUJPVFRPTTogMXB4IHNvbGlkOyBCT1JERVItTEVGVDogMXB4IHNvbGlkOyBCT1JERVItVE9QOiAxcHggc29saWQ7IEJPUkRFUi1SSUdIVDogMXB4IHNvbGlkOyBib3JkZXI6MHB4IHNvbGlkIiB2QWxpZ249dG9wIHdpZHRoPTM3MD48UCBzdHlsZT0iVEVYVC1BTElHTjogY2VudGVyIj48QSBocmVmPSJodHRwczovL3d3dy5sYW5kY2hpbmEuY29tLyIgdGFyZ2V0PV9zZWxmPjxJTUcgdGl0bGU9dGRzY3dfbG9nZTEucG5nIGFsdD10ZHNjd19sb2dlMS5wbmcgc3JjPSJodHRwOi8vMjE4LjI0Ni4yMi4xNjYvbmV3bWFuYWdlL3VlZGl0b3IvdXRmOC1uZXQvbmV0L3VwbG9hZC9pbWFnZS8yMDIwMDYxMC82MzcyNzQwNjM0Mjg3NzExMDgxMTExMzEyLnBuZyI+PC9BPjwvUD48L1REPjxURCBzdHlsZT0iQk9SREVSLUJPVFRPTTogMXB4IHNvbGlkOyBCT1JERVItTEVGVDogMXB4IHNvbGlkOyBXT1JELUJSRUFLOiBicmVhay1hbGw7IEJPUkRFUi1UT1A6IDFweCBzb2xpZDsgQk9SREVSLVJJR0hUOiAxcHggc29saWQ7Ym9yZGVyOjBweCBzb2xpZCIgdkFsaWduPXRvcCB3aWR0aD02MjA+PFNQQU4gc3R5bGU9IkZPTlQtRkFNSUxZOiDlrovkvZMsIFNpbVN1bjsgQ09MT1I6IHJnYigyNTUsMjU1LDI1NSk7IEZPTlQtU0laRTogMTJweCI+5Li75Yqe77ya6Ieq54S26LWE5rqQ6YOo5LiN5Yqo5Lqn55m76K6w5Lit5b+D77yI6Ieq54S26LWE5rqQ6YOo5rOV5b6L5LqL5Yqh5Lit5b+D77yJPC9TUEFOPiA8UD48U1BBTiBzdHlsZT0iRk9OVC1GQU1JTFk6IOWui+S9kywgU2ltU3VuOyBDT0xPUjogcmdiKDI1NSwyNTUsMjU1KTsgRk9OVC1TSVpFOiAxMnB4Ij7mjIflr7zljZXkvY3vvJroh6rnhLbotYTmupDpg6joh6rnhLbotYTmupDlvIDlj5HliKnnlKjlj7gmbmJzcDsgJm5ic3A75oqA5pyv5pSv5oyB77ya5rWZ5rGf6Ie75ZaE56eR5oqA6IKh5Lu95pyJ6ZmQ5YWs5Y+4PC9TUEFOPiA8UD48U1BBTiBzdHlsZT0iRk9OVC1GQU1JTFk6IOWui+S9kywgU2ltU3VuOyBDT0xPUjogcmdiKDI1NSwyNTUsMjU1KTsgRk9OVC1TSVpFOiAxMnB4Ij7kuqxJQ1DlpIcxMjAzOTQxNOWPty00Jm5ic3A7ICZuYnNwO+S6rOWFrOe9keWuieWkhzExMDEwMjAwMDY2NigyKSZuYnNwOyAmbmJzcDvpgq7nrrHvvJpsYW5kY2hpbmEyMThAMTYzLmNvbSZuYnNwOyZuYnNwOzxzY3JpcHQgdHlwZT0idGV4dC9qYXZhc2NyaXB0Ij52YXIgX2JkaG1Qcm90b2NvbCA9ICgoImh0dHBzOiIgPT0gZG9jdW1lbnQubG9jYXRpb24ucHJvdG9jb2wpID8gIiBodHRwczovLyIgOiAiIGh0dHBzOi8vIik7ZG9jdW1lbnQud3JpdGUodW5lc2NhcGUoIiUzQ3NjcmlwdCBzcmM9JyIgKyBfYmRobVByb3RvY29sICsgImhtLmJhaWR1LmNvbS9oLmpzJTNGODM4NTM4NTljNzI0N2M1YjAzYjUyNzg5NDYyMmQzZmEnIHR5cGU9J3RleHQvamF2YXNjcmlwdCclM0UlM0Mvc2NyaXB0JTNFIikpOzwvc2NyaXB0PjwvU1BBTj4gPC9QPjwvVFI+PC9UQk9EWT48L1RBQkxFPjxQPiZuYnNwOzwvUD4fAQVkQkFDS0dST1VORC1JTUFHRTp1cmwoaHR0cDovL3d3dy5sYW5kY2hpbmEuY29tL1VzZXIvZGVmYXVsdC9VcGxvYWQvc3lzRnJhbWVJbWcveF90ZHNjdzIwMTNfeXdfMS5qcGcpO2RkkwIr4KlVNUYIKjotxo2Eu96KfoUICQ0g7zL4sBlhVnk=" />
+</div>
+
+
+<script src="/WebResource.axd?d=HBqPtnGOxSKnJw0byNzePVHKhVNCfKo_ZB6q6U0f6zKQwa9GT_iNpmE0yzGaflXZITnedfKPn3nKaCR9n92_8MDi_tLexsdNSs5GhEEHjvWLPv5XtmtT0OqEKiAFAU_ejKq15_plagamRfo3YLebfrVkc4E_DueKDK78v8M0O4m1Suh2qADu5qroPBRHcnDPZtZ7nRLqoXLN7J91gQ2a7A2&amp;t=636090453364681543" type="text/javascript"></script>
+<script src="/WebResource.axd?d=O4Swg4xFYNDfLO18MdZpdbigFX428tkexJLd3PYafSbgSB_g0nRWTxfGKmUNk0WlBccXFKX0UNJjGta0ATPu21hrnFUjJFGkk0QAsD5VwS99yggzbi_p4S7IpGNVAK2jrRL2met4vKaH3B9e-Y--KkPURMz9bb80EibBiNmzGDq_i3esefhM5ZVLEzuGzLFW8wc8UiI6RSJ8YqBqfJg3iw2&amp;t=636090453364681543" type="text/javascript"></script>
+<script src="/WebResource.axd?d=HBqPtnGOxSKnJw0byNzePVHKhVNCfKo_ZB6q6U0f6zKQwa9GT_iNpmE0yzGaflXZITnedfKPn3nKaCR9n92_8MDi_tLexsdNSs5GhEEHjvWLPv5XtmtT0OqEKiAFAU_ejKq15_plagamRfo3YLebfrVkc4E_DueKDK78v8M0O4m1Suh2qADu5qroPBRHcnDPZtZ7nRLqoXLN7J91gQ2a7A2&amp;t=636090453364681543" type="text/javascript"></script>
+<div class="aspNetHidden">
+
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdAAK2BYsrSMgggrx08bFsUtQACeA4P5qp+tM6YGffBqgTjWWe7XkvPILl+Y9ogXbrEEfwLWwOuz7YgwufU0UzrJ7x" />
+</div>
+			<FONT face="宋体">
+				<TABLE class=mainTable id=mainDesktopTable cellSpacing=0 cellPadding=0
+align="center"  border=0>
+<tr><td>
+<TABLE class=htmlContent border=0 cellSpacing=0 cellPadding=0 width=100% height=29 >
+<TBODY>
+<TR>
+<td width="20px"></td>
+
+<TD width="200px">
+<DIV id=clock></DIV></FONT></TD>
+<td align="right" class="link1">
+
+                     <a class="link1" href="http://www.landchina.com/" target="_blank">返回首页</a>&nbsp;
+                     <a class="link1" href="http://www.landchina.com/default.aspx?tabid=359" target="_blank">联系我们</a>&nbsp;
+                     <a class="link1" href="http://www.landchina.com/default.aspx?tabid=383" target="_blank">网站地图</a>&nbsp;
+  </td>
+
+</TR></TBODY></TABLE>
+<SCRIPT language=javascript>
+var NowDay={
+getWeek:function(id)
+{var _=['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+return _[id];
+},
+getString:function()
+{
+var now=new Date();
+var y=now.getFullYear();
+var m=now.getMonth()+1;
+var d=now.getDate();
+var w=now.getDay();
+m<10?m=0+''+m:0;
+d<10?d=0+''+d:0;
+var index=m+''+d;
+var r=y+'年'+(m-0)+'月'+(d-0)+'日 '+this.getWeek(w);
+return r;
+},
+show:function()
+{
+clock.innerHTML =this.getString();
+}
+}
+NowDay.show();
+</SCRIPT>
+
+</td>
+
+
+</tr>
+
+					<tr>
+						<td>
+<TABLE id="DesktopPortalHeadTable" cellSpacing="0" cellPadding="0" width="100%" border="0">
+
+	<TR>
+		<td id="DesktopPortalHead1_tdHead" class="PageHead"><div id="DesktopPortalHead1_asdfasdf">
+<P>
+	<TABLE id="tblFlash" cellSpacing="0" cellPadding="0" width="100%" border="0">
+		<TR>
+			<TD align="center"  valign="middle">
+				<OBJECT
+      codeBase=http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0
+      height="203" width="100%" align=middle
+      classid=clsid:D27CDB6E-AE6D-11cf-96B8-444553540000 VIEWASTEXT>
+					<PARAM NAME="_cx" VALUE="26">
+					<PARAM NAME="_cy" VALUE="26">
+					<PARAM NAME="FlashVars" VALUE="">
+					<PARAM NAME="Movie" VALUE="http://www.landchina.com/User/default/Upload/sysFrameImg/zx_tdscw_flash_03.swf">
+					<PARAM NAME="Src" VALUE="http://www.landchina.com/User/default/Upload/sysFrameImg/zx_tdscw_flash_03.swf">
+					<PARAM NAME="WMode" VALUE="Opaque">
+					<PARAM NAME="Play" VALUE="-1">
+					<PARAM NAME="Loop" VALUE="-1">
+					<PARAM NAME="Quality" VALUE="High">
+					<PARAM NAME="SAlign" VALUE="">
+					<PARAM NAME="Menu" VALUE="-1">
+					<PARAM NAME="Base" VALUE="">
+					<PARAM NAME="AllowScriptAccess" VALUE="always">
+					<PARAM NAME="Scale" VALUE="NoBorder">
+					<PARAM NAME="DeviceFont" VALUE="0">
+					<PARAM NAME="EmbedMovie" VALUE="0">
+					<PARAM NAME="BGColor" VALUE="">
+					<PARAM NAME="SWRemote" VALUE="">
+					<PARAM NAME="MovieData" VALUE="">
+					<PARAM NAME="SeamlessTabbing" VALUE="1">
+					<PARAM NAME="Profile" VALUE="0">
+					<PARAM NAME="ProfileAddress" VALUE="">
+					<PARAM NAME="ProfilePort" VALUE="0">
+					<PARAM NAME="AllowNetworking" VALUE="all">
+					<PARAM NAME="AllowFullScreen" VALUE="false">
+					<embed
+                                        src="http://www.landchina.com/User/default/Upload/sysFrameImg/zx_tdscw_flash_03.swf"
+      width="100%"                         height="203"
+                             align="middle"             quality="high"
+
+      						pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"
+
+      						type="application/x-shockwave-flash"
+      scale="noborder"> </embed>
+				</OBJECT>
+			</TD>
+		</TR>
+	</TABLE>
+</P>
+</div></td>
+
+	</TR>
+</TABLE>
+</td>
+					</tr>
+					<TR>
+						<TD>
+
+<script language="javascript" id="mainmenuJS">
+<!--
+
+var oldSubMenu=null;
+var preTimeOut=null;
+
+
+function getPos(el,sProp)
+{
+     var iPos = 0
+     while (el!=null)
+　　 {
+　　    iPos+=el["offset" + sProp] ;
+        el = el.offsetParent;
+
+      }
+     　　return iPos;
+ }
+
+ function SubMenuOut()
+ {
+     if(oldSubMenu!=null)
+        oldSubMenu.style.display='none'
+
+
+
+
+ }
+
+/*显示纵向展开的二级菜单   */
+function show(el,divId)
+{
+
+  var subMenu= document.getElementById("MainMenu1_"+divId);
+  if (subMenu!=null)
+  {
+    subMenu.style.display='';
+    subMenu.style.pixelLeft = getPos(el,"Left")+el.offsetWidth/2-49 ;
+    subMenu.style.pixelTop = getPos(el,"Top") + el.offsetHeight+1;
+    subMenu.style.width=el.style.width;
+  }
+  if((subMenu!=oldSubMenu) && (oldSubMenu))
+      oldSubMenu.style.display='none' ;
+
+  oldSubMenu=subMenu;
+
+ }
+
+/*显示横向展开的二级菜单   */
+function showHx(el,divId)
+{
+
+  var subMenu= document.getElementById("MainMenu1_"+divId);
+  if (subMenu!=null)
+  {
+
+    // var welcomTage= document.getElementById("MainMenu1_portal_welcome_tag");
+    // welcomTage.style.display='none';
+
+
+
+
+    subMenu.style.display='';
+    if(getPos(el,"Left")>600)
+    {
+
+       subMenu.style.left = getPos(el,"Left")-subMenu.width;
+    }else{
+       subMenu.style.left = getPos(el,"Left")-100;
+    }
+
+  }
+  if((subMenu!=oldSubMenu) && (oldSubMenu))
+      oldSubMenu.style.display='none' ;
+
+  oldSubMenu=subMenu;
+
+}
+
+
+/*显示横向展开的二级菜单   */
+function showHxPopu(el, divId) {
+
+
+
+    var mainMenu = document.getElementById("MainMenu1_mainMenuTable");
+    var subMenu = document.getElementById("MainMenu1_" + divId);
+    if (subMenu != null) {
+        subMenu.style.display = '';
+
+
+
+        if (mainMenu != null) {
+
+            subMenu.style.left = mainMenu.style.left;
+
+
+
+        }
+
+        subMenu.style.pixelTop = getPos(el, "Top") + el.offsetHeight;
+
+    }
+    if ((subMenu != oldSubMenu) && (oldSubMenu))
+        oldSubMenu.style.display = 'none';
+
+    oldSubMenu = subMenu;
+
+}
+
+
+
+function SetBackImage(img,imagePath)
+{
+	img.src=imagePath;
+
+}
+
+
+function SubMenuClassSet(link,className)
+{
+
+
+		link.className=className;
+
+
+		if(className=="SubMenuItem")
+		{
+		   preTimeOut=setTimeout(SubMenuOut,100);
+		}else{
+		   if(preTimeOut!=null)
+		   {
+		      clearTimeout(preTimeOut);
+		   }
+
+		}
+
+}
+
+
+
+
+//-->
+</script>
+<table id="MainMenu1_mainMenuTable" class="MainMenuTable linkMenu" cellspacing="0" cellpadding="0" width="100%" border="0" style="BACKGROUND-COLOR:#f3f5f7;COLOR:;">
+	<tr>
+		<td valign="center"><table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%" class="MainMenuTable" style="BACKGROUND-IMAGE:url(http://www.landchina.com/User/default/Upload/sysFrameImg/x_landchia_dh_1.gif);BACKGROUND-COLOR:#f3f5f7;COLOR:;">
+			<tr height="34">
+				<td align="center" valign="center" onmouseover="showHxPopu(this,&#39;subMenu1&#39;);"><a href="http://www.landchina.com/" style="color:;">网站首页</a></td>
+				<td><img src="http://www.landchina.com/User/default/Upload/sysFrameImg/x_landchia_dh_jg_1.gif" /></td>
+				<td align="center" valign="center" onmouseover="showHxPopu(this,&#39;subMenu2&#39;);"><a href="http://www.landchina.com/default.aspx?tabid=226&ComName=default" style="color:;">土地供应</a></td>
+				<td><img src="http://www.landchina.com/User/default/Upload/sysFrameImg/x_landchia_dh_jg_1.gif" /></td>
+				<td align="center" valign="center" onmouseover="showHxPopu(this,&#39;subMenu26&#39;);"><a href="http://www.landchina.com/default.aspx?tabid=330&ComName=default" style="color:;">行业动态</a></td>
+				<td><img src="http://www.landchina.com/User/default/Upload/sysFrameImg/x_landchia_dh_jg_1.gif" /></td>
+				<td align="center" valign="center" onmouseover="showHxPopu(this,&#39;subMenu31&#39;);"><a href="http://www.landchina.com/default.aspx?tabid=334&ComName=default" style="color:;">政策法规</a></td>
+				<td><img src="http://www.landchina.com/User/default/Upload/sysFrameImg/x_landchia_dh_jg_1.gif" /></td>
+				<td align="center" valign="center" onmouseover="showHxPopu(this,&#39;subMenu38&#39;);"><a href="http://www.landchina.com/default.aspx?tabid=358&ComName=default" style="color:;">专项服务</a></td>
+			</tr>
+		</table>
+		</td>
+		<td width="1%"><img src="http://www.landchina.com/User/default/Upload/sysFrameImg/x_landchia_dh_hz_1.gif" /></td>
+	</tr>
+</table>
+
+
+<div style="height:27px; width :150px; margin-left:750; margin-top:-27px;   " >
+<table cellSpacing="0" cellPadding="0" width="100%" border="0"><tr><td><input id="txtKeyword"  value=""  type="text"  style="background-color:#ffffff;color:#e16728;border: 1px solid #e16728;width:130px" /></td><td><img
+            src="/Image/common/js.jpg" id="imgQuery" height="19px" width="19px" style="cursor: pointer"  onclick="return imgQuery_onclick()" /></td></table>
+</div>
+<script language="javascript" type="text/javascript">
+// <![CDATA[
+
+        function imgQuery_onclick() {
+
+              //window.alert(mainForm.txtKeyword.value);
+
+              window.location.href="DesktopModule/SearchMdl/SearchResultList.aspx?KeyWord="+mainForm.txtKeyword.value+"&TabID=-1";
+
+
+        }
+
+// ]]>
+    </script>
+
+
+<div id="MainMenu1_subMenu2" style="DISPLAY:none;width:100%;background-color:#f3f5f7;" class="submenu"><table cellpadding="0" cellspacing="0" height="100%" border="0" class="contentItem linkSubMenu">
+	<tr height="28px">
+		<td align="center" width="10%"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=226&ComName=default">供地计划</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=261&ComName=default">出让公告</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=262&ComName=default">地块公示</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=263&ComName=default">结果公告</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=264&ComName=default">市场交易</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=347&ComName=default">大企业购地情况</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=348&ComName=default">大地块出让情况</a></td>
+		<td width="50px"></td>
+	</tr>
+</table>
+</div><div id="MainMenu1_subMenu26" style="DISPLAY:none;width:100%;background-color:#f3f5f7;" class="submenu"><table cellpadding="0" cellspacing="0" height="100%" border="0" class="contentItem linkSubMenu">
+	<tr height="28px">
+		<td align="center" width="10%"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=330&ComName=default">要闻报道</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=331&ComName=default">市场动态</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=332&ComName=default">宏观态势</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=335&ComName=default">专家视点</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=381&ComName=default">理论研究</a></td>
+		<td width="50px"></td>
+	</tr>
+</table>
+</div><div id="MainMenu1_subMenu31" style="DISPLAY:none;width:100%;background-color:#f3f5f7;" class="submenu"><table cellpadding="0" cellspacing="0" height="100%" border="0" class="contentItem linkSubMenu">
+	<tr height="28px">
+		<td align="center" width="10%"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=334&ComName=default">法律法规</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=336&ComName=default">中共中央、国务院文件</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=337&ComName=default">部门规章</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=338&ComName=default">部门规范性文件</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=339&ComName=default">适用解释及函复</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=363&ComName=default">地方法规</a></td>
+		<td width="50px"></td>
+	</tr>
+</table>
+</div><div id="MainMenu1_subMenu38" style="DISPLAY:none;width:100%;background-color:#f3f5f7;" class="submenu"><table cellpadding="0" cellspacing="0" height="100%" border="0" class="contentItem linkSubMenu">
+	<tr height="28px">
+		<td align="center" width="10%"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=358&ComName=default">业务指南</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=359&ComName=default">联系我们</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=362&ComName=default">土地推介</a></td>
+		<td width="50px"></td>
+	</tr>
+</table>
+</div></TD>
+					</TR>
+					<TR>
+						<TD id="moduleContainterPane"><input name="hidComName" type="hidden" id="hidComName" value="default" /><table id="mainModuleContainer_0" cellpadding="0" cellspacing="0" border="0" width="100%">
+	<tr>
+		<td align="middle" valign="top"><table bgcolor="" border="0" align="cent" width="992" background="http://www.landchina.com/User/default/Upload/sysFrameImg/x_tdscw_js-dd_1.gif" cellpadding="0" style="MARGIN-BOTTOM:0;MARGIN-TOP:0;" cellspacing="0" height="27">
+			<tr>
+				<td valign="top">
+
+<table id="mainModuleContainer_475_475" cellpadding="0" cellspacing="0" border="0" width="100%">
+					<tr>
+						<td align="left" valign="top"><table cellpadding="0" cellspacing="0" width="95" border="0" align="cent" style="MARGIN-BOTTOM:-2;MARGIN-TOP:6;" bgcolor="">
+							<tr>
+								<td valign="top">
+<TABLE class="htmlContent link1" id="Table1" cellSpacing="0" cellPadding="0" width="100%"
+	border="0">
+	<TR>
+		<TD colSpan="2">
+
+<table id="mainModuleContainer_475_476_asf_tblModuleTile" class="ModuleTitle link1" cellspacing="0" cellpadding="3" width="100%" border="0" style="COLOR:#ffea00;BACKGROUND-COLOR:;">
+									<tr>
+										<td id="mainModuleContainer_475_476_asf_tdTitle" width="1"></td>
+										<td align="left"><span id="mainModuleContainer_475_476_asf_lblTitle">今日导读:</span></td>
+										<td align="right"><a id="mainModuleContainer_475_476_asf_EditButton" style="COLOR:#ffea00;BACKGROUND-COLOR:;"></a></td>
+									</tr>
+								</table>
+
+</TD>
+	</TR>
+	<TR>
+		<td id="mainModuleContainer_475_476_tdImgContainter" valign="middle" align="center" width="6"></td>
+
+		<TD id="mainModuleContainer_475_476_tdHtmlContent"></TD>
+
+	</TR>
+</TABLE>
+</td>
+							</tr>
+							<tr>
+								<td valign="top"></td>
+							</tr>
+						</table>
+						</td>
+					</tr>
+				</table>
+				</td>
+			</tr>
+			<tr>
+				<td valign="top"></td>
+			</tr>
+		</table>
+		<table cellpadding="0" cellspacing="0" width="992" border="0" align="cent" style="MARGIN-BOTTOM:0;MARGIN-TOP:5;" bgcolor="" background="http://www.landchina.com/User/default/Upload/sysFrameImg/x_tdscw_sy_jhgg_2.gif">
+			<tr>
+				<td valign="top"><table id="mainModuleContainer_478_asf_tblModuleTile" class="ModuleTitle link1" cellspacing="0" cellpadding="3" width="100%" border="0" style="COLOR:#D3D3D3;BACKGROUND-COLOR:;BACKGROUND-IMAGE:url(http://www.landchina.com/User/default/Upload/sysFrameImg/x_tdscw_sy_jhgg_000.gif);" height="3">
+					<tr>
+						<td id="mainModuleContainer_478_asf_tdTitle" width="1"></td>
+						<td align="left"><span id="mainModuleContainer_478_asf_lblTitle"></span></td>
+						<td align="right"><a id="mainModuleContainer_478_asf_EditButton" style="COLOR:#D3D3D3;"></a></td>
+					</tr>
+				</table>
+
+
+<table id="mainModuleContainer_478_478" cellpadding="0" cellspacing="0" border="0" width="100%">
+					<tr>
+						<td align="middle" valign="top"><table cellpadding="0" cellspacing="0" width="978" border="0" align="cent" style="MARGIN-BOTTOM:2;MARGIN-TOP:2;" bgcolor="">
+							<tr>
+								<td valign="top">
+
+<table id="mainModuleContainer_478_1112_1112" cellpadding="0" cellspacing="0" border="0" width="100%">
+									<tr>
+										<td align="left" valign="top"><table cellpadding="0" cellspacing="0" width="250" height="920" border="0" align="cent" style="MARGIN-BOTTOM:0;MARGIN-TOP:0;" bgcolor="">
+											<tr>
+												<td valign="top">
+
+<table id="mainModuleContainer_478_1112_479_479" cellpadding="0" cellspacing="0" border="0" width="100%">
+													<tr>
+														<td align="middle" valign="top"><table bgcolor="" border="0" align="cent" width="240" background="http://www.landchina.com/User/default/Upload/sysFrameImg/x_tdscw_zy_tdsc_02.gif" cellpadding="0" style="MARGIN-BOTTOM:2;MARGIN-TOP:5;" cellspacing="0" height="230">
+															<tr>
+																<td valign="top">
+<SCRIPT>
+
+function pictureClick(linkAddress)
+{
+	window.open(linkAddress);
+
+}
+
+</SCRIPT>
+<TABLE class="ContentItem link1" id="Table1" cellSpacing="0" cellPadding="0" width="100%"
+	border="0">
+	<TR id="trTitle">
+		<TD><FONT id="FONT1" face="宋体">
+<table id="mainModuleContainer_478_1112_479_480_asf_tblModuleTile" class="ModuleTitle link1" cellspacing="0" cellpadding="3" width="100%" border="0" style="COLOR:#FFFFFF;BACKGROUND-COLOR:;BACKGROUND-IMAGE:url(http://www.landchina.com/User/default/Upload/sysFrameImg/x_tdscw_zy_tdsc_1.gif);" height="54">
+																	<tr>
+																		<td id="mainModuleContainer_478_1112_479_480_asf_tdTitle" width="1"></td>
+																		<td align="left"><span id="mainModuleContainer_478_1112_479_480_asf_lblTitle"></span></td>
+																		<td align="right"><a id="mainModuleContainer_478_1112_479_480_asf_EditButton" style="COLOR:#FFFFFF;"></a></td>
+																	</tr>
+																</table>
+
+</FONT></TD>
+	</TR>
+	<TR>
+		<TD id="mainModuleContainer_478_1112_479_480_tdPictureContainer" valign="middle"><table cellpadding="0" cellspacing="2" border="0" width="100%" class="ContentItem">
+																	<tr>
+																		<td width="100%" align="center" valign="center"><img onclick="pictureClick(&#39;http://www.landchina.com/default.aspx?tabid=226&#39;)" src="http://www.landchina.com/User/default/Upload/picImg/x_tdscw_zy_gdjh_1.gif" style="height:29px;width:200px;cursor:hand;" /></td>
+																	</tr>
+																	<tr>
+																		<td align="center" valign="center"></td>
+																	</tr>
+																	<tr>
+																		<td width="100%" align="center" valign="center"><img onclick="pictureClick(&#39;http://www.landchina.com/default.aspx?tabid=261&#39;)" src="http://www.landchina.com/User/default/Upload/picImg/x_tdscw_zy_crgg2011nh_1.gif" style="height:29px;width:200px;cursor:hand;" /></td>
+																	</tr>
+																	<tr>
+																		<td align="center" valign="center"></td>
+																	</tr>
+																	<tr>
+																		<td width="100%" align="center" valign="center"><img onclick="pictureClick(&#39;http://www.landchina.com/default.aspx?tabid=324&#39;)" src="http://www.landchina.com/User/default/Upload/picImg/x_tdscw_zy_crgg2011nq_1.gif" style="height:29px;width:200px;cursor:hand;" /></td>
+																	</tr>
+																	<tr>
+																		<td align="center" valign="center"></td>
+																	</tr>
+																	<tr>
+																		<td width="100%" align="center" valign="center"><img onclick="pictureClick(&#39;http://www.landchina.com/default.aspx?tabid=262&#39;)" src="http://www.landchina.com/User/default/Upload/picImg/x_tdscw_zy_dkgs_1.gif" style="height:29px;width:200px;cursor:hand;" /></td>
+																	</tr>
+																	<tr>
+																		<td align="center" valign="center"></td>
+																	</tr>
+																	<tr>
+																		<td width="100%" align="center" valign="center"><img onclick="pictureClick(&#39;http://www.landchina.com/default.aspx?tabid=263&#39;)" src="http://www.landchina.com/User/default/Upload/picImg/x_tdscw_zy_jggg_1.gif" style="height:29px;width:200px;cursor:hand;" /></td>
+																	</tr>
+																	<tr>
+																		<td align="center" valign="center"></td>
+																	</tr>
+																	<tr>
+																		<td width="100%" align="center" valign="center"><img onclick="pictureClick(&#39;http://www.landchina.com/default.aspx?tabid=264&#39;)" src="http://www.landchina.com/User/default/Upload/picImg/x_tdscw_zy_scjy_1.gif" style="height:29px;width:200px;cursor:hand;" /></td>
+																	</tr>
+																	<tr>
+																		<td align="center" valign="center"></td>
+																	</tr>
+																	<tr>
+																		<td width="100%" align="center" valign="center"><img onclick="pictureClick(&#39;http://www.landchina.com/default.aspx?tabid=347&#39;)" src="http://www.landchina.com/User/default/Upload/picImg/x_tdscw_zy_zdqygdqk_1.gif" style="height:29px;width:200px;cursor:hand;" /></td>
+																	</tr>
+																	<tr>
+																		<td align="center" valign="center"></td>
+																	</tr>
+																	<tr>
+																		<td width="100%" align="center" valign="center"><img onclick="pictureClick(&#39;http://www.landchina.com/default.aspx?tabid=348&#39;)" src="http://www.landchina.com/User/default/Upload/picImg/x_tdscw_zy_zdqycrqk_1.gif" style="height:29px;width:200px;cursor:hand;" /></td>
+																	</tr>
+																	<tr>
+																		<td align="center" valign="center"></td>
+																	</tr>
+																</table>
+																</TD>
+
+	</TR>
+</TABLE>
+</td>
+															</tr>
+															<tr height="10">
+																<td valign="top" background="http://www.landchina.com/User/default/Upload/sysFrameImg/x_tdscw_zy_tdsc_03.gif"></td>
+															</tr>
+														</table>
+														</td>
+													</tr>
+												</table>
+												</td>
+											</tr>
+											<tr>
+												<td valign="top"></td>
+											</tr>
+										</table>
+										</td>
+										<td width="2px"></td>
+										<td align="middle" valign="top"><table cellpadding="0" cellspacing="0" width="720" border="0" align="cent" style="MARGIN-BOTTOM:0;MARGIN-TOP:2;" bgcolor="">
+											<tr>
+												<td valign="top">
+<TABLE class="ContentItem" id="Table1" cellSpacing="0" cellPadding="0" width="100%" border="0">
+	<TR>
+		<TD>
+			<table id="mainModuleContainer_478_1112_1536_asf_tblModuleTile" class="ModuleTitle link1" cellspacing="0" cellpadding="3" width="100%" border="0" style="COLOR:#D3D3D3;BACKGROUND-COLOR:;BACKGROUND-IMAGE:url(http://www.landchina.com/User/default/Upload/sysFrameImg/x_tdscw_zy_dkgs_01.gif);" height="46">
+													<tr>
+														<td id="mainModuleContainer_478_1112_1536_asf_tdTitle" width="1"></td>
+														<td align="left"><span id="mainModuleContainer_478_1112_1536_asf_lblTitle"></span></td>
+														<td align="right"><a id="mainModuleContainer_478_1112_1536_asf_EditButton" style="COLOR:#D3D3D3;"></a></td>
+													</tr>
+												</table>
+
+</TD>
+	</TR>
+	<TR>
+		<TD id="mainModuleContainer_478_1112_1536_tdExtendProContainer">
+<link href="ExtendModule/WorkAction/Styles/QueryStyle1.css" rel="stylesheet" type="text/css" />
+<!--查询-->
+
+<style type="text/css">.calender { width:170px; height:auto; font-size:12px; margin-right:14px; background:url(calenderbg.gif) no-repeat right center #fff; border:1px solid #397EAE; padding:1px;}
+.calender ul {list-style-type:none; margin:0; padding:0;}
+.calender .day { background-color:#EDF5FF; height:20px;}
+.calender .day li,.calender .date li{ float:left; width:14%; height:20px; line-height:20px; text-align:center}
+.calender li a { text-decoration:none; font-family:Tahoma; font-size:11px; color:#333}
+.calender li a:hover { color:#f30; text-decoration:none;}
+.calender li a.hasArticle {font-weight:bold; color:#f60 !important}
+.lastMonthDate, .nextMonthDate {color:#bbbbbb;font-size:11px;cursor:pointer;}
+.selectThisYear a, .selectThisMonth a{text-decoration:none; margin:0 2px; color:#000; font-weight:bold}
+.calender .LastMonth, .calender .NextMonth{ text-decoration:none; color:#000; font-size:18px; font-weight:bold; line-height:16px;}
+.calender .LastMonth { float:left;}
+.calender .NextMonth { float:right;}
+.calenderBody {clear:both}
+.calenderTitle {text-align:center;height:20px; line-height:20px; clear:both}
+.today { background-color:#ffffaa;border:1px solid #f60; padding:2px}
+.today a { color:#f30; }
+.selected { background-color:#ffeebb;border:1px solid #f60; padding:2px}
+.selected a { color:#f30; }
+.calenderBottom {clear:both; border-top:1px solid #ddd; padding: 3px 0; text-align:left}
+.calenderBottom a {text-decoration:none; margin:2px !important; font-weight:bold; color:#000}
+.calenderBottom a.closeCalender{float:right}
+.closeCalenderBox {float:right; border:1px solid #000; background:#fff; font-size:9px; width:11px; height:11px; line-height:11px; text-align:center;overflow:hidden; font-weight:normal !important}</style><div class="pop-body-Query"><div class="tags"><ul><li  class="selectTag" id="TAB_tag7"><a  href="javascript:void(0)">查询条件</a></li></ul></div><div class="tagContentBody"><div  class="tagContent selectTag" id="TAB_tagContent7"><table style="width: 100%;" class="dataListStyle" border="0" cellspacing="5"><tbody><tr><td width="20"></td><td><input type="checkbox"  id="TAB_QueryConditionItem80" value="4a611fc4-42b1-4861-ac43-8d25b002dc2b" name="TAB_QueryConditionItem" checked="checked" disabled="disabled"/></td><td align="left"><span  class="labelCondition">行政区 :</span></td><td><input type="text"  id="TAB_queryTblEnumItem_80" class="inputSearchFieldsCondition"/><input type="hidden"  id="TAB_queryTblEnumItem_80_v" value=""/></td> <td width="20"></td><td><input type="checkbox"  id="TAB_QueryConditionItem211" value="1ae25730-29ec-4b86-a32c-d8c19efaf961" name="TAB_QueryConditionItem"/></td><td align="left"><span  class="labelCondition">公示标题 :</span></td><td><input type="text"  id="TAB_queryTextItem_211" class="inputFieldsCondition"/></td> </tr><tr><td width="20"></td><td><input type="checkbox"  id="TAB_QueryConditionItem210" value="66cc8979-1a1d-4fd5-b22a-0aeb1e14c6fd" name="TAB_QueryConditionItem" checked="checked"/></td><td align="left"><span  class="labelCondition">供应方式 :</span></td><td><input type="text"  id="TAB_queryTblEnumItem_210" class="inputSearchFieldsCondition" value="2020-7-26"/><input type="hidden"  id="TAB_queryTblEnumItem_210_v" value="2????????璁?4a611fc4-75b2-9531-ac26-8d25b002dc2b:2020-7-26"/></td> <td width="20"></td><td><input type="checkbox"  id="TAB_QueryConditionItem79" value="4a611fc4-75b2-9531-ac26-8d25b002dc2b" name="TAB_QueryConditionItem" checked="checked"/></td><td align="left"><span  class="labelCondition">发布时间 :</span></td><td><input type="text"  id="TAB_queryDateItem_79_1" class="inputDateFieldsCondition" value="2020-7-26"/><label  class="labelChar">到</label><input type="text"  id="TAB_queryDateItem_79_2" class="inputDateFieldsCondition" value="2020-7-26"/></td> </tr><tr><td width="20"></td><td><input type="checkbox"  id="TAB_QueryConditionItem271" value="42ecfb7c-75b0-4106-8b88-556d2b5622f9" name="TAB_QueryConditionItem"/></td><td align="left"><span  class="labelCondition">截止时间 :</span></td><td><input type="text"  id="TAB_queryDateItem_271_1" class="inputDateFieldsCondition" value=""/><label  class="labelChar">到</label><input type="text"  id="TAB_queryDateItem_271_2" class="inputDateFieldsCondition"/></td> </tr></tbody></table></div></div><div class="tagOrderBody"><table width="100%" border="0" cellspacing="5"><tbody><tr><td width="75%"><span><span>请选择排序方式:</span><input type="checkbox"  id="TAB_QuerySort0" name="TAB_QuerySortItemList" value="20da3312-3b36-4e96-9398-fc8c5174b02c:False" checked="checked"/><label for="TAB_QuerySort0">发布时间[降]</label></span></td><td align="right" style="padding-right: 35px;"><span class="QueryButton"><input type="button"  class="HeadToolButton" style="cursor:pointer" value="查询" id="TAB_QueryButtonControl"/></span></td></tr></tbody></table></div></div><script type="text/javascript">QueryAction.addConditionControl('TAB');QueryAction.OnReady(function(){QueryAction.registerQueryXzq('TAB','TAB_QueryConditionItem80','TAB_queryTblEnumItem_80','TAB_queryTblEnumItem_80_v');});QueryAction.OnReady(function(){QueryAction.registerQueryText('TAB','TAB_QueryConditionItem211','TAB_queryTextItem_211');});QueryAction.OnReady(function(){QueryAction.registerQueryPopupEnum('TAB','TAB_QueryConditionItem210','3','TAB_queryTblEnumItem_210','TAB_queryTblEnumItem_210_v');});QueryAction.OnReady(function(){QueryAction.registerQueryDate('TAB','TAB_QueryConditionItem79','TAB_queryDateItem_79_1','TAB_queryDateItem_79_2');});QueryAction.OnReady(function(){QueryAction.registerQueryDate('TAB','TAB_QueryConditionItem271','TAB_queryDateItem_271_1','TAB_queryDateItem_271_2');});QueryAction.OnReady(function(){QueryAction.registerQueryButton('TAB','TAB_QueryButtonControl');});QueryAction.registerConditionTag('TAB',[7]);</script><script type="text/javascript">QueryAction.OnReady(function(){QueryAction.getConditionControl('TAB').relativePath='ExtendModule/WorkAction';});</script><input id="TAB_QuerySubmitConditionData" name="TAB_QuerySubmitConditionData" type="hidden" value="66cc8979-1a1d-4fd5-b22a-0aeb1e14c6fd:2????????璁?4a611fc4-75b2-9531-ac26-8d25b002dc2b:2020-7-26~2020-7-26"/><input id="TAB_QuerySubmitOrderData" name="TAB_QuerySubmitOrderData" type="hidden" value="20da3312-3b36-4e96-9398-fc8c5174b02c:False"/><script type="text/javascript">QueryAction.formId='mainForm';</script></TD>
+
+	</TR>
+</TABLE>
+</td>
+											</tr>
+											<tr>
+												<td valign="top"></td>
+											</tr>
+										</table>
+										<table cellpadding="0" cellspacing="0" width="724" border="0" align="cent" style="MARGIN-BOTTOM:2;MARGIN-TOP:-3;" bgcolor="">
+											<tr>
+												<td valign="top">
+<TABLE class="ContentItem" id="Table1" cellSpacing="0" cellPadding="0" width="100%" border="0">
+	<TR>
+		<TD>
+
+</TD>
+	</TR>
+	<TR>
+		<TD id="mainModuleContainer_478_1112_1537_tdExtendProContainer">
+<link href="ExtendModule/WorkAction/Styles/ContentStyle.css" rel="stylesheet" type="text/css" />
+
+<input id="TAB_RowButtonActionControl" name="TAB_RowButtonActionControl" type="hidden"/><input id="TAB_QuerySubmitPagerData" name="TAB_QuerySubmitPagerData" type="hidden" value="1"/><input id="TAB_QuerySubmitSortData" name="TAB_QuerySubmitSortData" type="hidden" value=""/><style type="text/css"> .contentDivSort { font-size: 12px; border: 1px solid #a9bfd3; margin: 0; padding: 0,10,0,10; background-color:rgb(250,250,250); } .contentDivSort ul { margin:0; padding:0; } .contentDivSort ul li { margin:0; list-style-type: none; text-align: center; cursor: pointer; } </style><table class="grid" cellspacing="0" cellpadding="0" width="100%"><tbody><tr><td valign="top"><table cellspacing="0" cellpadding="0" width="100%"><tbody><tr><td><table id="TAB_contentTable" name="contentTable" width="100%" cellspacing="0" cellpadding="0" border="0"><tbody><tr class="gridHeader"><td class="gridHdCell" style="padding-left:2px;">序号</td><td  class="gridHdCell"><div class="titleDivStyle" onmouseover="onMouseOver(this);" onmouseout="onMouseOut(this);"><span>行政区</span><img style="display:none;border:0" class="titleColumnStyle" onclick="showSortDIV('TAB',this,'cbc6d2c5-a552-456d-91ec-8d4bff6cb1e6')"/></div></td><td  class="gridHdCell"><div class="titleDivStyle" onmouseover="onMouseOver(this);" onmouseout="onMouseOut(this);"><span>公示标题</span><img style="display:none;border:0" class="titleColumnStyle" onclick="showSortDIV('TAB',this,'99f754ff-28e1-46c9-ac4c-cfc7a65a7b4c')"/></div></td><td  class="gridHdCell"><div class="titleDivStyle" onmouseover="onMouseOver(this);" onmouseout="onMouseOut(this);"><span>公示发布日期</span><img style="display:none;border:0" class="titleColumnStyle" onclick="showSortDIV('TAB',this,'20da3312-3b36-4e96-9398-fc8c5174b02c')"/></div></td></tr><tr><td colspan="3">没有检索到相关数据!</td></tr></tbody></table></td></tr><tr><td> &nbsp; </td></tr></tbody></table></td></tr><tr><td></td></tr></tbody></table><div id="TAB_divSort" class="contentDivSort" style="display: none; position: absolute;" onblur="this.style.display='none';"><ul><li onclick="doAscPro('TAB')"><img alt="升序" src="image/common/hmenu-asc.gif">升序排序</li><li onclick="doDescPro('TAB')"><img alt="降序" src="image/common/hmenu-desc.gif">降序排序</li></ul></div><script type="text/javascript"> function onMouseOver(element) { element.childNodes[1].style.display = ''; }; function onMouseOut(element) { element.childNodes[1].style.display = 'none'; }; function showSortDIV(id,ths, field) { var left = ths.offsetLeft; var top = ths.offsetTop; var element = document.getElementById(id + "_divSort"); element.style.display = 'block'; element.style.pixelLeft = left; element.style.pixelTop = top + ths.offsetHeight; element.focus(); element.field = field; } function doAscPro(fix) { var dive = document.getElementById(fix + '_divSort'); var element = document.getElementById(fix + '_QuerySubmitSortData'); element.value = dive.field + ':True'; var form = document.getElementById(QueryAction.formId); if (form) { form.submit(); } } function doDescPro(fix) { var dive = document.getElementById(fix+"_divSort"); var element = document.getElementById(fix+'_QuerySubmitSortData'); element.value = dive.field + ':False'; var form = document.getElementById(QueryAction.formId); if (form) { form.submit(); } } </script><script type="text/javascript">QueryAction.addResultControl('TAB');</script><script type="text/javascript">QueryAction.OnReady(function(){QueryAction.getResultControl('TAB').relativePath='ExtendModule/WorkAction';});</script><script type="text/javascript">QueryAction.formId='mainForm';</script>
+
+</TD>
+
+	</TR>
+</TABLE>
+</td>
+											</tr>
+											<tr>
+												<td valign="top"></td>
+											</tr>
+										</table>
+										</td>
+									</tr>
+								</table>
+								</td>
+							</tr>
+							<tr>
+								<td valign="top"></td>
+							</tr>
+						</table>
+						</td>
+					</tr>
+				</table>
+				</td>
+			</tr>
+			<tr height="1">
+				<td valign="top" background="http://www.landchina.com/User/default/Upload/sysFrameImg/x_tdscw_sy_jhgg_3.gif"></td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+</table>
+</TD>
+
+					</TR>
+					<TR>
+						<TD>
+<meta content="False" name="vs_showGrid">
+<TABLE class="ContentItem" id="desktopPortalTailTable" cellSpacing="0" cellPadding="0"
+	width="100%" border="0">
+
+	<tr height=10>
+		<td id="DesktopPortalTail1_tdBottomMenu">
+			<table id="DesktopPortalTail1_BottomMenu1_bottomMenuTable" class="MainMenuTable link1" align="center" cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td valign="center"><table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
+			<tr>
+			</tr>
+		</table>
+		</td>
+	</tr>
+</table>
+
+</td>
+
+	</tr>
+	<tr>
+		<td id="DesktopPortalTail1_TD1" align="center" style="BACKGROUND-IMAGE:url(http://www.landchina.com/User/default/Upload/sysFrameImg/x_tdscw2013_yw_1.jpg);"><P><BR></P><TABLE><TBODY><TR class=firstRow><TD style="BORDER-BOTTOM: 1px solid; BORDER-LEFT: 1px solid; BORDER-TOP: 1px solid; BORDER-RIGHT: 1px solid; border:0px solid" vAlign=top width=370><P style="TEXT-ALIGN: center"><A href="https://www.landchina.com/" target=_self><IMG title=tdscw_loge1.png alt=tdscw_loge1.png src="http://218.246.22.166/newmanage/ueditor/utf8-net/net/upload/image/20200610/6372740634287711081111312.png"></A></P></TD><TD style="BORDER-BOTTOM: 1px solid; BORDER-LEFT: 1px solid; WORD-BREAK: break-all; BORDER-TOP: 1px solid; BORDER-RIGHT: 1px solid;border:0px solid" vAlign=top width=620><SPAN style="FONT-FAMILY: 宋体, SimSun; COLOR: rgb(255,255,255); FONT-SIZE: 12px">主办：自然资源部不动产登记中心（自然资源部法律事务中心）</SPAN> <P><SPAN style="FONT-FAMILY: 宋体, SimSun; COLOR: rgb(255,255,255); FONT-SIZE: 12px">指导单位：自然资源部自然资源开发利用司&nbsp; &nbsp;技术支持：浙江臻善科技股份有限公司</SPAN> <P><SPAN style="FONT-FAMILY: 宋体, SimSun; COLOR: rgb(255,255,255); FONT-SIZE: 12px">京ICP备12039414号-4&nbsp; &nbsp;京公网安备110102000666(2)&nbsp; &nbsp;邮箱：landchina218@163.com&nbsp;&nbsp;<script type="text/javascript">var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " https://");document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F83853859c7247c5b03b527894622d3fa' type='text/javascript'%3E%3C/script%3E"));</script></SPAN> </P></TR></TBODY></TABLE><P>&nbsp;</P></td>
+
+	</tr>
+</TABLE>
+</TD>
+					</TR>
+					<tr height="4">
+						<td></td>
+					</tr>
+				</TABLE>
+			</FONT>
+		</form>
+		<script language="JScript">
+			<!--
+
+
+			var scrollWidth=1024;
+
+
+			function initAd(adObjName,x,y,isDistLeft)
+			{
+
+				scrollWidth=document.body.scrollWidth;
+
+				var obj=document.getElementById(adObjName);
+
+				obj.style.posTop = -200;//设置onLoad事件激发以后，广告层相对于固定后的y方向位置
+
+				if(isDistLeft==1)
+				{
+					obj.style.posLeft = x;
+				}else
+				{
+					obj.style.posLeft = scrollWidth-x-parseInt(obj.style.width);
+
+				}
+				obj.style.visibility = 'visible';//设置层为可见
+
+				MoveLayer(adObjName,x,y,isDistLeft);//调用函数MoveLayer()
+
+			}
+
+			function MoveLayer(adObjName,x,y,isDistLeft)
+			{
+
+			   scrollWidth=document.body.scrollWidth;
+				var obj=document.getElementById(adObjName);
+				var diff = (document.body.scrollTop + y - obj.style.posTop)*0.40;
+				var posy = document.body.scrollTop + y - diff;
+
+				obj.style.posTop = posy;
+
+				if(isDistLeft==1)
+				{
+					obj.style.posLeft = x;
+				}else
+				{
+					obj.style.posLeft = scrollWidth-x-parseInt(obj.style.width);
+
+				}
+				var express="MoveLayer('"+adObjName+"',"+x+","+y+","+isDistLeft+")";
+				setTimeout(express, 100);//设置100毫秒后再调用函数MoveLayer()
+			}
+
+
+			function CloseAd(adObjName)
+			{
+				var obj=document.getElementById(adObjName);
+
+				obj.style.visibility = 'hidden';//设置层为不可见
+
+
+
+			}
+
+
+		//-->
+		</script>
+	</body>
+</HTML>
+
+

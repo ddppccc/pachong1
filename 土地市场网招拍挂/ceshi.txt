@@ -1,0 +1,500 @@
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<html>
+<head>
+    <title>
+        哈密市国土资源局国有土地使用权挂牌出让公告(哈市[2012挂字]008号)
+    </title>
+    <meta content="哈密市国土资源局国有土地使用权挂牌出让公告(哈市[2012挂字]008号)" name="keywords">
+    <meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+    <meta content="C#" name="CODE_LANGUAGE">
+    <meta content="JavaScript" name="vs_defaultClientScript">
+    <meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+    <link href="../../../Styles/global.css" type="text/css" rel="stylesheet">
+
+    <style type="text/css">
+        @font-face {
+            font-family: 'my_webfont';
+        src:  url('../../../styles/fonts/gRYimlGgKp1mW5ldNU5LIoLTJdKXEnKo.eot?fdipzone');
+        src:  url('../../../styles/fonts/gRYimlGgKp1mW5ldNU5LIoLTJdKXEnKo.eot?fdipzone#iefix') format('embedded-opentype'),
+        url('../../../styles/fonts/gRYimlGgKp1mW5ldNU5LIoLTJdKXEnKo.ttf?fdipzone') format('truetype'),
+        url('../../../styles/fonts/gRYimlGgKp1mW5ldNU5LIoLTJdKXEnKo.woff?fdipzone') format('woff'),
+        url('../../../styles/fonts/gRYimlGgKp1mW5ldNU5LIoLTJdKXEnKo.svg?fdipzone#my_webfont') format('svg');
+            
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        .my_webfont {
+            font-family: my_webfont !important;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-size: 14px !important;
+            font-weight: normal;
+        }
+
+
+            .my_webfont td {
+                font-family: my_webfont !important;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                font-size: 14px !important;
+                font-weight: normal;
+            }
+
+            .my_webfont span {
+                font-family: my_webfont !important;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                font-size: 14px !important;
+                font-weight: normal;
+            }
+			
+			
+			.my_webfont span font {
+                font-family: my_webfont !important;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                font-size: 14px !important;
+                font-weight: normal;
+            }
+    </style>
+
+
+    <script language="javascript" id="clientEventHandlersJS">
+<!--
+
+    function btnPrint_onclick() {
+
+        window.print();
+
+    }
+
+    function btnClose_onclick() {
+        window.close();
+
+    }
+
+    //-->
+    </script>
+
+
+</head>
+<body ms_positioning="GridLayout" bgcolor="f4f5f6">
+    <form method="post" action="bulWorkView.aspx?wmguid=20aae8dc-4a0c-4af5-aedf-cc153eb6efdf&amp;recorderguid=a6a54f46-6b68-4850-8741-7f6593a4dfec&amp;sitePath=" id="Form1">
+<div class="aspNetHidden">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKLTQ2NDQ1MzQ1MGRksKL52/EAprZea0GGsvT1mnINFBNRVPgeBXDb/LwD8xw=" />
+</div>
+
+        <table cellpadding="0" align="center" bgcolor="#ffffff" border="0" class="mainTable" id="Table1"
+            cellspacing="0">
+            <tr>
+                <td>
+                    
+<TABLE id="DesktopPortalHeadTable" cellSpacing="0" cellPadding="0" width="100%" border="0">
+        
+	<TR>
+		<td id="DesktopPortalHead1_tdHead" class="PageHead"><div id="DesktopPortalHead1_asdfasdf">
+<P>
+	<TABLE id="tblFlash" cellSpacing="0" cellPadding="0" width="100%" border="0">
+		<TR>
+			<TD align="center"  valign="middle">
+				<OBJECT 
+      codeBase=http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0 
+      height="203" width="100%" align=middle 
+      classid=clsid:D27CDB6E-AE6D-11cf-96B8-444553540000 VIEWASTEXT>
+					<PARAM NAME="_cx" VALUE="26">
+					<PARAM NAME="_cy" VALUE="26">
+					<PARAM NAME="FlashVars" VALUE="">
+					<PARAM NAME="Movie" VALUE="http://www.landchina.com/User/default/Upload/sysFrameImg/zx_tdscw_flash_03.swf">
+					<PARAM NAME="Src" VALUE="http://www.landchina.com/User/default/Upload/sysFrameImg/zx_tdscw_flash_03.swf">
+					<PARAM NAME="WMode" VALUE="Opaque">
+					<PARAM NAME="Play" VALUE="-1">
+					<PARAM NAME="Loop" VALUE="-1">
+					<PARAM NAME="Quality" VALUE="High">
+					<PARAM NAME="SAlign" VALUE="">
+					<PARAM NAME="Menu" VALUE="-1">
+					<PARAM NAME="Base" VALUE="">
+					<PARAM NAME="AllowScriptAccess" VALUE="always">
+					<PARAM NAME="Scale" VALUE="NoBorder">
+					<PARAM NAME="DeviceFont" VALUE="0">
+					<PARAM NAME="EmbedMovie" VALUE="0">
+					<PARAM NAME="BGColor" VALUE="">
+					<PARAM NAME="SWRemote" VALUE="">
+					<PARAM NAME="MovieData" VALUE="">
+					<PARAM NAME="SeamlessTabbing" VALUE="1">
+					<PARAM NAME="Profile" VALUE="0">
+					<PARAM NAME="ProfileAddress" VALUE="">
+					<PARAM NAME="ProfilePort" VALUE="0">
+					<PARAM NAME="AllowNetworking" VALUE="all">
+					<PARAM NAME="AllowFullScreen" VALUE="false">
+					<embed         
+                                        src="http://www.landchina.com/User/default/Upload/sysFrameImg/zx_tdscw_flash_03.swf"             
+      width="100%"                         height="203"  
+                             align="middle"             quality="high"           
+                                                             
+      						pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" 
+                                                                 
+      						type="application/x-shockwave-flash"                               
+      scale="noborder"> </embed>
+				</OBJECT>
+			</TD>
+		</TR>
+	</TABLE>
+</P>
+</div></td>
+
+	</TR>
+</TABLE>
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    
+
+<script language="javascript" id="mainmenuJS">
+<!--
+
+var oldSubMenu=null; 
+var preTimeOut=null;
+
+
+function getPos(el,sProp)  
+{
+     var iPos = 0 
+     while (el!=null)  
+　　 {
+　　    iPos+=el["offset" + sProp] ;
+        el = el.offsetParent;
+        
+      } 
+     　　return iPos;
+ }  
+ 
+ function SubMenuOut()
+ {
+     if(oldSubMenu!=null)
+        oldSubMenu.style.display='none' 
+        
+        
+        
+ 
+ }
+ 
+/*显示纵向展开的二级菜单   */
+function show(el,divId)  
+{
+ 
+  var subMenu= document.getElementById("MainMenu1_"+divId);
+  if (subMenu!=null) 
+  {
+    subMenu.style.display=''; 
+    subMenu.style.pixelLeft = getPos(el,"Left")+el.offsetWidth/2-49 ;
+    subMenu.style.pixelTop = getPos(el,"Top") + el.offsetHeight+1;
+    subMenu.style.width=el.style.width;
+  }  
+  if((subMenu!=oldSubMenu) && (oldSubMenu))
+      oldSubMenu.style.display='none' ;
+      
+  oldSubMenu=subMenu;
+  
+ }  
+ 
+/*显示横向展开的二级菜单   */
+function showHx(el,divId)  
+{
+ 
+  var subMenu= document.getElementById("MainMenu1_"+divId);
+  if (subMenu!=null) 
+  {
+  
+    // var welcomTage= document.getElementById("MainMenu1_portal_welcome_tag");
+    // welcomTage.style.display='none'; 
+   
+       
+    
+    
+    subMenu.style.display=''; 
+    if(getPos(el,"Left")>600)
+    {
+         
+       subMenu.style.left = getPos(el,"Left")-subMenu.width;
+    }else{
+       subMenu.style.left = getPos(el,"Left")-100;
+    }
+   
+  }  
+  if((subMenu!=oldSubMenu) && (oldSubMenu))
+      oldSubMenu.style.display='none' ;
+      
+  oldSubMenu=subMenu;
+
+}
+
+
+/*显示横向展开的二级菜单   */
+function showHxPopu(el, divId) {
+
+
+
+    var mainMenu = document.getElementById("MainMenu1_mainMenuTable");
+    var subMenu = document.getElementById("MainMenu1_" + divId);
+    if (subMenu != null) {
+        subMenu.style.display = '';
+
+        
+
+        if (mainMenu != null) {
+
+            subMenu.style.left = mainMenu.style.left;
+         
+
+
+        }
+
+        subMenu.style.pixelTop = getPos(el, "Top") + el.offsetHeight;
+        
+    }
+    if ((subMenu != oldSubMenu) && (oldSubMenu))
+        oldSubMenu.style.display = 'none';
+
+    oldSubMenu = subMenu;
+
+}  
+
+
+
+function SetBackImage(img,imagePath) 
+{
+	img.src=imagePath;
+  
+}
+
+
+function SubMenuClassSet(link,className)
+{	
+	
+	
+		link.className=className;
+		
+		
+		if(className=="SubMenuItem")
+		{
+		   preTimeOut=setTimeout(SubMenuOut,100);
+		}else{
+		   if(preTimeOut!=null)
+		   {
+		      clearTimeout(preTimeOut);
+		   }
+		
+		}
+
+}
+
+
+
+
+//-->
+</script>
+<table id="MainMenu1_mainMenuTable" class="MainMenuTable linkMenu" cellspacing="0" cellpadding="0" width="100%" border="0" style="BACKGROUND-COLOR:#f3f5f7;COLOR:;">
+	<tr>
+		<td valign="center"><table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%" class="MainMenuTable" style="BACKGROUND-IMAGE:url(http://www.landchina.com/User/default/Upload/sysFrameImg/x_landchia_dh_1.gif);BACKGROUND-COLOR:#f3f5f7;COLOR:;">
+			<tr height="34">
+				<td align="center" valign="center" onmouseover="showHxPopu(this,&#39;subMenu1&#39;);"><a href="http://www.landchina.com/" style="color:;">网站首页</a></td>
+				<td><img src="http://www.landchina.com/User/default/Upload/sysFrameImg/x_landchia_dh_jg_1.gif" /></td>
+				<td align="center" valign="center" onmouseover="showHxPopu(this,&#39;subMenu2&#39;);"><a href="http://www.landchina.com/default.aspx?tabid=226&ComName=default" style="color:;">土地供应</a></td>
+				<td><img src="http://www.landchina.com/User/default/Upload/sysFrameImg/x_landchia_dh_jg_1.gif" /></td>
+				<td align="center" valign="center" onmouseover="showHxPopu(this,&#39;subMenu26&#39;);"><a href="http://www.landchina.com/default.aspx?tabid=330&ComName=default" style="color:;">行业动态</a></td>
+				<td><img src="http://www.landchina.com/User/default/Upload/sysFrameImg/x_landchia_dh_jg_1.gif" /></td>
+				<td align="center" valign="center" onmouseover="showHxPopu(this,&#39;subMenu31&#39;);"><a href="http://www.landchina.com/default.aspx?tabid=334&ComName=default" style="color:;">政策法规</a></td>
+				<td><img src="http://www.landchina.com/User/default/Upload/sysFrameImg/x_landchia_dh_jg_1.gif" /></td>
+				<td align="center" valign="center" onmouseover="showHxPopu(this,&#39;subMenu38&#39;);"><a href="http://www.landchina.com/default.aspx?tabid=358&ComName=default" style="color:;">专项服务</a></td>
+				<td><img src="http://www.landchina.com/User/default/Upload/sysFrameImg/x_landchia_dh_jg_1.gif" /></td>
+				<td align="center" valign="center" onmouseover="showHxPopu(this,&#39;subMenu40&#39;);"><a href="http://www.landchina.com/default.aspx?tabid=362&ComName=default" style="color:;">土地推介</a></td>
+			</tr>
+		</table>
+		</td>
+		<td width="1%"><img src="http://www.landchina.com/User/default/Upload/sysFrameImg/x_landchia_dh_hz_1.gif" /></td>
+	</tr>
+</table>
+
+
+<div style="height:27px; width :150px; margin-left:750; margin-top:-27px;   " >
+<table cellSpacing="0" cellPadding="0" width="100%" border="0"><tr><td><input id="txtKeyword"  value=""  type="text"  style="background-color:#ffffff;color:#e16728;border: 1px solid #e16728;width:130px" /></td><td><img 
+            src="/Image/common/js.jpg" id="imgQuery" height="19px" width="19px" style="cursor: pointer"  onclick="return imgQuery_onclick()" /></td></table>
+</div>
+<script language="javascript" type="text/javascript">
+// <![CDATA[
+
+        function imgQuery_onclick() {
+
+              //window.alert(mainForm.txtKeyword.value);
+
+              window.location.href="DesktopModule/SearchMdl/SearchResultList.aspx?KeyWord="+mainForm.txtKeyword.value+"&TabID=-1";
+
+
+        }
+
+// ]]>
+    </script>
+
+
+<div id="MainMenu1_subMenu2" style="DISPLAY:none;width:100%;background-color:#f3f5f7;" class="submenu"><table cellpadding="0" cellspacing="0" height="100%" border="0" class="contentItem linkSubMenu">
+	<tr height="28px">
+		<td align="center" width="10%"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=226&ComName=default">供地计划</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=261&ComName=default">出让公告</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=262&ComName=default">地块公示</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=263&ComName=default">结果公告</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=264&ComName=default">市场交易</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=347&ComName=default">大企业购地情况</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=348&ComName=default">大地块出让情况</a></td>
+		<td width="50px"></td>
+	</tr>
+</table>
+</div><div id="MainMenu1_subMenu26" style="DISPLAY:none;width:100%;background-color:#f3f5f7;" class="submenu"><table cellpadding="0" cellspacing="0" height="100%" border="0" class="contentItem linkSubMenu">
+	<tr height="28px">
+		<td align="center" width="10%"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=330&ComName=default">要闻报道</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=331&ComName=default">市场动态</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=332&ComName=default">宏观态势</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=335&ComName=default">专家视点</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=381&ComName=default">理论研究</a></td>
+		<td width="50px"></td>
+	</tr>
+</table>
+</div><div id="MainMenu1_subMenu31" style="DISPLAY:none;width:100%;background-color:#f3f5f7;" class="submenu"><table cellpadding="0" cellspacing="0" height="100%" border="0" class="contentItem linkSubMenu">
+	<tr height="28px">
+		<td align="center" width="10%"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=334&ComName=default">法律法规</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=336&ComName=default">中共中央、国务院文件</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=337&ComName=default">部门规章</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=338&ComName=default">部门规范性文件</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=339&ComName=default">适用解释及函复</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=363&ComName=default">地方法规</a></td>
+		<td width="50px"></td>
+	</tr>
+</table>
+</div><div id="MainMenu1_subMenu38" style="DISPLAY:none;width:100%;background-color:#f3f5f7;" class="submenu"><table cellpadding="0" cellspacing="0" height="100%" border="0" class="contentItem linkSubMenu">
+	<tr height="28px">
+		<td align="center" width="10%"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=358&ComName=default">业务指南</a></td>
+		<td width="50px"></td>
+		<td align="center"><a href="http://www.landchina.com/default.aspx?tabid=359&ComName=default">联系我们</a></td>
+		<td width="50px"></td>
+	</tr>
+</table>
+</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="cellBordy" valign="top">
+                    <table class="contentItem" id="Table2" height="100%" cellspacing="0" cellpadding="0" width="100%"
+                        border="0">
+                        <tr height="10">
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="ContentTitle3" align="center" height="30">
+                                <span id="lblTitle">哈密市国土资源局国有土地使用权挂牌出让公告(哈市[2012挂字]008号)</span></td>
+                        </tr>
+                        <tr height="30">
+                            <td align="center"><font face="宋体">&nbsp;&nbsp;</font><span id="lblCreateDate">发布时间：2012年3月30日 18:51</span><font face="宋体">&nbsp;&nbsp;
+										<span id="lblXzq">行政区：新疆维吾尔 > 哈密地区 > 哈密市</span></font></td>
+                        </tr>
+                        <tr height="20">
+                            <td class="TileUnderLine1"></td>
+                        </tr>
+                        <tr>
+                            <td height="30"></td>
+                        </tr>
+                        <tr>
+                            <td valign="top" align="center">
+                                <table cellspacing="0" cellpadding="2" width="90%" border="0">
+                                    <tr height="400">
+                                        <td id="tdContent" valign="top" class="my_webfont"><table width="95%" border="0" cellspacing="0" cellpadding="0" style="font-family: '宋�[';font-size: 14px;line-height: 150%;">  <tr>    <td align="center" style="font-size:16px; font-weight:bold; height:30px">哈���h逡�������e逡������使�i�}���p出让�e�x(哈�h[2012����]008号)</td>  </tr>  <tr>    <td align="center">哈�h[2012����]008号    2012-3-30</td>  </tr>  <tr>    <td>  <p></p>        <p>    �N哈���h�Q�qふ�t批��,哈���h逡�������e�_��以 <u>���p</u> ��式出让 <u>1(幅)</u> ��块�`逡������使�i�}。现将���v��项�e�x�{��：</p>        <p>一、���p出让��块�`基���_况和�F划�����デ� : </p>               <div style=" font-size:12px;">    <table width="100%" border="1" cellpadding="1" cellspacing="0" style="border-collapse:collapse; border-color:#333333;font-size:12px;">        <tr>            <td style="width:100px;">宗��编号：</td>            <td style="width:200px;"> 2012-008</td>            <td style="width:100px;">宗�����q：</td>            <td style="width:100px;"> 133560����米</td>            <td style="width:100px;">宗��坐落：</td>            <td> 哈����色金����</td>        </tr>        <tr>            <td>出让�}限：</td>            <td > 50�}</td>            <td>容�q率：</td>            <td > 等�C0.12</td>            <td>�U筑����(%)：</td>            <td > </td>        </tr>        <tr>             <td>���盥�(%)：</td>            <td > 等�C23.1</td>            <td>�U筑限��(米)：</td>            <td > </td>            <td>�����i途：</td>            <td > �冁i�i��</td>        </tr>        <tr>            <td>投���m�穑�</td>            <td > 万元/�e顷</td>            <td>保证金：</td>            <td > 80万元</td>            <td></td>            <td></td>        </tr>                <tr>            <td colspan="6">                 场����整：  基础�鲜�：</td>        </tr>                        <tr>            <td>起始价：</td>            <td> </td>            <td>��价幅�穑�</td>            <td colspan="3" > </td>        </tr>                          <tr>            <td>���p�Z始�峒洌�</td>            <td> 2012�}03月30��10��00分</td>            <td>���p截止�峒洌�</td>            <td  colspan="3"> 2012�}04月18��19��00分</td>        </tr>                    </table></div><div style=" height:3px;"></div>        <p>二、 �T�^�Q�q��和逡�漳����`���Q、自然�Q和�`他组织均可���ūW��，�����Q应�v��独���ā�</p>        <p>三、 ��次逡������使�i�}���p出让按照价�陶��U原则确���}�U�Q。 </p>        <p>四、 ��次���p出让�`详细��料和�N�[�デ螅��T���p出让�y�]。�����Q可�C <u>2012�}03月30��</u> 至 <u>2012�}04月18��</u> 到 <u>哈���h����交易�T心</u> 获取 ���p 出让�y�]。</p>        <p>五、 �����Q可�C <u>2012�}03月30��</u> 至 <u>2012�}04月18��</u> 到 <u>哈���h����交易�T心</u> 向�i�e提交�������ā＝荒陕}买保证金�`截止�峒澍x<u>2012�}04月18��19��00分</u>  。�N审核，�����Q按�F��交纳�}买保证金，�N备���ㄌ��]�`，�i�e将�a <u>2012�}04月18��19��00分</u> 前确���`�}买��格。</p>        <p>�G、 ��次逡������使�i�}���p����<u></u>  �a <u>哈���h����交易�T心</u> �囚！８鞴�块���p�峒浞直瘌x:<br>     <u>2012-008</u> 号��块:<u>2012�}03月30��10��00分</u> 至 <u>2012�}04月18��19��00分</u> ;<br/></p>        <p>��、 �`他需���e�x�`��项:<br/>    （一）���p�峒浣刂��幔����}买�Q表��愿意继�c�}价，�b�鹣殖÷}价，�O过现场�}价确���}�U�Q。<br/> </p>        <p>八、 联����式�h银簦帐��<br/>                   联����址：哈���h爱逡�{路4号<br/>                   联 �� �Q：�y继�f、姜金琳<br/>                   联���h话：0902-2250748<br/>                   �Z�����R：哈���h����交易�T心<br/>                   �Z��银簦：�U�弦�簦哈��爱逡�{路分�q处<br/>                   银簦帐号：65001670300052501009<br/></td>  </tr>  <tr>    <td align="right">  哈���h逡�������e<br></td>  </tr>  <tr>    <td></td>  </tr>  <tr>    <td></td>  </tr></table></td>
+
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right" class="gridHeader" height="20">
+                                <a id="lnkOldBul" class="link1"></a></td>
+                        </tr>
+                        <tr>
+                            <td class="gridHeader" align="center">
+                                <input language="javascript" class="HeadToolButton" id="btnPrint" style="height: 24px"
+                                    onclick="return btnPrint_onclick()" type="button" value="打印" name="btnPrint"><input language="javascript" class="HeadToolButton" id="btnClose" style="height: 24px"
+                                        onclick="return btnClose_onclick()" type="button" value="关闭窗口" name="btnClose"></td>
+                        </tr>
+                        <tr>
+                            <td class="gridHeader" height="20"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    
+<meta content="False" name="vs_showGrid">
+<TABLE class="ContentItem" id="desktopPortalTailTable" cellSpacing="0" cellPadding="0"
+	width="100%" border="0">
+	
+	<tr height=10>
+		<td id="DesktopPortalTail1_tdBottomMenu">
+			<table id="DesktopPortalTail1_BottomMenu1_bottomMenuTable" class="MainMenuTable link1" align="center" cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td valign="center"><table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
+			<tr>
+			</tr>
+		</table>
+		</td>
+	</tr>
+</table>
+
+</td>
+
+	</tr>
+	<tr>
+		<td id="DesktopPortalTail1_TD1" align="center" style="BACKGROUND-IMAGE:url(http://www.landchina.com/User/default/Upload/sysFrameImg/x_tdscw2013_yw_1.jpg);"><P><BR></P><TABLE><TBODY><TR class=firstRow><TD style="BORDER-BOTTOM: 1px solid; BORDER-LEFT: 1px solid; BORDER-TOP: 1px solid; BORDER-RIGHT: 1px solid; border:0px solid" vAlign=top width=370><P style="TEXT-ALIGN: center"><A href="https://www.landchina.com/" target=_self><IMG title=tdscw_loge1.png alt=tdscw_loge1.png src="http://218.246.22.166/newmanage/ueditor/utf8-net/net/upload/image/20200610/6372740634287711081111312.png"></A></P></TD><TD style="BORDER-BOTTOM: 1px solid; BORDER-LEFT: 1px solid; WORD-BREAK: break-all; BORDER-TOP: 1px solid; BORDER-RIGHT: 1px solid;border:0px solid" vAlign=top width=620><SPAN style="FONT-FAMILY: 宋体, SimSun; COLOR: rgb(255,255,255); FONT-SIZE: 12px">主办：自然资源部不动产登记中心（自然资源部法律事务中心）</SPAN> <P><SPAN style="FONT-FAMILY: 宋体, SimSun; COLOR: rgb(255,255,255); FONT-SIZE: 12px">指导单位：自然资源部自然资源开发利用司&nbsp; &nbsp;技术支持：浙江臻善科技股份有限公司</SPAN> <P><SPAN style="FONT-FAMILY: 宋体, SimSun; COLOR: rgb(255,255,255); FONT-SIZE: 12px">京ICP备12039414号-4&nbsp; &nbsp;京公网安备11010202008990&nbsp; &nbsp;邮箱：landchina218@163.com&nbsp;&nbsp;<script type="text/javascript">var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " https://");document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F83853859c7247c5b03b527894622d3fa' type='text/javascript'%3E%3C/script%3E"));</script></SPAN> </P></TR></TBODY></TABLE><P>&nbsp;</P></td>
+
+	</tr>
+</TABLE>
+
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <script>
+        window.onload = function () {
+            document.getElementById("tdContent").style.cssText = 'font-family:"微软雅黑"';
+            // decode();
+        }
+    </script>
+</body>
+</html>
