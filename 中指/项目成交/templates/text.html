@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>AES 测试</title>
+</head>
+<body>
+<label>时间戳: </label><input id="time" type="text" placeholder="" style="width: 50%"><br>
+<label>偏移量: </label><input id="iv" type="text" placeholder="" style="width: 50%"><br>
+<label>秘&nbsp;&nbsp;&nbsp;钥: </label><input id="key" type="text" placeholder="" style="width: 50%"><br>
+<label>加密前: </label><input id="data" type="text" placeholder="" style="width: 50%"><br>
+<label>加密后: </label><input id="code" type="text" placeholder="" style="width: 50%"><br>
+<label>解密后: </label><span id="decode"></span><br>
+<button id="de" onclick="test()">test</button>
+<script src="https://cdn.staticfile.org/crypto-js/4.0.0/crypto-js.min.js" type="text/javascript"></script>
+<script>
+    function codes(){
+        let i = 7;
+        let t = [];
+        let r = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "(", ")", "=", "*", "$", "#", "@", "^"];
+        let e = document.getElementById('time').value;
+        a =  e.toString().substr(e.length - i).split("");
+        a.forEach(function(e, n) {
+            t.push(r[10 * n + parseInt(e, 10)])
+        });
+        console.log(e);
+        console.log(t);
+        return t
+    }
+    //1601365234510
+    function encrypt(data){
+        // Encrypt
+        return CryptoJS.AES.encrypt(data, secret_key, {
+            iv: iv,
+            mode: CryptoJS.mode.CTRGladman,
+            padding: CryptoJS.pad.Pkcs7
+        }).toString();
+    }
+    function decrypt(code){
+        console.log("codessss :", code);
+        let codes_key = codes();
+        let secret_key = codes_key.join("");
+        let iv = codes_key.reverse().join("");
+
+        // let iv = document.getElementById('iv').value;
+        // let secret_key = document.getElementById('key').value;
+        console.log(iv, secret_key);
+        return CryptoJS.AES.decrypt(code, secret_key,{
+
+            iv: iv,
+            mode: CryptoJS.mode.CTRGladman,
+            padding: CryptoJS.pad.Pkcs7
+        }).toString(CryptoJS.enc.Utf8);
+    }
+    function test() {
+
+        let code =  document.getElementById('code').value;
+        decode = decrypt(code);
+        // document.querySelector('#decode').value = decode;
+        document.getElementById("decode").innerHTML=decode;
+    }
+
+ </script>
+</body>
+</html>
