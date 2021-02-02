@@ -2,7 +2,7 @@
 
 **==不用这个代码可以自己再写一份, 网站不复杂==**
 
-![image-20210105120658328](C:%5CUsers%5C12602%5CDesktop%5CGit%5Cpachong%5C%E7%99%BE%E5%BA%A6%E8%BF%81%E5%BE%99%5CREADME%5Cimage-20210105120658328.png)
+![image-20210105120658328](README/image-20210105120658328.png)
 
 网址: https://qianxi.baidu.com/?city=0#city=0
 
