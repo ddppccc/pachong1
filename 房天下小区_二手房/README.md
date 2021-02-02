@@ -35,7 +35,7 @@
 
   小区数据默认保存在NAS的数据库中, 若要修改位置, 请在`save_date.py`的`saveData`中修改, 或者在`xiaoqu.py`中搜索函数`saveData`, 修改保存数据.
 
-  ![image-20210129111437047](C:%5CUsers%5C12602%5CDesktop%5CGit%5Cpachong%5C%E6%88%BF%E5%A4%A9%E4%B8%8B%E5%B0%8F%E5%8C%BA_%E4%BA%8C%E6%89%8B%E6%88%BF%5CREADME%5Cimage-20210129111437047.png)
+  ![image-20210129111437047](README/image-20210129111437047.png)
 
 
 
