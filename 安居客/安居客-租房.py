@@ -7,9 +7,30 @@ from lxml import etree
 from config import get_proxy,get_ua,delete_proxy,statis_output
 from capter_verify.captcha_run import AJK_Slide_Captcha
 from zujin_descde import decode_zujin,get_font
+from urllib import parse
 
-info_base = pymongo.MongoClient(host='127.0.0.1', port=27017)['安居客租房']['info']
-has_spider = pymongo.MongoClient(host='127.0.0.1', port=27017)['安居客租房']['has_spider']
+
+MONGODB_CONFIG = {
+   "host": "8.135.119.198",
+   "port": "27017",
+   "user": "hladmin",
+   "password": parse.quote("Hlxkd3,dk3*3@"),
+   "db": "dianping",
+   "collections": "dianping_collections",
+}
+
+info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['安居客租房']['info']
+has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['安居客租房']['has_spider']
 
 
 
