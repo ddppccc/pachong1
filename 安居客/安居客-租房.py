@@ -4,7 +4,7 @@ import requests
 import pymongo
 
 from lxml import etree
-from config import get_proxy,get_ua,delete_proxy,statis_output
+from config import get_proxy,get_ua,delete_proxy,statis_output, city_url
 from capter_verify.captcha_run import AJK_Slide_Captcha
 from zujin_descde import decode_zujin,get_font
 from urllib import parse
@@ -35,13 +35,13 @@ has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
 
 
 
-city_url = {
-    '广州':'https://gz.zu.anjuke.com/fangyuan/lx4/',
-    '深圳':'https://sz.zu.anjuke.com/fangyuan/lx4/',
-    '北京':'https://bj.zu.anjuke.com/fangyuan/lx4/',
-    '成都':'https://cd.zu.anjuke.com/fangyuan/lx4/',
-    '上海':'https://sh.zu.anjuke.com/fangyuan/lx4/',
-            }
+# city_url = {
+#     '广州':'https://gz.zu.anjuke.com/fangyuan/lx4/',
+#     '深圳':'https://sz.zu.anjuke.com/fangyuan/lx4/',
+#     '北京':'https://bj.zu.anjuke.com/fangyuan/lx4/',
+#     '成都':'https://cd.zu.anjuke.com/fangyuan/lx4/',
+#     '上海':'https://sh.zu.anjuke.com/fangyuan/lx4/',
+#             }
 
 
 headers = {
@@ -195,7 +195,7 @@ if __name__ == '__main__':
         key = item
         url = city_url[item]
         print(key,url)
-        get_parseInfo(key,url)
+        get_parseInfo(key, url)
     # statis_output('安居客_五城_{}_租房.csv'.format(time.strftime("%Y-%m-%d", time.localtime())),
     #
     #               ['城市','标题','标题url','户型','面积','楼层','小区','小区url','地址','数据来源','类型','朝向','特点','租金'], info_base)
