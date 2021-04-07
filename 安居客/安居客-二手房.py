@@ -6,7 +6,6 @@ from lxml import etree
 from config import get_proxy,get_ua,delete_proxy,statis_output
 from capter_verify.captcha_run import AJK_Slide_Captcha
 from urllib import parse
-
 MONGODB_CONFIG = {
    "host": "8.135.119.198",
    "port": "27017",
@@ -125,7 +124,7 @@ def get_parseInfo(city,url):
 
     if url in has_spider_urlList:
         html, response, _ = get_html(url)
-        next_page_url = html.xpath('string(//div[@class="multi-page"]/a[@class="aNxt"]/@href)')
+        next_page_url = html.xpath('string(//a[@class="next next-active"]/@href)')
         if next_page_url:
             print('该页数据已爬取，下一页')
             get_parseInfo(city, next_page_url)
@@ -134,25 +133,27 @@ def get_parseInfo(city,url):
             return
     else:
         html, response, _ = get_html(url)
-        li_list = html.xpath('//ul[@id="houselist-mod-new"]/li')
+        li_list = html.xpath('//*[@id="__layout"]//div[@class="property"]//div[@class="property-content"]')
         for li in li_list:
             item = {}
             item['城市'] = city
-            item['标题'] = li.xpath('string(./div[@class="house-details"]/div[@class="house-title"]/a)').replace('\n','').strip()
-            item['户型'] = li.xpath('string(./div[@class="house-details"]/div[@class="details-item"][1]/span[1])').replace('\n','').strip()
-            item['面积'] = li.xpath('string(./div[@class="house-details"]/div[@class="details-item"][1]/span[2])').replace('\n','').strip()
-            item['楼层'] = li.xpath('string(./div[@class="house-details"]/div[@class="details-item"][1]/span[3])').replace('\n','').strip()
-            item['建筑年份'] = li.xpath('string(./div[@class="house-details"]/div[@class="details-item"][1]/span[4])').replace('\n','').strip()
-            item['地址'] = li.xpath('string(./div[@class="house-details"]/div[@class="details-item"][2]/span)').replace('\n','').replace('\xa0','').replace(' ','').strip()
-            item['标签'] = li.xpath('string(./div[@class="house-details"]/div[@class="tags-bottom"])').replace('\n','').replace('\xa0','').replace(' ','').strip()
-            item['总价'] = li.xpath('string(./div[@class="pro-price"]/span[@class="price-det"]/strong)')
-            item['单价'] = li.xpath('string(./div[@class="pro-price"]/span[@class="unit-price"])')
+            item['标题'] = li.xpath('string(.//div[@class="property-content-detail"]/div[@class="property-content-title"]/h3)').replace('\n','').strip()
+            item['户型'] = li.xpath('string(.//div[@class="property-content-info"]/p[1])').replace('\n','').strip()
+            item['面积'] = li.xpath('string(.//div[@class="property-content-info"]/p[2])').replace('\n','').strip()
+            item['楼层'] = li.xpath('string(.//div[@class="property-content-info"]/p[4])').replace('\n','').strip()
+            item['建筑年份'] = li.xpath('string(.//div[@class="property-content-info"]/p[5])').replace('\n','').strip()
+            item['地址'] = li.xpath('string(.//p[@class="property-content-info-comm-address"])').replace('\n','').replace('\xa0','').replace(' ','').strip()
+            item['标签'] = li.xpath('string(.//div[@class="property-content-info"]/span[@class="property-content-info-tag"])').replace('\n','').replace('\xa0','').replace(' ','').strip()
+            item['总价'] = li.xpath('string(.//div[@class="property-price"]/p[1])')
+            item['单价'] = li.xpath('string(.//div[@class="property-price"]/p[2])')
+            item['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+            num.append(1)
+            print(len(num))
             print(item)
             info_base.insert_one(item)
+        has_spider.insert_one({'标题': url})
 
-        has_spider.insert_one({'标题':url})
-
-    next_page_url = html.xpath('string(//div[@class="multi-page"]/a[@class="aNxt"]/@href)')
+    next_page_url = html.xpath('string(//div[@class="pagination"]/a[@class="next next-active"]/@href)')
     if next_page_url:
         print('下一页')
         get_parseInfo(city,next_page_url)
@@ -161,10 +162,12 @@ def get_parseInfo(city,url):
 
 
 if __name__ == '__main__':
+    num = []
     for item in city_url:
         key = item
         url = city_url[item]
         get_parseInfo(key,url)
-    statis_output('安居客_五城_{}_二手房.csv'.format(time.strftime("%Y-%m-%d", time.localtime())),
+        statis_output('安居客_五城_{}_二手房.csv'.format(time.strftime("%Y-%m-%d", time.localtime())),
 
-                  ['城市','标题','户型','面积','楼层','建筑年份','地址','标签','总价','单价'], info_base)
+                      ['城市','标题','户型','面积','楼层','建筑年份','地址','标签','总价','单价'], info_base,key)
+
