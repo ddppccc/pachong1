@@ -33,12 +33,18 @@ def get_url(url):
     response = requests.get(url, headers=headers)
     response.encoding = 'utf-8'
     html = etree.HTML(response.text)
-    cs = html.xpath('//div[@class="content"]/div[@class="city-itm"]/div[@class="letter_city"]/ul/li/div[@class="city_list"]/a/@href')# /div[@class="letter_city"]/a
-    #for li in cs:
-    #    a = li.xpath('div[@class="city_list"]/a')
+
+    cs_url = html.xpath('//div[@class="content"]/div[@class="city-itm"]/div[@class="letter_city"]/ul/li/div[@class="city_list"]/a/@href')# /div[@class="letter_city"]/a
+    cs_name = html.xpath('//div[@class="content"]/div[@class="city-itm"]/div[@class="letter_city"]/ul/li/div[@class="city_list"]/a/text()')
+    csurl_list = []
+    for i in range(len(cs_name)):
+        item = {}
+        item['城市名'] = cs_name[i]
+        item['url'] = cs_url[i]
+        csurl_list.append(item)
 
 
-    return cs
+    return csurl_list
 
 
 
