@@ -31,10 +31,10 @@ has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
 
 
 city_url = {
-    # '广州':'https://guangzhou.anjuke.com/sale/t17/',
-    # '深圳':'https://shenzhen.anjuke.com/sale/t13/',
-    # '北京':'https://beijing.anjuke.com/sale/t7/',
-    # '成都':'https://chengdu.anjuke.com/sale/t22/',
+    '广州':'https://guangzhou.anjuke.com/sale/t17/',
+    '深圳':'https://shenzhen.anjuke.com/sale/t13/',
+    '北京':'https://beijing.anjuke.com/sale/t7/',
+    '成都':'https://chengdu.anjuke.com/sale/t22/',
     '上海':'https://shanghai.anjuke.com/sale/t1/',
             }
 
@@ -161,10 +161,10 @@ def get_parseInfo(city,url):
 
 
 if __name__ == '__main__':
-    # for item in city_url:
-    #     key = item
-    #     url = city_url[item]
-    #     get_parseInfo(key,url)
+    for item in city_url:
+        key = item
+        url = city_url[item]
+        get_parseInfo(key,url)
     statis_output('安居客_五城_{}_二手房.csv'.format(time.strftime("%Y-%m-%d", time.localtime())),
 
                   ['城市','标题','户型','面积','楼层','建筑年份','地址','标签','总价','单价'], info_base)
