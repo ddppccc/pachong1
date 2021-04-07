@@ -64,6 +64,7 @@ def get_html(url):
             try:
                 # response = requests.get(url, headers=headers,
                 #                         proxies={"https": "https://{}".format(proxy)}, timeout=(2, 5))
+                
                 response = requests.get(url, headers=headers, timeout=(2, 5))
                 response.encoding = 'utf-8'
                 html = etree.HTML(response.text)
