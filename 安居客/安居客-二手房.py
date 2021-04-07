@@ -167,7 +167,7 @@ if __name__ == '__main__':
         key = item
         url = city_url[item]
         get_parseInfo(key,url)
-        statis_output('安居客_五城_{}_二手房.csv'.format(time.strftime("%Y-%m-%d", time.localtime())),
-
-                      ['城市','标题','户型','面积','楼层','建筑年份','地址','标签','总价','单价'], info_base,key)
+        # statis_output('安居客_五城_{}_二手房.csv'.format(time.strftime("%Y-%m-%d", time.localtime())),
+        #
+        #               ['城市','标题','户型','面积','楼层','建筑年份','地址','标签','总价','单价'], info_base,key)
 
