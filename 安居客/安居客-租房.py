@@ -162,6 +162,7 @@ def get_parseInfo(city,url):
             item['小区url'] = "".join(house.xpath(".//address[@class='details-item']/a/@href"))
             item['地址'] = "".join(house.xpath(".//address[@class='details-item']/text()")).strip()
             item['数据来源'] = '安居客'
+            item['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
             cate = []
             for i in house.xpath(".//p[@class='details-item bot-tag']//span/text()"):
                 if '整租' in i or '合租' in i:
@@ -195,6 +196,6 @@ if __name__ == '__main__':
         url = city_url[item]
         print(key,url)
         get_parseInfo(key,url)
-    statis_output('安居客_五城_{}_租房.csv'.format(time.strftime("%Y-%m-%d", time.localtime())),
-
-                  ['城市','标题','标题url','户型','面积','楼层','小区','小区url','地址','数据来源','类型','朝向','特点','租金'], info_base)
+    # statis_output('安居客_五城_{}_租房.csv'.format(time.strftime("%Y-%m-%d", time.localtime())),
+    #
+    #               ['城市','标题','标题url','户型','面积','楼层','小区','小区url','地址','数据来源','类型','朝向','特点','租金'], info_base)
