@@ -4,7 +4,6 @@ import json
 import re
 import time
 from io import StringIO
-
 from PIL import Image
 import execjs
 import requests
