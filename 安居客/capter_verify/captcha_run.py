@@ -8,6 +8,9 @@ from io import StringIO
 from PIL import Image
 import execjs
 import requests
+import os
+
+dir_path = os.getcwd()
 
 class AJK_Slide_Captcha():
     headers = {
@@ -119,7 +122,7 @@ class AJK_Slide_Captcha():
         return fpToken
 
     def get_jiami_data(self,responseId,fpToken,lastXpos,trace):
-        jsCode = execjs.compile(open("E:\代码备份\Enviroment\workon\SPIDER_CODE\安居客\capter_verify\jiami.js", "r").read())
+        jsCode = execjs.compile(open(dir_path+os.sep+"capter_verify"+os.sep+"jiami.js", "r").read())
         jiami_data = jsCode.call("getSlideAnswer", responseId, fpToken, lastXpos, trace)
         return jiami_data
 
@@ -158,7 +161,7 @@ class AJK_Slide_Captcha():
             # print('step4:    position->', position)
 
             # Step 5 get trace
-            (lastXpos, trace) = self.get_trace(position,traceTxtPath='E:\代码备份\Enviroment\workon\SPIDER_CODE\安居客\capter_verify\CaptchaTrace.txt')
+            (lastXpos, trace) = self.get_trace(position,traceTxtPath=dir_path+os.sep+"capter_verify"+os.sep+'CaptchaTrace.txt')
             # print('step5:    trace->', trace)
 
             # Step 6 get fpToken
