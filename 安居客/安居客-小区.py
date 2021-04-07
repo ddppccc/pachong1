@@ -4,10 +4,11 @@ import requests
 import pymongo
 
 from lxml import etree
-from config import get_proxy,get_ua,delete_proxy,statis_output
+from config import get_proxy,get_ua,delete_proxy,statis_output, city_url
 from capter_verify.captcha_run import AJK_Slide_Captcha
 from zujin_descde import decode_zujin,get_font
 from urllib import parse
+
 
 
 MONGODB_CONFIG = {
@@ -34,16 +35,16 @@ has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             retryWrites="false")['安居客小区']['has_spider']
 
 
-city_map = {
-    '郑州':'https://zhengzhou.anjuke.com/community/p1/',
-    '长春':'https://cc.anjuke.com/community/p1/',
-    '漳州':'https://zhangzhou.anjuke.com/community/p1/',
-    '乌鲁木齐':'https://wulumuqi.anjuke.com/community/p1/',
-    '沈阳':'https://sy.anjuke.com/community/p1/',
-    '哈尔滨':'https://heb.anjuke.com/community/p1/',
-    '大连':'https://dalian.anjuke.com/community/p1/',
-    '杭州':'https://hangzhou.anjuke.com/community/p1/',
-}
+# city_map = {
+#     '郑州':'https://zhengzhou.anjuke.com/community/p1/',
+#     '长春':'https://cc.anjuke.com/community/p1/',
+#     '漳州':'https://zhangzhou.anjuke.com/community/p1/',
+#     '乌鲁木齐':'https://wulumuqi.anjuke.com/community/p1/',
+#     '沈阳':'https://sy.anjuke.com/community/p1/',
+#     '哈尔滨':'https://heb.anjuke.com/community/p1/',
+#     '大连':'https://dalian.anjuke.com/community/p1/',
+#     '杭州':'https://hangzhou.anjuke.com/community/p1/',
+# }
 
 
 
@@ -202,11 +203,11 @@ def get_parseInfo(city,url,area_name):
 
 if __name__ == '__main__':
 
-    for item in city_map:
+    for item in city_url:
         key = item
-        url = city_map[item]
+        url = city_url[item]
         print(key,url)
-        html, response, _ = get_html(url)
+        html, response, _ = get_html(url+"/community/")
         area = html.xpath('//ul[@class="region-parents"]/li')[1:-1]
         for area_else in area:
             url = area_else.xpath('string(./a/@href)')

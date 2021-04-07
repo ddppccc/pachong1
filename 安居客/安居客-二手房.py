@@ -3,7 +3,7 @@ import requests
 import pymongo
 
 from lxml import etree
-from config import get_proxy,get_ua,delete_proxy,statis_output
+from config import get_proxy,get_ua,delete_proxy,statis_output, city_url
 from capter_verify.captcha_run import AJK_Slide_Captcha
 from urllib import parse
 MONGODB_CONFIG = {
@@ -29,13 +29,13 @@ has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             retryWrites="false")['安居客二手房']['has_spider']
 
 
-city_url = {
-    '广州':'https://guangzhou.anjuke.com/sale/t17/',
-    '深圳':'https://shenzhen.anjuke.com/sale/t13/',
-    '北京':'https://beijing.anjuke.com/sale/t7/',
-    '成都':'https://chengdu.anjuke.com/sale/t22/',
-    '上海':'https://shanghai.anjuke.com/sale/t1/',
-            }
+# city_url = {
+#     '广州':'https://guangzhou.anjuke.com/sale/t17/',
+#     '深圳':'https://shenzhen.anjuke.com/sale/t13/',
+#     '北京':'https://beijing.anjuke.com/sale/t7/',
+#     '成都':'https://chengdu.anjuke.com/sale/t22/',
+#     '上海':'https://shanghai.anjuke.com/sale/t1/',
+#             }
 
 
 headers = {
@@ -156,7 +156,7 @@ def get_parseInfo(city,url):
     next_page_url = html.xpath('string(//div[@class="pagination"]/a[@class="next next-active"]/@href)')
     if next_page_url:
         print('下一页')
-        get_parseInfo(city,next_page_url)
+        get_parseInfo(city, next_page_url)
     else:
         return
 
@@ -166,7 +166,7 @@ if __name__ == '__main__':
     for item in city_url:
         key = item
         url = city_url[item]
-        get_parseInfo(key,url)
+        get_parseInfo(key,url+"/sale/")
         # statis_output('安居客_五城_{}_二手房.csv'.format(time.strftime("%Y-%m-%d", time.localtime())),
         #
         #               ['城市','标题','户型','面积','楼层','建筑年份','地址','标签','总价','单价'], info_base,key)
