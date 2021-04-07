@@ -7,10 +7,31 @@ from lxml import etree
 from config import get_proxy,get_ua,delete_proxy,statis_output
 from capter_verify.captcha_run import AJK_Slide_Captcha
 from zujin_descde import decode_zujin,get_font
+from urllib import parse
 
 
-info_base = pymongo.MongoClient(host='127.0.0.1', port=27017)['安居客小区']['info']
-has_spider = pymongo.MongoClient(host='127.0.0.1', port=27017)['安居客小区']['has_spider']
+MONGODB_CONFIG = {
+   "host": "8.135.119.198",
+   "port": "27017",
+   "user": "hladmin",
+   "password": parse.quote("Hlxkd3,dk3*3@"),
+   "db": "dianping",
+   "collections": "dianping_collections",
+}
+
+
+info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['安居客小区']['info']
+has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['安居客小区']['has_spider']
 
 
 city_map = {
@@ -128,7 +149,7 @@ def get_parseInfo(city,url,area_name):
             time.sleep(10)
             continue
 
-    house_div = html.xpath("//div[@class='li-row']")
+    house_div = html.xpath("//a[@class='li-row']")
     if len(house_div) == 0:
         return
     for house in house_div:
@@ -179,17 +200,17 @@ def get_parseInfo(city,url,area_name):
 if __name__ == '__main__':
     for item in city_map:
         key = item
-        # url = city_map[item]
-    #     print(key,url)
-    #     html, response, _ = get_html(url)
-    #     area = html.xpath('//ul[@class="region-parents"]/li')[1:-1]
-    #     for area_else in area:
-    #         url = area_else.xpath('string(./a/@href)')
-    #         area_name = area_else.xpath('string(./a)')
-    #         has_spider_list = has_spider.find()
-    #         if url in has_spider_list:
-    #             continue
-    #         get_parseInfo(key,url,area_name)
+        url = city_map[item]
+        print(key,url)
+        html, response, _ = get_html(url)
+        area = html.xpath('//ul[@class="region-parents"]/li')[1:-1]
+        for area_else in area:
+            url = area_else.xpath('string(./a/@href)')
+            area_name = area_else.xpath('string(./a)')
+            has_spider_list = has_spider.find()
+            if url in has_spider_list:
+                continue
+            get_parseInfo(key,url,area_name)
         statis_output('{}_{}.csv'.format(key,time.strftime("%Y-%m", time.localtime())),
 
                       ['city_name', '标题', '详情url','latitude','longitude', '竣工时间', '地址', '二手房上架数', '在租套数', '价格', '涨跌幅'],
