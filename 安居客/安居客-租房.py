@@ -68,8 +68,10 @@ def get_html(url):
         while number > 0:
             headers['user-agent'] = get_ua()
             try:
-                response = requests.get(url, headers=headers,
-                                        proxies={"https": "https://{}".format(proxy)}, timeout=(2, 5))
+                # response = requests.get(url, headers=headers,
+                #                         proxies={"https": "https://{}".format(proxy)}, timeout=(2, 5))
+
+                response = requests.get(url, headers=headers, timeout=(2, 5))
                 response.encoding = 'utf-8'
                 html = etree.HTML(response.text)
             except requests.exceptions.ProxyError:
