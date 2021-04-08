@@ -104,7 +104,8 @@ def get_html(url):
                 continue
 
             if response.status_code in [403]:
-                print(403)
+                print(403, "休息一分钟")
+                time.sleep(60)
                 continue
             return html, response, proxy
 
