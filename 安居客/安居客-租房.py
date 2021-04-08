@@ -109,7 +109,8 @@ def get_html(url):
                 continue
 
             if response.status_code in [403]:
-                print(403)
+                print(403, "休息一分钟")
+                time.sleep(60)
                 continue
             return html, response, proxy
 
@@ -182,12 +183,12 @@ def get_parseInfo(city,url):
 
         has_spider.insert_one({'标题':url})
 
-    next_page_url = html.xpath('string(//div[@class="multi-page"]/a[@class="aNxt"]/@href)')
-    if next_page_url:
-        get_parseInfo(city,next_page_url)
-    else:
-        print('最后一页')
-        return
+        next_page_url = html.xpath('string(//div[@class="multi-page"]/a[@class="aNxt"]/@href)')
+        if next_page_url:
+            get_parseInfo(city,next_page_url)
+        else:
+            print('最后一页')
+            return
 def get_zu_url(index_url):
     html, response, _ = get_html(index_url)
     new_url=html.xpath('//div[@id="glbNavigation"]/div/ul[@class="L_tabsnew"]/li[4]/a/@href')

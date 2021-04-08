@@ -153,12 +153,12 @@ def get_parseInfo(city,url):
             info_base.insert_one(item)
         has_spider.insert_one({'标题': url})
 
-    next_page_url = html.xpath('string(//div[@class="pagination"]/a[@class="next next-active"]/@href)')
-    if next_page_url:
-        print('下一页')
-        get_parseInfo(city, next_page_url)
-    else:
-        return
+        next_page_url = html.xpath('string(//div[@class="pagination"]/a[@class="next next-active"]/@href)')
+        if next_page_url:
+            print('下一页')
+            get_parseInfo(city, next_page_url)
+        else:
+            return
 
 
 if __name__ == '__main__':
