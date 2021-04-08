@@ -85,17 +85,17 @@ def get_html(url):
 
             # 安居客滑动验证, js破解
             if html.xpath('//*[@id="captchaForm"]'):
-                print("出现滑动验证, 更改ip")
-                number = -1
-                continue
-                # proixy = "https://" + proxy
-                # try:
-                #     message = AJK_Slide_Captcha(proixy).run()
-                #     if message != '校验成功':
-                #         break
-                # except Exception as e:
-                #     print("错误原因: ", e)
-                #     continue
+                # print("出现滑动验证, 更改ip")
+                # number = -1
+                # continue
+                proixy = "https://" + proxy
+                try:
+                    message = AJK_Slide_Captcha(proixy).run()
+                    if message != '校验成功':
+                        break
+                except Exception as e:
+                    print("错误原因: ", e)
+                    continue
 
             # ip被封
             if "访问过于频繁" in "".join(html.xpath("//h2[@class='item']/text()")):
