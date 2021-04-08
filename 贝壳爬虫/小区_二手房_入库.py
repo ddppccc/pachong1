@@ -6,7 +6,7 @@ import pandas as pd
 
 
 def write_to_table(df, schema, table_name, password='123456', host='127.0.0.1', DB='House',
-                   if_exists='append', port=5432):
+                   if_exists='append', port=5432, sqlalchemy=None):
     """
     :param df:          df表
     :param schema:      模式名
@@ -81,4 +81,4 @@ if __name__ == '__main__':
     # TODO 弃用
     year, month = 2020, 11
     
-    # Community_install_Postsql().run(year, month)
+    Community_install_Postsql().run(year, month)
