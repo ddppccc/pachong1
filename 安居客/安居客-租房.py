@@ -188,14 +188,21 @@ def get_parseInfo(city,url):
     else:
         print('最后一页')
         return
+def get_zu_url(index_url):
+    html, response, _ = get_html(index_url)
+    new_url=html.xpath('//div[@id="glbNavigation"]/div/ul[@class="L_tabsnew"]/li[4]/a/@href')
+    return new_url[0]
+
 
 
 if __name__ == '__main__':
     for item in city_url:
         key = item
         url = city_url[item]
-        print(key,url)
-        get_parseInfo(key, url)
+        new_url=get_zu_url(url)
+        # print(new_url)
+        # print(key,url)
+        get_parseInfo(key, new_url)
     # statis_output('安居客_五城_{}_租房.csv'.format(time.strftime("%Y-%m-%d", time.localtime())),
     #
     #               ['城市','标题','标题url','户型','面积','楼层','小区','小区url','地址','数据来源','类型','朝向','特点','租金'], info_base)
