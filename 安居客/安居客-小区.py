@@ -20,7 +20,7 @@ MONGODB_CONFIG = {
    "collections": "dianping_collections",
 }
 
-
+# 建立连接
 info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
@@ -191,6 +191,7 @@ def get_parseInfo(city,url,area_name):
         print(item)
         item['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         info_base.insert_one(item)
+    # 存入数据
     has_spider.insert_one({'url':url,'city':area_name})
     time.sleep(5)
 
