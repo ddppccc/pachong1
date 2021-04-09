@@ -5,7 +5,10 @@ import random
 import re
 import time
 import uuid
+from urllib import parse
+
 import numpy as np
+import pymongo
 import scrapy
 
 from beike_map import get_regions, get_esf_code_map
@@ -14,6 +17,30 @@ from city_spider import cities
 from config import make_date
 
 year, month, day = make_date()
+
+MONGODB_CONFIG = {
+   "host": "8.135.119.198",
+   "port": "27017",
+   "user": "hladmin",
+   "password": parse.quote("Hlxkd3,dk3*3@"),
+   "db": "dianping",
+   "collections": "dianping_collections",
+}
+
+info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['贝壳']['ESF']
+
+url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['贝壳']['esf_url']
+
 
 
 class Spider(scrapy.Spider):
@@ -49,6 +76,7 @@ class Spider(scrapy.Spider):
         city = item['city']
         district = item['region_name']
         dist_url = item['base_url']
+
 
         if '人机认证' in response.text:
             print('需要人机验证: ', response.url)
@@ -107,33 +135,34 @@ class Spider(scrapy.Spider):
                     items['标签'] = np.NaN
 
                 # 总价
-                totalPrice = house.xpath(".//div[@class='totalPrice']/span/text()").get() + \
-                             house.xpath(".//div[@class='totalPrice']/text()").get()
-                totalPrice = "".join(re.findall('(\d+\.?\d+)万', str(totalPrice)))
+                totalPrice = house.xpath(".//div[@class='totalPrice']/span/text()").get().strip()
+                # totalPrice = "".join(re.findall('(\d+\.?\d+)万', str(totalPrice)))
                 try:
                     items['总价'] = float(totalPrice)
                 except:
                     items['总价'] = np.NaN
 
                 # 单价
-                unitPrace = house.xpath(".//div[@class='unitPrice']/span/text()").get()
+                unitPrace = house.xpath(".//div[@class='unitPrice']/span/text()").get().strip()
                 unitPrace = "".join(re.findall('(\d+\.?\d+)元', unitPrace))
                 try:
                     items['单价'] = float(unitPrace)
                 except:
                     items['单价'] = np.NaN
 
-                items['抓取时间'] = f'{year}-{month}-28'
-                items['抓取年份'] = year
-                items['抓取月份'] = month
+                item['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
                 items['数据来源'] = '贝壳'
 
-                items['地址'] = np.NaN
+                items['地址'] = items['城市']+items['区县']+items['小区']
+                info_base.insert_one(items)
+                print(items)
                 yield items
+
 
             next_page = json.loads(response.xpath("//div[@class='page-box house-lst-page-box']/@page-data").get())
             totalPage = next_page['totalPage']
             curPage = next_page['curPage']
+            print(curPage)
 
             for i in range(curPage, totalPage + 1):
                 curPage = i + 1
@@ -145,7 +174,7 @@ class Spider(scrapy.Spider):
                     next_page_url = dist_url + 'pg' + str(curPage) + '/'
                     yield scrapy.Request(next_page_url, callback=self.parse,meta={'item': item})
                 break
-
+        url_data.insert_one({'url': item['base_url']})
 
 if __name__ == '__main__':
     # TODO 每个月跑程序之前 清理下上个月缓存的数据 位置: data/esf
@@ -161,9 +190,7 @@ if __name__ == '__main__':
 
     for city_name in cities:  #
         print("城市: ", city_name)
-        if city_name in [i.split('_')[1] for i in os.listdir('data/esf')]:
-            continue
-        p = crawl_city_process(city_name, Spider, params=params)
+        p = crawl_city_process(city_name, Spider)
         if p:
             p.start()
             p.join()

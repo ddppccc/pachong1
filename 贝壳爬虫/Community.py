@@ -3,8 +3,10 @@ import random
 import re
 import time
 import uuid
+from urllib import parse
 
 import pandas as pd
+import pymongo
 import requests
 
 from lxml import etree
@@ -12,6 +14,32 @@ from concurrent.futures.thread import ThreadPoolExecutor
 from sqlalchemy import create_engine
 
 from config import write_to_table, cities
+
+
+MONGODB_CONFIG = {
+   "host": "8.135.119.198",
+   "port": "27017",
+   "user": "hladmin",
+   "password": parse.quote("Hlxkd3,dk3*3@"),
+   "db": "dianping",
+   "collections": "dianping_collections",
+}
+
+# 建立连接
+info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['贝壳']['XiaoQu']
+
+url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['贝壳']['xiaoqu_url']
+
 
 data_list = []
 
@@ -31,51 +59,7 @@ class Community_BeiKe:
         self.year = year
         self.month = month
 
-    def saveData(self, dataList):
-        df = pd.DataFrame(dataList)
-        df['楼栋总数'] = df['楼栋总数'].map(lambda x: ''.join(re.findall('(\d+)', str(x))))
-        df['房屋总数'] = df['房屋总数'].map(lambda x: ''.join(re.findall('(\d+)', str(x))))
-        df['在租套数'] = df['再租套数']
-        df['物业费'] = df['物业费用']
-        df['id'] = df['楼栋总数'].map(lambda x: uuid.uuid1(node=random.randint(10000, 1000000)))
-        df['在租套数'] = df['在租套数'].map(lambda x: int(x) if 'N' not in str(x).upper() and x else '')
-        df['建筑年份'] = df['建筑年份'].map(lambda x: int(x) if 'N' not in str(x).upper() and x else '')
-        df['类型'] = ''
 
-        df['涨跌幅'] = ''
-        df['产权描述'] = ''
-        df['建筑面积'] = ''
-        df['占地面积'] = ''
-        df['绿化率'] = ''
-        df['容积率'] = ''
-        df['数据来源'] = '贝壳'
-
-        a = ["id", "城市", "区县", "小区", "类型", "单价", "在售套数", "在租套数", "建筑年份", "longitude", "latitude", "涨跌幅", "建筑面积", "占地面积",
-             "房屋总数", "楼栋总数", "绿化率", "容积率", "产权描述", "地址", "小区url", "抓取年份", "抓取月份", "数据来源"]
-        df_beike_community_1 = df[a]
-        print('数据量: ', df_beike_community_1.shape)
-
-        # TODO 不同年份, 修改表名称
-        write_to_table(df_beike_community_1, schema='public', table_name='Community_2020', password='1q2w3e4r',
-                       host='127.0.0.1', DB='Community', port=5432)
-
-    def get_exists_dist(self, month):
-        """ 查看当月已经存的城市行政区"""
-        engine = create_engine('postgresql://postgres:1q2w3e4r@127.0.0.1/Community').connect()
-        # TODO, 年份不同修改 表名
-        sql = f"""SELECT distinct "城市", "区县" FROM public."Community_2020" where 抓取月份={month} and 数据来源='贝壳';"""
-        df = pd.read_sql_query(sql=sql, con=engine)
-        engine.close()
-        return df
-
-    def get_everyone_city_region(self, df, city):
-        """生成每一个城市已经获取的region"""
-        exists_city_df = df[df['城市'] == city]
-        if not exists_city_df.shape[0]:
-            exists_region = []
-        else:
-            exists_region = exists_city_df['区县'].tolist()
-        return exists_region
 
     def get_regions(self, city_code):
         """
@@ -92,6 +76,12 @@ class Community_BeiKe:
         return regions
 
     def fetch_html(self, url ):
+        has_spider_urllist = []
+        for i in url_data.find():
+            has_spider_urllist.append(i['url'])
+        if url in has_spider_urllist:
+            print('以爬取，下一页')
+            return 0
         '''获取页面代码'''
         number = 3
         while number > 0:
@@ -200,6 +190,7 @@ class Community_BeiKe:
             data['小区'] = house.xpath(".//div[@class='title']/a/@title")[0]
             data['小区url'] = house.xpath(".//div[@class='title']/a/@href")[0]
             houseInfo = house.xpath(".//div[@class='houseInfo']/a/text()")
+            print(houseInfo)
             data['成交情况'] = "".join([i for i in houseInfo if '成交' in i])
             data['再租套数'] = "".join(["".join(re.findall("\d+", i)) for i in houseInfo if '出租' in i])
 
@@ -209,16 +200,18 @@ class Community_BeiKe:
 
             # 标签
             data['标签'] = "".join(house.xpath(".//div[@class='tagList']/span/text()"))
-            data['单价'] = "".join(re.findall("\d+\.?\d+", house.xpath("string(.//div[@class='totalPrice']/span)")))
+            data['单价'] = "".join(re.findall("\d+\.?\d+", house.xpath("string(.//div[@class='totalPrice']/span/text())")))
             data['单价描述'] = "".join(house.xpath(".//div[@class='priceDesc']/text()"))
             data['在售套数'] = house.xpath(".//div[@class='xiaoquListItemSellCount']/a/span/text()")[0]
             data['抓取月份'] = self.month
             data['抓取年份'] = self.year
+            print(data)
             if data['小区url'] == 'https://wx.ke.com/xiaoqu/4120034740837231/':
                 continue
             done = pool.submit(self.get_page_information, data['小区url'], data, data_list)
             p.append(done)
         [obj.result() for obj in p]
+        url_data.insert_one({'url': url})
 
     def get_page_information(self, url, item, data_list):
         ''' 获取每一页列表页数据 '''
@@ -250,10 +243,11 @@ class Community_BeiKe:
             elif infoItem.xpath("./span[@class='xiaoquInfoLabel']/text()")[0] == '房屋总数':
                 item['房屋总数'] = infoItem.xpath("./span[@class='xiaoquInfoContent']/text()")[0].strip()
         data_list.append(item)
+        info_base.insert_one(item)
 
     # 启动
     def run_community(self, cities):
-        df = self.get_exists_dist(self.month)
+        # df = self.get_exists_dist(self.month)
 
         b = requests.session()
         b.get('https://zs.ke.com/xiaoqu/dongshengzhen1/')
@@ -262,7 +256,7 @@ class Community_BeiKe:
             if city in ['江阴']:
                 continue
             # if city not in ['丹东']: continue
-            exists_region = self.get_everyone_city_region(df, city)
+            # exists_region = self.get_everyone_city_region(df, city)
             self.headers['Host'] = '{}.ke.com'.format(city_code)
             regions = self.get_regions(city_code)  # 生成行政区列表
             if not regions:
@@ -272,9 +266,9 @@ class Community_BeiKe:
                 if city + '_' + region in ['广州_南海', '广州_顺德', '佛山_番禺', '佛山_白云']:
                     continue
                 print(city, region, region_url)
-                if region in exists_region or '周边' in region:
-                    print(city, region, '----->  已经存在')
-                    continue
+                # if region in exists_region or '周边' in region:
+                #     print(city, region, '----->  已经存在')
+                #     continue
                 data_dict = {}
                 data_dict['城市'] = city
                 data_dict['区县'] = region
