@@ -210,8 +210,8 @@ def get_data(url, baseUrl, city, dist, pageNumber, currPage, item):
         if item_dict['类型'] not in ['住宅', '别墅']:
             continue
         try:
-            item_dict['单价'] = house.xpath('/div/p[1]/span/text()')[0]
-            item_dict['涨跌幅'] = house.xpath('/div/p[2]/span/text()')[0]
+            item_dict['单价'] = house.xpath('./div/p[1]/span/text()')[0].strip()
+            item_dict['涨跌幅'] = house.xpath('./div/p[2]/span/text()')[0].strip()
         except:
             item_dict['单价'] = None
             item_dict['涨跌幅'] = None
@@ -285,16 +285,16 @@ def get_street_page(city, street_url, GetType, **kwargs):
         pools.append(done)
     [obj.result() for obj in pools]
 
-    try:
-        print("data数据量", len(data))
-        useTime = saveData(data, city, GetType)  # 保存数据
-        save_grab_dist(city, kwargs['street'], street_url, GetType)  # 保存行政区
-        print("数据保存成功, 用时: ", useTime)
-
-    except Exception as e:
-        print('城市: %s, 区域: %s, 数据保存失败, %s' % (city, kwargs['street'], e))
-    finally:
-        del data
+    # try:
+    #     print("data数据量", len(data))
+    #     useTime = saveData(data, city, GetType)  # 保存数据
+    #     save_grab_dist(city, kwargs['street'], street_url, GetType)  # 保存行政区
+    #     print("数据保存成功, 用时: ", useTime)
+    # 
+    # except Exception as e:
+    #     print('城市: %s, 区域: %s, 数据保存失败, %s' % (city, kwargs['street'], e))
+    # finally:
+    #     del data
 
 
 
@@ -334,10 +334,10 @@ def get_page(city, dist_dict, GetType):
             print("没有数据")
             continue
 
-        if '100' in page_number[0]:
+        if '1000' in page_number[0]:
         # if True:
             print(page_number)
-            print('当前页数大于100页, 分页抓取')
+            print('当前页数大于1000页, 分页抓取')
             # 获取街道信息
             street_xpath = '//*[@id="shangQuancontain"]/a[not(contains(text(), "不限"))]'
             street_dict = dict(zip(tree.xpath(street_xpath + '/text()'), tree.xpath(street_xpath + '/@href')))
