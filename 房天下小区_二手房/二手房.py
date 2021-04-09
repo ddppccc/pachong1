@@ -8,10 +8,13 @@
 import random
 import re
 import time
+import requests
+import pymongo
 import uuid
 import numpy as np
 import pandas as pd
 
+from urllib import parse
 from lxml import etree
 from sqlalchemy import create_engine
 from concurrent.futures import ThreadPoolExecutor
@@ -20,6 +23,26 @@ from IP_config import get_Html_IP
 from city_map import make_url, city_map
 from save_data import saveData, save_grab_dist, get_exists_dist
 
+MONGODB_CONFIG = {
+   "host": "8.135.119.198",
+   "port": "27017",
+   "user": "hladmin",
+   "password": parse.quote("Hlxkd3,dk3*3@"),
+   "db": "dianping",
+   "collections": "dianping_collections",
+}
+info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['房天下二手房']['info']
+has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['房天下二手房']['has_spider']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -30,6 +53,17 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 }
 
+def get_html(url):
+    try:
+        response = requests.get(url, headers=headers, timeout=2)
+        encod = response.apparent_encoding
+        if encod.upper() in ['GB2312', 'WINDOWS-1254']:
+            encod = 'gbk'
+        response.encoding = encod
+        return response
+    except Exception as e:
+        pass
+
 
 class Esf_FTX:
     def __init__(self, year, month, pool):
@@ -37,21 +71,21 @@ class Esf_FTX:
         self.month = month
         self.pool = pool
 
-    def get_exists_dists(self, month):
-        """
-         查看当月已经存的城市行政区
-        """
-        print('等待获取当前月已经抓取的城市列表......')
-        # TODO 连接本地电脑
-        # engine = create_engine('postgresql://postgres:123456@127.0.0.1/ESF').connect()
-        # TODO 连接NAS
-        engine = create_engine('postgresql://postgres:1q2w3e4r@192.168.88.254:15432/ESF').connect()
-        # TODO, 年份不同修改 表名
-        sql = f"""SELECT distinct "城市", "区县" FROM public."Esf_2021" where 抓取月份={month} and 数据来源='房天下';"""
-        df = pd.read_sql_query(sql=sql, con=engine)
-        engine.close()
-        print(f'已经抓取城市数量: {df["城市"].unique().shape}')
-        return df
+    # def get_exists_dists(self, month):
+    #     """
+    #      查看当月已经存的城市行政区
+    #     """
+    #     print('等待获取当前月已经抓取的城市列表......')
+    #     # TODO 连接本地电脑
+    #     # engine = create_engine('postgresql://postgres:123456@127.0.0.1/ESF').connect()
+    #     # TODO 连接NAS
+    #     engine = create_engine('postgresql://postgres:1q2w3e4r@192.168.88.254:15432/ESF').connect()
+    #     # TODO, 年份不同修改 表名
+    #     sql = f"""SELECT distinct "城市", "区县" FROM public."Esf_2021" where 抓取月份={month} and 数据来源='房天下';"""
+    #     df = pd.read_sql_query(sql=sql, con=engine)
+    #     engine.close()
+    #     print(f'已经抓取城市数量: {df["城市"].unique().shape}')
+    #     return df
 
     def get_everyone_city_region(self, df, city):
         """生成每一个城市已经获取的region"""
@@ -71,6 +105,7 @@ class Esf_FTX:
             try:
                 dist = make_url(city, 'https://{}.esf.fang.com/{}/', GetType)
                 return dist
+
             except:
                 number -= 1
                 continue
@@ -82,8 +117,20 @@ class Esf_FTX:
         number_tz = 0
         while True:
             gen_url = baseUrl
-            response = get_Html_IP(gen_url, headers=headers)
-            tree = etree.HTML(response.text)
+            has_spider_urlList = []
+            for has_spider_url in has_spider.find():
+                has_spider_urlList.append(has_spider_url['标题'])
+            if gen_url in has_spider_urlList:
+                print('该页数据已爬取，下一页')
+                break
+
+
+            # response = get_Html_IP(gen_url, headers=headers)
+            res = get_html(gen_url)
+            if res:
+                tree = etree.HTML(res.text)
+            else:
+                break
 
             number_tz += 1
             if "跳转" in tree.xpath("//title/text()"):
@@ -116,15 +163,15 @@ class Esf_FTX:
                         item_dict['建筑年份'] = "".join(re.findall("(\d+)年", conts))
 
                 if "建筑年份" not in item_dict.keys():
-                    item_dict['建筑年份'] = np.NaN
+                    item_dict['建筑年份'] = None
                 elif "户型" not in item_dict.keys():
-                    item_dict['户型'] = np.NaN
+                    item_dict['户型'] = None
                 elif "面积" not in item_dict.keys():
-                    item_dict['面积'] = np.NaN
+                    item_dict['面积'] = None
                 elif "楼层" not in item_dict.keys():
-                    item_dict['楼层'] = np.NaN
+                    item_dict['楼层'] = None
                 elif "朝向" not in item_dict.keys():
-                    item_dict['朝向'] = np.NaN
+                    item_dict['朝向'] = None
 
                 try:
                     item_dict['小区'] = house.xpath(".//p[@class='add_shop']/a/@title")[0]
@@ -135,7 +182,7 @@ class Esf_FTX:
                 try:
                     item_dict['地址'] = house.xpath(".//p[@class='add_shop']/span/text()")[0]
                 except:
-                    item_dict['地址'] = np.NaN
+                    item_dict['地址'] = None
 
                 try:
                     item_dict['总价'] = house.xpath(".//dd[@class='price_right']/span[@class='red']/b/text()")[0].replace(
@@ -145,8 +192,8 @@ class Esf_FTX:
                     item_dict['单价'] = "".join(re.findall("(\d+\.?\d+)元", unit_price)).replace('$', '')
                 except:
                     print('error!!, 单价错误')
-                    item_dict['总价'] = np.NaN
-                    item_dict['单价'] = np.NaN
+                    item_dict['总价'] = None
+                    item_dict['单价'] = None
 
                 # 标签
                 item_dict['标签'] = "|".join(house.xpath(".//p[@class='clearfix label']//span/text()"))
@@ -157,8 +204,12 @@ class Esf_FTX:
 
                 item_dict['城市'] = city
                 item_dict['区县'] = dist
-                item_dict['关注人数'] = np.NaN  # followInfo
+                item_dict['关注人数'] = None  # followInfo
+                item_dict['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
                 data.append(item_dict)
+                print(item_dict)
+                info_base.insert_one(item_dict)
+            has_spider.insert_one({'标题': gen_url})
             return data
         return
 
@@ -168,16 +219,17 @@ class Esf_FTX:
         """
         for dist_url, dist in dist_dict.items():
 
-            if dist in exists_region or dist in get_exists_dist(city, GetType):
-                print(city, dist, '----->  已经存在')
-                continue
+            # if dist in exists_region or dist in get_exists_dist(city, GetType):
+            #     print(city, dist, '----->  已经存在')
+            #     continue
 
             base_url = re.findall("https.*com", dist_url)[0]
             print("base_url: ", base_url, "dist_url: ", dist_url)  # https://abazhou.esf.fang.com
             number_tz = 0
             while True:
-                response = get_Html_IP(dist_url, headers=headers)
-                tree = etree.HTML(response.text)
+                res = get_html(dist_url)
+                if res:
+                    tree = etree.HTML(res.text)
                 # 没有请求到正确的页面
                 number_tz += 1
                 if '跳转' in tree.xpath("//title/text()")[0]:
@@ -189,9 +241,12 @@ class Esf_FTX:
                 page_number = tree.xpath("//div[@class='page_al']/p[last()]/text()") or \
                               tree.xpath("//div[@class='page_al']/span[contains(text(), '共')]/text()")
 
+                print('pagenum',page_number)
+
+
                 if len(page_number) < 1:
                     print(tree.xpath('//title/text()'))
-                    save_grab_dist(city, dist, dist_url, GetType)
+                    # save_grab_dist(city, dist, dist_url, GetType)
                     print("没有数据")
                     break
 
@@ -214,11 +269,12 @@ class Esf_FTX:
                 break
 
     def run(self, city_map):
-        df = self.get_exists_dists(self.month)
+        # df = self.get_exists_dists(self.month)
 
         print(len(city_map))
         for city, city_code in city_map.items():
-            exists_region = self.get_everyone_city_region(df, city)
+            # exists_region = self.get_everyone_city_region(df, city)
+            exists_region = []
 
             if city in ["罗定", "阿坝州", "农安", "怒江", "盘锦", '香港', '海南省']: continue
             if city in ['安达', '安宁', '安丘', '安溪', '宝应', '巴彦', '霸州', '三河', '三沙', '商河', '尚志', '韶山',
@@ -237,6 +293,7 @@ class Esf_FTX:
 
             start = time.time()
             dist = self.get_dist(city, GetType="二手房")
+            # print(dist)
             self.get_page(city, dist, GetType="二手房", exists_region=exists_region)
             print("抓取%s 总用时: %s" % (city, time.time() - start))
 
@@ -246,7 +303,7 @@ if __name__ == '__main__':
     # TODO 请删除 log>lose_dist 中的缓存记录
     # TODO 修改 Month为当前要抓取的月份
     Year = 2021
-    Month = 1
+    Month = 4
 
     Pool = ThreadPoolExecutor(20)
     Esf_FTX(year=Year, month=Month, pool=Pool).run(city_map)

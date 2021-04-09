@@ -4,8 +4,10 @@ import re
 import time
 import uuid
 import requests
+import pymongo
 import numpy as np
 
+from urllib import parse
 from lxml import etree
 from concurrent.futures.thread import ThreadPoolExecutor
 
@@ -15,7 +17,26 @@ from config.config import baidu_chang_gaode
 # from jtu_ydm.selenium_screenshot import verification
 from save_data import saveData, save_grab_dist, get_exists_dist, get_ua
 
-
+MONGODB_CONFIG = {
+   "host": "8.135.119.198",
+   "port": "27017",
+   "user": "hladmin",
+   "password": parse.quote("Hlxkd3,dk3*3@"),
+   "db": "dianping",
+   "collections": "dianping_collections",
+}
+info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['房天下小区']['info']
+has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['房天下小区']['has_spider']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -26,6 +47,16 @@ headers = {
     "User-Agent": get_ua()
 }
 
+def get_html(url):
+    try:
+        response = requests.get(url, headers=headers, timeout=2)
+        encod = response.apparent_encoding
+        if encod.upper() in ['GB2312', 'WINDOWS-1254']:
+            encod = 'gbk'
+        response.encoding = encod
+        return response
+    except Exception as e:
+        pass
 
 def get_Html_IP_xq(url, headers):
     retry_count = 10
@@ -85,7 +116,8 @@ def get_info_community(url, **kwargs):
         "upgrade-insecure-requests": "1",
         "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Mobile Safari/537.36",
     }
-    res = get_Html_IP_xq(url, headersd)
+    # res = get_Html_IP_xq(url, headersd)
+    res = get_html(url)
     if not res:
         return "退出当前详情访问"
     html = etree.HTML(res.text)
@@ -94,17 +126,17 @@ def get_info_community(url, **kwargs):
     item_info = {}
     item_dd = { dd.xpath('string(.)').split('：', 1)[0].replace(' ', ''): dd.xpath('string(.)').split('：', 1)[-1].replace(' ', '') for dd in dd_list}
 
-    item_info['产权描述'] = item_dd.get('产权描述', np.NaN)
-    item_info['物业类型'] = item_dd.get('物业类型', np.NaN)
-    item_info['建筑类型'] = item_dd.get('建筑类型', np.NaN)
-    item_info['建筑面积'] = item_dd.get('建筑面积', np.NaN)
+    item_info['产权描述'] = item_dd.get('产权描述', None)
+    item_info['物业类型'] = item_dd.get('物业类型', None)
+    item_info['建筑类型'] = item_dd.get('建筑类型', None)
+    item_info['建筑面积'] = item_dd.get('建筑面积', None)
 
-    item_info['房屋总数'] = item_dd.get('房屋总数', np.NaN)
-    item_info['楼栋总数'] = item_dd.get('楼栋总数', np.NaN)
-    item_info['绿化率'] = item_dd.get('绿化率', np.NaN)
-    item_info['容积率'] = item_dd.get('容积率', np.NaN)
-    item_info['物业费'] = item_dd.get('物业费', np.NaN)
-    item_info['停车位'] = item_dd.get('停车位', np.NaN)
+    item_info['房屋总数'] = item_dd.get('房屋总数', None)
+    item_info['楼栋总数'] = item_dd.get('楼栋总数', None)
+    item_info['绿化率'] = item_dd.get('绿化率', None)
+    item_info['容积率'] = item_dd.get('容积率', None)
+    item_info['物业费'] = item_dd.get('物业费', None)
+    item_info['停车位'] = item_dd.get('停车位', None)
 
     description = "".join(html.xpath("/html/head/meta[@name='description']/@content"))
     item_info['占地面积'] = "".join(re.findall("占地面积(\d+\.?\d+)平方米，", description))
@@ -142,12 +174,25 @@ def get_data(url, baseUrl, city, dist, pageNumber, currPage, item):
     :param currPage:    当前页数
     :return: dataList
     """
+
+    has_spider_urlList = []
+    for has_spider_url in has_spider.find():
+        has_spider_urlList.append(has_spider_url['标题'])
+    if url in has_spider_urlList:
+        print('该页数据已爬取，下一页')
+        return
+
     headers["User-Agent"] = get_ua()
-    res = get_Html_IP_xq(url, headers)
-    tree = etree.HTML(res.text)
+    # res = get_Html_IP_xq(url, headers)
+    print('每个页面url',url)
+    res = get_html(url)
+    if res:
+        tree = etree.HTML(res.text)
+    else:
+        return
 
     try:
-        house_box = tree.xpath('//*[contains(@id, "houselist_B09")]')
+        house_box = tree.xpath('//div[@class="houseList"]/div[@dataflag="bgcomare"]')
     except:
         return
     if house_box:
@@ -165,16 +210,18 @@ def get_data(url, baseUrl, city, dist, pageNumber, currPage, item):
         if item_dict['类型'] not in ['住宅', '别墅']:
             continue
         try:
-            item_dict['单价'] = house.xpath('./div/p[1]/span[1]/text()')[0]
-            item_dict['涨跌幅'] = house.xpath('./div/p[2]/span[1]/text()')[0]
+            item_dict['单价'] = house.xpath('/div/p[1]/span/text()')[0]
+            item_dict['涨跌幅'] = house.xpath('/div/p[2]/span/text()')[0]
         except:
-            item_dict['单价'] = np.NaN
-            item_dict['涨跌幅'] = np.NaN
+            item_dict['单价'] = None
+            item_dict['涨跌幅'] = None
+        # item_dict['单价'] = house.xpath('./div/p[1]/span/text()')
+        # item_dict['涨跌幅'] = house.xpath('./div/p[2]/span/text()')
         item_dict['在售套数'] = house.xpath('./dl/dd/ul/li[1]/a/text()')[0].strip()
         item_dict['在租套数'] = house.xpath('./dl/dd/ul/li[2]/a/text()')[0].strip()
         try:
             item_dict['建筑年份'] = re.findall("\d+", house.xpath('./dl/dd/ul/li[3]/text()')[0])[0]
-        except: item_dict['建筑年份'] = ''
+        except: item_dict['建筑年份'] = None
         if city == '海南省':
             item_dict['城市'] = dist
         else:
@@ -190,15 +237,19 @@ def get_data(url, baseUrl, city, dist, pageNumber, currPage, item):
         except:
             addrInfo = ''
         item_dict['地址'] = addr + '-' + addrInfo
-        item_dict['longitude'] = np.NaN
-        item_dict['latitude'] = np.NaN
-        item_dict['date'] = f'{year}-{month}-28'
-        item_dict['抓取年份'] = year
-        item_dict['抓取月份'] = month
+        # item_dict['longitude'] = np.NaN
+        # item_dict['latitude'] = np.NaN
+        # item_dict['date'] = f'{year}-{month}-28'
+        # item_dict['抓取年份'] = year
+        # item_dict['抓取月份'] = month
         item_dict['数据来源'] = '房天下'
         community_url = item_dict['小区url']
-        print("城市-区县: {}-{}, 小区: {}, 小区url: {}".format(city, dist, item_dict['小区'], item_dict['小区url']))
+        item_dict['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+        # print("城市-区县: {}-{}, 小区: {}, 小区url: {}".format(city, dist, item_dict['小区'], item_dict['小区url']))
         get_info_community(community_url, Referer=item_dict['小区url'], item=item, item_dict=item_dict)
+        print(item_dict)
+        info_base.insert_one(item_dict)
+    has_spider.insert_one({'标题': url})
 
 
 def get_street_page(city, street_url, GetType, **kwargs):
@@ -207,7 +258,10 @@ def get_street_page(city, street_url, GetType, **kwargs):
     """
     headers['Referer'] = kwargs['Referer']
     res = get_Html_IP_xq(url=street_url, headers=headers)
-    tree = etree.HTML(res.text)
+    if res:
+        tree = etree.HTML(res.text)
+    else:
+        return
     page_number = tree.xpath("//span[@class='txt']/text()")
     # 判断 有没有数据
     if len(page_number) < 1:
@@ -249,35 +303,51 @@ def get_page(city, dist_dict, GetType):
     获取每个区下的页面
     """
     for dist_url, dist in dist_dict.items():
-        if dist in get_exists_dist(city, GetType):
-            print(city, dist, '----->  已经存在')
-            continue
+        # if dist in get_exists_dist(city, GetType):
+        #     print(city, dist, '----->  已经存在')
+        #     continue
 
         base_url = re.findall("https.*com", dist_url)[0]
         print("base_url: ", base_url, "dist_url: ", dist_url)
 
-        res = get_Html_IP_xq(url=dist_url, headers=headers)
-        tree = etree.HTML(res.text)
+        has_spider_urlList = []
+        for has_spider_url in has_spider.find():
+            has_spider_urlList.append(has_spider_url['标题'])
+        if dist_url in has_spider_urlList:
+            print('该页数据已爬取，下一页')
+            break
+
+        # res = get_Html_IP_xq(url=dist_url, headers=headers)
+        res = get_html(dist_url)
+        if res:
+            tree = etree.HTML(res.text)
+            # print('res','tree',res,tree)
+        else:
+            print('抓取失败')
+            break
         page_number = tree.xpath("//span[@class='txt']/text()")
+        print('page',page_number)
 
         # 判断 有没有数据
         if len(page_number) < 1:
-            save_grab_dist(city, dist, dist_url, GetType)
+            # save_grab_dist(city, dist, dist_url, GetType)
             print("没有数据")
             continue
 
         if '100' in page_number[0]:
+        # if True:
+            print(page_number)
             print('当前页数大于100页, 分页抓取')
             # 获取街道信息
             street_xpath = '//*[@id="shangQuancontain"]/a[not(contains(text(), "不限"))]'
             street_dict = dict(zip(tree.xpath(street_xpath + '/text()'), tree.xpath(street_xpath + '/@href')))
             for street, str_url in street_dict.items():
                 street_url = base_url + str_url
-                print(street, street_url)
+                print('街道',street, street_url)
 
-                if street in get_exists_dist(city, GetType):
-                    print(city, street, '----->  已经存在')
-                    continue
+                # if street in get_exists_dist(city, GetType):
+                #     print(city, street, '----->  已经存在')
+                #     continue
 
                 get_street_page(city, street_url, GetType, street=street,
                                 Referer=dist_url, dist=dist, base_url=base_url)
@@ -315,12 +385,12 @@ if __name__ == '__main__':
     # TODO 直接 month为要抓取的月份
     # TODO 每月启动前,清空 log/lose_dist, log/小区  中的文件
     year = 2021
-    month = 1
+    month = 4
 
     pool = ThreadPoolExecutor(30)
     name = []
     for city, city_code in city_map.items():
-        if city != '海南省': continue
+        if city == '海南省': continue
 
         print(city, city_code)
         if city == '绍兴':
@@ -336,7 +406,7 @@ if __name__ == '__main__':
         dist = get_dist(city, GetType="小区")
         if not dist:
             name.append(city)
-        print('没有小区的城市: ', name)
+        # print('没有小区的城市: ', name)
         get_page(city, dist, GetType="小区")
 
     pool.shutdown()
