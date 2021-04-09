@@ -16,7 +16,7 @@ from concurrent.futures.thread import ThreadPoolExecutor
 
 from IP_config import get_Html_IP
 from save_data import write_to_table, Update_NewHouse_Df
-from 新房详情 import get_detail_url
+# from 新房详情 import get_detail_url
 
 MONGODB_CONFIG = {
    "host": "8.135.119.198",
@@ -67,14 +67,52 @@ def get_html(url):
     except Exception as e:
         pass
     return response
+def get_detail_url(url, title, dataDict, data):
+    while True:
+        try:
+            res = requests.get(url=url, headers=headers, timeout=(2, 7))
+            res.encoding = res.apparent_encoding
+            tree = etree.HTML(res.text)
+            break
+        except Exception as e:
+            print("get_detail_url error: ", e)
+            continue
+
+    # 楼盘详情url
+    try:
+        durl = tree.xpath('//*[@id="orginalNaviBox"]/a[contains(text(), "楼盘详情") or contains(text(), "详细信息")]/@href')[0]
+        detail_url = "https:" + durl if 'http' not in durl else durl
+        print('详细链接',detail_url)
+        if 'ld.newhouse' in durl:
+            print('出现: ld.newhouse', durl)
+            Infodata = dict()
+        else:
+            Infodata = get_community_area(detail_url, title)
+    except:
+        print('get_detail_url函数中, 详情错误')
+        Infodata = dict()
+    dataDict['销售状态'] = Infodata.get('销售状态', '')
+    dataDict['开盘时间'] = Infodata.get('开盘时间', '')
+    dataDict['主力户型'] = Infodata.get('主力户型', '')
+    dataDict['占地面积'] = Infodata.get('占地面积', '')
+    dataDict['建筑面积'] = Infodata.get('建筑面积', '')
+    dataDict['容积率'] = Infodata.get('容积率', '')
+    dataDict['绿化率'] = Infodata.get('绿化率', '')
+    dataDict['停车位'] = Infodata.get('停车位', '')
+    dataDict['楼栋总数'] = Infodata.get('楼栋总数', '')
+    dataDict['总户数'] = Infodata.get('总户数', '')
+    dataDict['物业费'] = Infodata.get('物业费', '')
+    dataDict['楼层状况'] = Infodata.get('楼层状况', '')
+    # print(dataDict)
+    data.append(dataDict)
 # 解析页面
 def get_data(url, city, data):
-    has_spider_urlList = []
-    for has_spider_url in has_spider.find():
-        has_spider_urlList.append(has_spider_url['标题'])
-    if url in has_spider_urlList:
-        print('该页数据已爬取，下一页')
-        return 0
+    # has_spider_urlList = []
+    # for has_spider_url in has_spider.find():
+    #     has_spider_urlList.append(has_spider_url['标题'])
+    # if url in has_spider_urlList:
+    #     print('该页数据已爬取，下一页')
+    #     return 0
         # html, response, _ = get_html(url)
         # next_page_url = html.xpath('string(//a[@class="next next-active"]/@href)')
         # if next_page_url:
@@ -124,16 +162,18 @@ def get_data(url, city, data):
         dataDict['抓取月份'] = month
         dataDict['数据来源'] = "房天下"
         dataDict["id"] = uuid.uuid1(node=random.randint(100, 99999999))
-        dataDict['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-        print(dataDict)
-        info_base.insert_one(dataDict)
-        get_detail_url(dataDict['标题url'], dataDict['标题'], dataDict, data)
+        dataDict['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))        
+        # get_detail_url(dataDict['标题url'], dataDict['标题'], dataDict, data)
         # 获取详情页内容
-        l.append(pool.submit(get_detail_url, dataDict['标题url'], dataDict['标题'], dataDict, data))
-    has_spider.insert_one({'标题': url})
+        # l.append(pool.submit(get_detail_url, dataDict['标题url'], dataDict['标题'], dataDict, data))
+        get_detail_url(dataDict['标题url'], dataDict['标题'], dataDict, data)
+
+        print(dataDict)
+        # info_base.insert_one(dataDict)
+    # has_spider.insert_one({'标题': url})
 
 
-    [i.result() for i in l]
+    # [i.result() for i in l]
 
 
 def get_html_page(url, city):
