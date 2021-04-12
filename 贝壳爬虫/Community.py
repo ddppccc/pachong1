@@ -69,11 +69,15 @@ class Community_BeiKe:
         url = 'https://{}.ke.com/xiaoqu/'.format(city_code)
         response = self.fetch_html(url)
         html = etree.HTML(response)
-        regions_xpath = "//div[@data-role='ershoufang']/div/a"
-        regions = dict(zip(html.xpath(regions_xpath + '/text()'), html.xpath(regions_xpath + '/@href')))
-        xiaoqu_url = url + '{}/'
-        regions = {key: xiaoqu_url.format(value.rsplit('/', 2)[1]) for key, value in regions.items()}
-        return regions
+        try:
+            regions_xpath = "//div[@data-role='ershoufang']/div/a"
+            regions = dict(zip(html.xpath(regions_xpath + '/text()'), html.xpath(regions_xpath + '/@href')))
+            xiaoqu_url = url + '{}/'
+            regions = {key: xiaoqu_url.format(value.rsplit('/', 2)[1]) for key, value in regions.items()}
+            return regions
+        except Exception as e:
+            print('fetch_html: ', e, url)
+            return 0
 
     def fetch_html(self, url ):
         has_spider_urllist = []

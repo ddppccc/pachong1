@@ -193,10 +193,10 @@ if __name__ == '__main__':
     # 生成最新的esf映射表
     get_esf_code_map()
 
-    params = {
-        'save_dir': "data/esf",  # 保存位置
-        'save_name': 'beke_esf'  # 保存数据名,
-       }
+    # params = {
+    #     'save_dir': "data/esf",  # 保存位置
+    #     'save_name': 'beke_esf'  # 保存数据名,
+    #    }
 
     for city_name in cities:  #
         print("城市: ", city_name)
