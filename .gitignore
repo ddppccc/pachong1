@@ -1,2 +1,10 @@
 data
 *.csv
+/安居客/.idea
+/安居客/__pycache__
+/安居客/capter_verify/__pycache__
+/贝壳爬虫/.idea
+/贝壳爬虫/__cached__
+/贝壳爬虫/__pycache__
+/贝壳爬虫/sy.py
+/贝壳爬虫/sy2.py
