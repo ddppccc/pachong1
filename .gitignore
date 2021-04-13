@@ -1,2 +1,5 @@
 data
 *.csv
+/安居客/.idea
+/安居客/__pycache__
+/安居客/capter_verify/__pycache__
