@@ -3,8 +3,11 @@ data
 /安居客/.idea
 /安居客/__pycache__
 /安居客/capter_verify/__pycache__
+<<<<<<< HEAD
 /贝壳爬虫/.idea
 /贝壳爬虫/__cached__
 /贝壳爬虫/__pycache__
 /贝壳爬虫/sy.py
 /贝壳爬虫/sy2.py
+=======
+>>>>>>> 36b884148a1c9acbcb6984cbaa4c9a2cc4b1c6d8

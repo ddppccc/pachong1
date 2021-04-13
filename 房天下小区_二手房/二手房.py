@@ -230,6 +230,8 @@ class Esf_FTX:
                 res = get_html(dist_url)
                 if res:
                     tree = etree.HTML(res.text)
+                else:
+                    break
                 # 没有请求到正确的页面
                 number_tz += 1
                 if '跳转' in tree.xpath("//title/text()")[0]:
@@ -261,11 +263,11 @@ class Esf_FTX:
                 [obj.result() for obj in l]
                 print("最终数据量: ", len(data))
 
-                try:
-                    useTime = saveData(data, city, GetType)  # 保存数据
-                    print("数据保存成功, 用时: ", useTime)
-                except Exception as e:
-                    print('城市: %s, 区域: %s, 数据保存失败, %s' % (city, dist, e))
+                # try:
+                #     useTime = saveData(data, city, GetType)  # 保存数据
+                #     print("数据保存成功, 用时: ", useTime)
+                # except Exception as e:
+                #     print('城市: %s, 区域: %s, 数据保存失败, %s' % (city, dist, e))
                 break
 
     def run(self, city_map):
