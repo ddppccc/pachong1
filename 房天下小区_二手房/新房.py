@@ -10,13 +10,14 @@ import requests
 import pandas as pd
 from lxml import etree
 from urllib import parse
+from city_map import city_map
 
-from sqlalchemy import create_engine
+# from sqlalchemy import create_engine
 from concurrent.futures.thread import ThreadPoolExecutor
 
 from IP_config import get_Html_IP
-from save_data import write_to_table, Update_NewHouse_Df
-from 新房详情 import get_detail_url
+# from save_data import write_to_table, Update_NewHouse_Df
+# from 新房详情 import get_detail_url
 
 MONGODB_CONFIG = {
    "host": "8.135.119.198",
@@ -48,15 +49,6 @@ headers = {
 
 
 
-def check_sql():
-    engine = create_engine('postgresql://postgres:123456@127.0.0.1/NewHouse').connect()
-    sql = f"""SELECT distinct "城市" FROM public."NewHouse_2021" where 抓取月份={month} and 数据来源='房天下';"""
-    exists_city = pd.read_sql_query(sql=sql, con=engine)
-    exists_city_list = exists_city['城市'].tolist()
-    print(f'已经抓城市数量: {len(exists_city_list)}')
-    engine.close()
-    return exists_city_list
-
 def get_html(url):
     try:
         response = requests.get(url, headers=headers, timeout=2)
@@ -67,8 +59,81 @@ def get_html(url):
     except Exception as e:
         pass
     return response
+def get_community_area(url, title):
+    while True:
+        try:
+            response = requests.get(url, headers=headers, timeout=2)
+            encod = response.apparent_encoding
+            if encod.upper() in ['GB2312', 'WINDOWS-1254']:
+                encod = 'gbk'
+            response.encoding = encod
+            tree = etree.HTML(response.text)
+            break
+        except Exception as e:
+            # print('新房详情中...', e, url)
+            time.sleep(2)
+            continue
+    item, data = [], {}
+
+    # 销售信息
+    sales_message = tree.xpath("//div[@class='main-item']/h3[contains(text(), '销售信息')]/../ul/li")
+    for sales in sales_message:
+        txt = re.sub('\s', '', sales.xpath('string(.)')).split('：')
+        item.append(dict(zip(txt[0::2], txt[1::2])))
+
+    # 小区规划
+    Community_planning = tree.xpath('//ul[@class="clearfix list"]//li')
+    for plan in Community_planning:
+        txt = re.sub('\s', '', plan.xpath('string(.)')).split('：')
+        item.append(dict(zip(txt[0::2], txt[1::2])))
+    [data.update(i) for i in item]
+    return data
+
+def get_detail_url(url, title, dataDict, data):
+    while True:
+        Infodata = dict()
+        try:
+            response = requests.get(url, headers=headers, timeout=2)
+            encod = response.apparent_encoding
+            if encod.upper() in ['GB2312', 'WINDOWS-1254']:
+                encod = 'gbk'
+            response.encoding = encod
+            tree = etree.HTML(response.text)
+            break
+        except Exception as e:
+            print("get_detail_url error: ", e)
+            continue
+
+    # 楼盘详情url
+    try:
+        durl = tree.xpath('//*[@id="orginalNaviBox"]/a[contains(text(), "楼盘详情") or contains(text(), "详细信息")]/@href')[0]
+        detail_url = "https:" + durl if 'http' not in durl else durl
+        # print('durl',detail_url)
+        if 'ld.newhouse' in durl:
+            print('出现: ld.newhouse', durl)
+        else:
+            # print('执行get_community_area')
+            Infodata = get_community_area(detail_url, title)
+    except Exception as e:
+        print(e)
+        # print('get_detail_url函数中, 详情错误')
+        Infodata = dict()
+    dataDict['销售状态'] = Infodata.get('销售状态', '')
+    dataDict['开盘时间'] = Infodata.get('开盘时间', '')
+    dataDict['主力户型'] = Infodata.get('主力户型', '')
+    dataDict['占地面积'] = Infodata.get('占地面积', '')
+    dataDict['建筑面积'] = Infodata.get('建筑面积', '')
+    dataDict['容积率'] = Infodata.get('容积率', '')
+    dataDict['绿化率'] = Infodata.get('绿化率', '')
+    dataDict['停车位'] = Infodata.get('停车位', '')
+    dataDict['楼栋总数'] = Infodata.get('楼栋总数', '')
+    dataDict['总户数'] = Infodata.get('总户数', '')
+    dataDict['物业费'] = Infodata.get('物业费', '')
+    dataDict['楼层状况'] = Infodata.get('楼层状况', '')
+
+    data.append(dataDict)
 # 解析页面
-def get_data(url, city, data):
+def get_data(url, city,page_number,page, data):
     has_spider_urlList = []
     for has_spider_url in has_spider.find():
         has_spider_urlList.append(has_spider_url['标题'])
@@ -89,7 +154,7 @@ def get_data(url, city, data):
     tree = etree.HTML(res.text)
     house_list = tree.xpath("//div[@id='newhouse_loupai_list']/ul/li[@id]")
 
-    l = []
+    # l = []
     for house in house_list:
         dataDict = {}
         try:
@@ -125,15 +190,16 @@ def get_data(url, city, data):
         dataDict['数据来源'] = "房天下"
         dataDict["id"] = uuid.uuid1(node=random.randint(100, 99999999))
         dataDict['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+        # get_detail_url(dataDict['标题url'], dataDict['标题'], dataDict, data)
+        # 获取详情页内容
+        # l.append(pool.submit(get_detail_url, dataDict['标题url'], dataDict['标题'], dataDict, data))
+        get_detail_url(dataDict['标题url'], dataDict['标题'], dataDict, data)
+
         print(dataDict)
         info_base.insert_one(dataDict)
-        get_detail_url(dataDict['标题url'], dataDict['标题'], dataDict, data)
-        # 获取详情页内容
-        l.append(pool.submit(get_detail_url, dataDict['标题url'], dataDict['标题'], dataDict, data))
     has_spider.insert_one({'标题': url})
 
-
-    [i.result() for i in l]
+    # [i.result() for i in l]
 
 
 def get_html_page(url, city):
@@ -158,11 +224,18 @@ def get_html_page(url, city):
         if page == 0:
             print('城市: 没有数据', )
 
-        data = []
+        # data = []
+        # for i in range(1, int(page) + 1):
+        #     page_url = url + "b9{}/".format(i)
+        #     print('城市: {}, 页数: {}, 当前页: {}'.format(city, page, i))
+        #     get_data(page_url, city, data)
+
+        l, data = [], []
         for i in range(1, int(page) + 1):
             page_url = url + "b9{}/".format(i)
-            print('城市: {}, 页数: {}, 当前页: {}'.format(city, page, i))
-            get_data(page_url, city, data)
+            done = pool.submit(get_data, page_url,city,int(page),i,data)
+            l.append(done)
+        [obj.result() for obj in l]
     except Exception as e:
         print(e)
     # if not data:
@@ -177,11 +250,11 @@ def get_html_page(url, city):
 
 
 def run():
-    with open('city_map.json', 'r', encoding="utf-8") as fp:
-        city_code = json.load(fp)
+    # with open('city_map.json', 'r', encoding="utf-8") as fp:
+    #     city_code = json.load(fp)
 
     # exists_city = check_sql()
-    for city, pinyin in city_code.items():
+    for city, pinyin in city_map.items():
 
         # if city  in exists_city: print(f'{city}, 已存在\n'); continue
         if city in [
@@ -204,7 +277,7 @@ if __name__ == '__main__':
     month = 4
     day = 28
 
-    pool = ThreadPoolExecutor(10)
+    pool = ThreadPoolExecutor(20)
     run()
     pool.shutdown()
 

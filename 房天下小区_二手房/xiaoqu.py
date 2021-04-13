@@ -310,12 +310,12 @@ def get_page(city, dist_dict, GetType):
         base_url = re.findall("https.*com", dist_url)[0]
         print("base_url: ", base_url, "dist_url: ", dist_url)
 
-        has_spider_urlList = []
-        for has_spider_url in has_spider.find():
-            has_spider_urlList.append(has_spider_url['标题'])
-        if dist_url in has_spider_urlList:
-            print('该页数据已爬取，下一页')
-            break
+        # has_spider_urlList = []
+        # for has_spider_url in has_spider.find():
+        #     has_spider_urlList.append(has_spider_url['标题'])
+        # if dist_url in has_spider_urlList:
+        #     print('该页数据已爬取，下一页')
+        #     break
 
         # res = get_Html_IP_xq(url=dist_url, headers=headers)
         res = get_html(dist_url)
@@ -364,17 +364,17 @@ def get_page(city, dist_dict, GetType):
                 pools.append(done)
             [obj.result() for obj in pools]
 
-            try:
-                print("data数据量", len(data))
-                useTime = saveData(data, city, GetType)  # 保存数据
-                save_grab_dist(city, dist, dist_url, GetType)  # 保存行政区
-                print("数据保存成功, 用时: ", useTime)
-
-            except Exception as e:
-                print('城市: %s, 区域: %s, 数据保存失败, %s' % (city, dist, e))
-            finally:
-                print()
-                del data
+            # try:
+            #     print("data数据量", len(data))
+            #     useTime = saveData(data, city, GetType)  # 保存数据
+            #     save_grab_dist(city, dist, dist_url, GetType)  # 保存行政区
+            #     print("数据保存成功, 用时: ", useTime)
+            # 
+            # except Exception as e:
+            #     print('城市: %s, 区域: %s, 数据保存失败, %s' % (city, dist, e))
+            # finally:
+            #     print()
+            #     del data
 
 
 if __name__ == '__main__':

@@ -230,6 +230,8 @@ class Esf_FTX:
                 res = get_html(dist_url)
                 if res:
                     tree = etree.HTML(res.text)
+                else:
+                    break
                 # 没有请求到正确的页面
                 number_tz += 1
                 if '跳转' in tree.xpath("//title/text()")[0]:
