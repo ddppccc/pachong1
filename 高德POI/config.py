@@ -1,6 +1,7 @@
 import pymongo
 from urllib import parse
 
+# poicode配置
 poicode = {
     "100000":{
         "100100":[
@@ -1143,13 +1144,22 @@ MONGODB_CONFIG = {
    "user": "hladmin",
    "password": parse.quote("Hlxkd3,dk3*3@"),
 }
+
+#高德key
+gaode_key = ["4fabbb7c9a939ee3942c67715f9a8f33"]
+
 gaode = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
             retryWrites="false")['gaode']
-
+# 网格表
 pos = gaode.pos
+# 数据表，用于存入抓取到的数据
 poi = gaode.poi
+# 已抓取过的网格表
 use_pos = gaode.use_pos
+
+
+api_url = "https://restapi.amap.com/v3/place/polygon?"
