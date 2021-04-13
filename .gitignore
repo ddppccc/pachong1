@@ -1,2 +1,7 @@
 data
 *.csv
+/安居客/.idea
+/安居客/__pycache__
+/安居客/capter_verify/__pycache__
+/房天下小区_二手房/.idea
+/房天下小区_二手房/__pycache__
