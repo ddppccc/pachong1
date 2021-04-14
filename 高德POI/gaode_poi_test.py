@@ -29,7 +29,7 @@ per_page_num = 25
 #获取数据
 def get_html(code, pos, page=1):
     try:
-        key = random.choices(config.gaode_key)
+        key = random.choices(config.gaode_key)[0]
         url = config.api_url+'&types=' + code + '&offset='+str(per_page_num)+'&page=' + str(page) + '&polygon=' + pos + '&key=' + key
         response = requests.get(url, headers=headers, timeout=2)
         encod = response.apparent_encoding
