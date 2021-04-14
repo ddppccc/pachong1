@@ -1,11 +1,38 @@
 # coding:utf-8
 import re
 import math
+from urllib import parse
+import time
+import pymongo
 import requests
 import pandas as pd
 
 from sqlalchemy import create_engine
 from config import Update_NewHouse, make_date, newHouse_map
+
+
+MONGODB_CONFIG = {
+   "host": "8.135.119.198",
+   "port": "27017",
+   "user": "hladmin",
+   "password": parse.quote("Hlxkd3,dk3*3@"),
+   "db": "dianping",
+   "collections": "dianping_collections",
+}
+
+info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['贝壳']['XinFang']
+
+url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['贝壳']['xf_url']
 
 
 class NewHouse:
@@ -28,13 +55,13 @@ class NewHouse:
         lat = z * math.sin(theta)
         return lat, lng
 
-    def get_exists_city(self, month):
-        """获取当月已经获取的城市"""
-        sql = f"""SELECT distinct "城市" FROM public."NewHouse_2020" where 抓取月份={month} and 数据来源='贝壳';"""
-        exists_city = pd.read_sql_query(sql=sql, con=engine)
-        # engine.close()
-        exists_city_list = exists_city['城市'].tolist()
-        return exists_city_list
+    # def get_exists_city(self, month):
+    #     """获取当月已经获取的城市"""
+    #     sql = f"""SELECT distinct "城市" FROM public."NewHouse_2020" where 抓取月份={month} and 数据来源='贝壳';"""
+    #     exists_city = pd.read_sql_query(sql=sql, con=engine)
+    #     # engine.close()
+    #     exists_city_list = exists_city['城市'].tolist()
+    #     return exists_city_list
 
     def get_html(self, url):
         headers = {
@@ -60,6 +87,12 @@ class NewHouse:
 
 
     def get_page_info(self, city, url, data, **kwargs):
+        has_spider_urllist = []
+        for i in url_data.find():
+            has_spider_urllist.append(i['url'])
+        if url in has_spider_urllist:
+            print('以爬取，下一页')
+            return 0
         ''' 获取详情页信息 '''
         res = self.get_html(url)
         houseList = res['data']['list']
@@ -96,7 +129,13 @@ class NewHouse:
 
             houseDict['抓取年份'] = self.year
             houseDict['抓取月份'] = self.month
+            houseDict['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+            print('====================================',house)
+            print(houseDict)
             data.append(houseDict)
+            info_base.insert_one(houseDict)
+        url_data.insert_one({'url':url})
+
 
     # 获取所有城市映射表
     def get_city_info(self, city, url):
@@ -109,17 +148,17 @@ class NewHouse:
             page_url = url + '/pg%s' % i
             self.get_page_info(city, page_url, data=data, page=i, totalPage=totalPage, totalNumber=totalNumber)
 
-        df = pd.DataFrame(data)
-        df = Update_NewHouse().update(df)
-        df.to_sql(name='NewHouse_2020', con=engine, schema='public', if_exists='append', index=False)
-        print(f'{city}, 保存成功')
+        # df = pd.DataFrame(data)
+        # df = Update_NewHouse().update(df)
+        # df.to_sql(name='NewHouse_2020', con=engine, schema='public', if_exists='append', index=False)
+        # print(f'{city}, 保存成功')
 
 
     def run(self, newHouse_map):
-        exists_city_list = self.get_exists_city(self.month)
+        # exists_city_list = self.get_exists_city(self.month)
         for city, city_url in newHouse_map.items():
             if city in ['大治'] : print('贝壳已舍去'); continue
-            if city in exists_city_list: print('已存在,跳过 '); continue
+            # if city in exists_city_list: print('已存在,跳过 '); continue
             print(city, city_url)
             local_list = city_url.split('/')[-1].split('-')
             base = city_url.replace(city_url.split('/')[-1],'')
@@ -135,7 +174,7 @@ if __name__ == '__main__':
     # TODO 修改每月抓取时间(可自定义), 位置 config >> make_date
 
     Year, Month, Day = make_date()
-    engine = create_engine('postgresql://postgres:1q2w3e4r@127.0.0.1/NewHouse').connect()  # 连接本地的新房数据库
+    #engine = create_engine('postgresql://postgres:1q2w3e4r@127.0.0.1/NewHouse').connect()  # 连接本地的新房数据库
     NewHouse(year=Year, month=Month).run(newHouse_map)
-    engine.close()
+    #engine.close()
 

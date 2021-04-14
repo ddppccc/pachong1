@@ -77,6 +77,15 @@ class Spider(scrapy.Spider):
         district = item['region_name']
         dist_url = item['base_url']
 
+        has_spider_urllist = []
+        for i in url_data.find():
+            has_spider_urllist.append(i['url'])
+        if item['base_url'] in has_spider_urllist:
+            print('以爬取，下一页')
+            return 0
+
+
+
 
         if '人机认证' in response.text:
             print('需要人机验证: ', response.url)
@@ -154,6 +163,7 @@ class Spider(scrapy.Spider):
                 items['数据来源'] = '贝壳'
 
                 items['地址'] = items['城市']+items['区县']+items['小区']
+                items['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
                 info_base.insert_one(items)
                 print(items)
                 yield items
@@ -183,10 +193,10 @@ if __name__ == '__main__':
     # 生成最新的esf映射表
     get_esf_code_map()
 
-    params = {
-        'save_dir': "data/esf",  # 保存位置
-        'save_name': 'beke_esf'  # 保存数据名,
-       }
+    # params = {
+    #     'save_dir': "data/esf",  # 保存位置
+    #     'save_name': 'beke_esf'  # 保存数据名,
+    #    }
 
     for city_name in cities:  #
         print("城市: ", city_name)

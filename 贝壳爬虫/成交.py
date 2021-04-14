@@ -23,6 +23,22 @@ headers = {
 }
 
 
+def get_proxy():
+    try:
+        return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+    except:
+        num = 3
+        while num:
+            try:
+                return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+            except:
+                print('暂无ip，等待20秒')
+                time.sleep(20)
+
+                num -= 1
+        print('暂无ip')
+
+
 def check_data(x):
     x = str(x)
     if 'n' in x or 'N' in x:
@@ -141,7 +157,8 @@ def get_data(url, city):
     num = 2
     while num > 0:
         try:
-
+            proxy = get_proxy()
+            proixy = "https://" + proxy
             has_spider_urllist = []
             for i in url_data.find():
                 has_spider_urllist.append(i['url'])
@@ -149,7 +166,7 @@ def get_data(url, city):
                 print('以爬取，下一页')
                 return 0
 
-            html = requests.get(url, headers=headers)
+            html = requests.get(url,proxies=proixy, headers=headers)
             html.encoding = html.apparent_encoding
             tree = etree.HTML(html.text)
         except Exception as e:
@@ -157,6 +174,7 @@ def get_data(url, city):
             num -= 1
             continue
         houses = tree.xpath("//ul[@class='listContent']/li/div[@class='info']")
+        time.sleep(2)
 
         if houses:
             data, flag = [], 0

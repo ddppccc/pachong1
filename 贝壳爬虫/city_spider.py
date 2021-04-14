@@ -37,12 +37,12 @@ def crawl_task(Spider, settings):
 
 
 # 开启爬虫
-def crawl_city_process(city_name, spider_class, params):
+def crawl_city_process(city_name, spider_class):
     # 检查当月数据是否已爬取
-    if check_crawled(city_name, save_dir=params.get('save_dir', 'data'), save_name=params.get('save_name', '')):
-        print('%s当月数据已存在' % city_name)
-        return
-    print('%s当月数据缺失，开始爬取' % city_name)
+    # if check_crawled(city_name, save_dir=params.get('save_dir', 'data'), save_name=params.get('save_name', '')):
+    #     print('%s当月数据已存在' % city_name)
+    #     return
+    # print('%s当月数据缺失，开始爬取' % city_name)
 
     # 配置参数
     default_settings = {
@@ -70,8 +70,8 @@ def crawl_city_process(city_name, spider_class, params):
         'HTTPERROR_ALLOWED_CODES': [302],
         "LOG_LEVEL": 'INFO',
     }
-    params.get('ITEM_PIPELINES') and params['ITEM_PIPELINES'].update(default_settings['ITEM_PIPELINES'])
-    default_settings.update(params)
+    # params.get('ITEM_PIPELINES') and params['ITEM_PIPELINES'].update(default_settings['ITEM_PIPELINES'])
+    # default_settings.update(params)
     # Spider = Spider
     settings = Settings()
     settings.update(default_settings)
