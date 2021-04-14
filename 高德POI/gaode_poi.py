@@ -1,6 +1,7 @@
 import config
 import re
 import random
+import json
 import time
 import requests
 from requests.adapters import HTTPAdapter
@@ -64,50 +65,47 @@ def get_pos(id_list=[]):
         print(e)
         return None
 def get_pos_big(current_pos):
-    for i in config.pos.find(current_pos):
-        j = re.findall('(\d+\.\d+)?', i['ulbr'])
-        # pos=j[0]+','+j[3]+'|'+j[6]+','+j[9]
-        l1 = format(eval(j[0]), '.6f')
-        l2 = format(eval(j[3]), '.6f')
-        l3 = format(eval(j[6]), '.6f')
-        l4 = format(eval(j[9]), '.6f')
-        pos = l1 + ',' + l2 + '|' + l3 + ',' + l4
-        # print(pos)
-        return pos
+
+    j = re.findall('(\d+\.\d+)?', current_pos['ulbr'])
+    # pos=j[0]+','+j[3]+'|'+j[6]+','+j[9]
+    l1 = format(eval(j[0]), '.6f')
+    l2 = format(eval(j[3]), '.6f')
+    l3 = format(eval(j[6]), '.6f')
+    l4 = format(eval(j[9]), '.6f')
+    pos = l1 + ',' + l2 + '|' + l3 + ',' + l4
+    # print('i',i)
+    # print(pos)
+    return pos
 def get_pos_small(current_pos):
-    # search=config.pos                       #数据表格
-    # has=config.use_pos                  #已抓取
     small_pos_list =[]
-    for i in config.pos.find(current_pos):
-        small_pos_list=[]
-        j=re.findall('(\d+\.\d+)?',i['ulbr_0'])
-        l1 = format(eval(j[0]), '.6f')
-        l2 = format(eval(j[3]), '.6f')
-        l3 = format(eval(j[6]), '.6f')
-        l4 = format(eval(j[9]), '.6f')
-        pos = l1 + ',' + l2 + '|' + l3 + ',' + l4
-        small_pos_list.append(pos)
-        j = re.findall('(\d+\.\d+)?', i['ulbr_1'])
-        l1 = format(eval(j[0]), '.6f')
-        l2 = format(eval(j[3]), '.6f')
-        l3 = format(eval(j[6]), '.6f')
-        l4 = format(eval(j[9]), '.6f')
-        pos = l1 + ',' + l2 + '|' + l3 + ',' + l4
-        small_pos_list.append(pos)
-        j = re.findall('(\d+\.\d+)?', i['ulbr_2'])
-        l1 = format(eval(j[0]), '.6f')
-        l2 = format(eval(j[3]), '.6f')
-        l3 = format(eval(j[6]), '.6f')
-        l4 = format(eval(j[9]), '.6f')
-        pos = l1 + ',' + l2 + '|' + l3 + ',' + l4
-        small_pos_list.append(pos)
-        j = re.findall('(\d+\.\d+)?', i['ulbr_3'])
-        l1 = format(eval(j[0]), '.6f')
-        l2 = format(eval(j[3]), '.6f')
-        l3 = format(eval(j[6]), '.6f')
-        l4 = format(eval(j[9]), '.6f')
-        pos = l1 + ',' + l2 + '|' + l3 + ',' + l4
-        small_pos_list.append(pos)
+    j = re.findall('(\d+\.\d+)?', current_pos['ulbr_0'])
+    l1 = format(eval(j[0]), '.6f')
+    l2 = format(eval(j[3]), '.6f')
+    l3 = format(eval(j[6]), '.6f')
+    l4 = format(eval(j[9]), '.6f')
+    pos = l1 + ',' + l2 + '|' + l3 + ',' + l4
+    small_pos_list.append(pos)
+    j = re.findall('(\d+\.\d+)?', current_pos['ulbr_1'])
+    l1 = format(eval(j[0]), '.6f')
+    l2 = format(eval(j[3]), '.6f')
+    l3 = format(eval(j[6]), '.6f')
+    l4 = format(eval(j[9]), '.6f')
+    pos = l1 + ',' + l2 + '|' + l3 + ',' + l4
+    small_pos_list.append(pos)
+    j = re.findall('(\d+\.\d+)?', current_pos['ulbr_2'])
+    l1 = format(eval(j[0]), '.6f')
+    l2 = format(eval(j[3]), '.6f')
+    l3 = format(eval(j[6]), '.6f')
+    l4 = format(eval(j[9]), '.6f')
+    pos = l1 + ',' + l2 + '|' + l3 + ',' + l4
+    small_pos_list.append(pos)
+    j = re.findall('(\d+\.\d+)?', current_pos['ulbr_3'])
+    l1 = format(eval(j[0]), '.6f')
+    l2 = format(eval(j[3]), '.6f')
+    l3 = format(eval(j[6]), '.6f')
+    l4 = format(eval(j[9]), '.6f')
+    pos = l1 + ',' + l2 + '|' + l3 + ',' + l4
+    small_pos_list.append(pos)
     return small_pos_list
 def sava_data(data,current_pos):                    #数据处理
     num=0
@@ -191,23 +189,15 @@ def run():
                     sum = sum + num
                     count_num = count_num - 20
                     page = page + 1
-        #config.pos.update_one(current_pos, {"$set": {"status": 1}})
+        config.pos.update_one(current_pos, {"$set": {"status": 1}})
         print('该地址获取条数',sum)
-        # break
-        # input('')
+
 
 if __name__ == '__main__':
-    print(int(time.time()*1000))
-
+    t1=time.time()
     run()
-    print(int(time.time() * 1000))
+    print('耗时',time.time()-t1)
 
 
-# print(type(current_pos))
-# l=config.pos.find_one(current_pos)
-# x = config.use_pos.delete_many({})
-# print(x.deleted_count, "个文档已删除")
-# print(config.use_pos.count_documents({}))
-# print(config.poi.count_documents({}))
 
 
