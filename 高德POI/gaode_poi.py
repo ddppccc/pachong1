@@ -43,14 +43,6 @@ def get_html(code,pos,key,page = 1):
         return data
     except Exception as e:
         print('获取页面失败',e)
-# def get_pos_big():
-#     # search=config.pos                       #数据表格
-#     # has=config.use_pos                  #已抓取
-#     for i in config.pos.find():
-#         j=re.findall('\d+',i['ulbr'])
-#         k=j[0]+'.'+j[1]+','+j[2]+'.'+j[3]+'|'+ j[4]+'.'+j[5]+','+j[6]+'.'+j[7]
-#         break
-#     return k
 def get_pos(id_list=[]):
     try:
         if id_list:
@@ -71,10 +63,21 @@ def get_pos(id_list=[]):
     except Exception as e:
         print(e)
         return None
-def get_pos_small():
+def get_pos_big(current_pos):
+    for i in config.pos.find(current_pos):
+        j = re.findall('(\d+\.\d+)?', i['ulbr'])
+        # pos=j[0]+','+j[3]+'|'+j[6]+','+j[9]
+        l1 = format(eval(j[0]), '.6f')
+        l2 = format(eval(j[3]), '.6f')
+        l3 = format(eval(j[6]), '.6f')
+        l4 = format(eval(j[9]), '.6f')
+        pos = l1 + ',' + l2 + '|' + l3 + ',' + l4
+        # print(pos)
+        return pos
+def get_pos_small(current_pos):
     # search=config.pos                       #数据表格
     # has=config.use_pos                  #已抓取
-    for i in config.pos.find():
+    for i in config.pos.find(current_pos):
         small_pos_list=[]
         j=re.findall('(\d+\.\d+)?',i['ulbr_0'])
         l1 = format(eval(j[0]), '.6f')
@@ -83,21 +86,21 @@ def get_pos_small():
         l4 = format(eval(j[9]), '.6f')
         pos = l1 + ',' + l2 + '|' + l3 + ',' + l4
         small_pos_list.append(pos)
-        j = re.findall('(\d+\.\d+)?', i['ulbr_0'])
+        j = re.findall('(\d+\.\d+)?', i['ulbr_1'])
         l1 = format(eval(j[0]), '.6f')
         l2 = format(eval(j[3]), '.6f')
         l3 = format(eval(j[6]), '.6f')
         l4 = format(eval(j[9]), '.6f')
         pos = l1 + ',' + l2 + '|' + l3 + ',' + l4
         small_pos_list.append(pos)
-        j = re.findall('(\d+\.\d+)?', i['ulbr_0'])
+        j = re.findall('(\d+\.\d+)?', i['ulbr_2'])
         l1 = format(eval(j[0]), '.6f')
         l2 = format(eval(j[3]), '.6f')
         l3 = format(eval(j[6]), '.6f')
         l4 = format(eval(j[9]), '.6f')
         pos = l1 + ',' + l2 + '|' + l3 + ',' + l4
         small_pos_list.append(pos)
-        j = re.findall('(\d+\.\d+)?', i['ulbr_0'])
+        j = re.findall('(\d+\.\d+)?', i['ulbr_3'])
         l1 = format(eval(j[0]), '.6f')
         l2 = format(eval(j[3]), '.6f')
         l3 = format(eval(j[6]), '.6f')
@@ -107,91 +110,101 @@ def get_pos_small():
         break
     return small_pos_list
 def sava_data(data,current_pos):                    #数据处理
-
+    num=0
     for i in data['pois']:
         print(i)
         config.poi.insert_one(i)
+        num=num+1
+    return num
 
-    pass
-def get_code(pos,code_list):
-    try:
-        for i in config.poicode.keys():
-            # print('getcode',i,pos,key)
-            data=get_html(i,pos,key)
-            # print('count',data['count'],'code',i)
+def get_code(big_pos,small_pos_list,code_dic):
+    code_dic[big_pos] = []
+    for small_pos in small_pos_list:
+        code_dic[small_pos] = []
+        # print('smallpos',small_pos)
+    for big_class_code in config.poicode.keys():
+        data = get_html(big_class_code, big_pos, key)
+        if int(data['count']) > 2000:
+            for small_pos in small_pos_list:
+                data = get_html(big_class_code, small_pos, key)
+                if int(data['count']) > 1:
+                    get_mid_code(big_class_code,code_dic,big_pos,small_pos)
+                else:
+                    code_dic[small_pos].append(big_class_code)
+        else:
+            code_dic[big_pos].append(big_class_code)
+    return code_dic
+
+def get_mid_code(big_class_code,code_dic,big_pos,small_pos):      #获取中类
+    for mid_class_code in config.poicode[big_class_code].keys():
+        data = get_html(mid_class_code, big_pos, key)
+        if int(data['count']) > 1:
+            data = get_html(mid_class_code, small_pos, key)
             if int(data['count']) > 2000:
-                for j in config.poicode[i]:
-                    data = get_html(j, pos, key)
-                    # print('count',data['count'],'code',j)
-                    if int(data['count']) > 2000:
-                        for k in config.poicode[i][j]:
-                            # print(k)
-                            data = get_html(k, pos, key)
-                            # print('count', data['count'],'code',k)
-                            if int(data['count']) > 2000:
-                                return code_list
-                            else:
-                                code_list.append(k)
-                    else:
-                        code_list.append(j)
+                get_small_code(big_class_code,mid_class_code, code_dic, big_pos, small_pos)
             else:
-                code_list.append(i)
-        return code_list
-    except Exception as e:
-        print('获取code失败',e)
-        return code_list
-if __name__ == '__main__':
-    while True:
-        code_list=[]
-        current_pos=get_pos()
-        # current_pos = config.pos.find_one({"status": 0})
-        #判断是否在use_pos表中
-        # count = config.use_pos.count_documents({"ulbr": current_pos['ulbr']})
-        # count = config.use_pos.count_documents({"ulbr": 'DDDD'})
-        # if count != 0:
-        #     print("该数据已抓取")
-        #     continue
-        # else:
-        #     print('该数据没有抓取')
-        j = re.findall('(\d+\.\d+)?', current_pos['ulbr'])
-        # print(j)
-        # pos = j[0] + '.' + j[1] + ',' + j[2] + '.' + j[3] + '|' + j[4] + '.' + j[5] + ',' + j[6] + '.' + j[7]
-        # pos=j[0]+','+j[3]+'|'+j[6]+','+j[9]
-        l1=format(eval(j[0]), '.6f')
-        l2=format(eval(j[3]), '.6f')
-        l3=format(eval(j[6]), '.6f')
-        l4=format(eval(j[9]), '.6f')
-        pos=l1+','+l2+'|'+l3+','+l4
-        print(pos)
-        code_list = get_code(pos,code_list)
-        print(code_list)
-        if len(code_list) == 0:
-            continue
-        for code in code_list:
-            data = get_html(code, pos, key)
-            sava_data(data, current_pos)
-            # print(data)
-            count_num=int(data['count'])
-            page = 2
-            while count_num-20 > 0:
-                data=get_html(code, pos, key,page=page)
-                sava_data(data, current_pos)
-                count_num=count_num-20
-                page=page+1
-        try:
-            config.pos.update_one(current_pos,{"$set":{"status":1}})
-            print('状态更新成功')
-            # config.use_pos.insert_one(current_pos)
-            # print('数据记录成功')
-        except Exception as e:
-            print(e)
+                code_dic[small_pos].append(mid_class_code)
+        else:
+            code_dic[big_pos].append(mid_class_code)
+    return code_dic
 
-# current_pos=get_pos()
-# print(current_pos)
+def get_small_code(big_class_code,mid_class_code,code_dic,big_pos,small_pos):        #获取小类
+    for small_class_code in config.poicode[big_class_code][mid_class_code]:
+        data = get_html(small_class_code, big_pos, key)
+        if int(data['count']) > 2000:
+            data = get_html(small_class_code, small_pos, key)
+            if int(data['count']) > 2000:
+                print('最小网格获取数量超过2000')
+            else:
+                code_dic[small_pos].append(small_class_code)
+        else:
+            code_dic[big_pos].append(small_class_code)
+    return code_dic
+
+
+def run():
+    while True:
+        # current_pos = get_pos()
+        current_pos = {'_id': ObjectId('6076840d1058790d7ece375c'), 'gridid': '87', 'city': '七台河市', 'ulbr': '130.25298531886688, 46.00935192833246, 130.29790108307287, 45.978147293498665', 'ulbr_0': '130.25298531886688, 46.00935192833246, 130.27544320096987, 45.99374961091556', 'ulbr_1': '130.25298531886688, 45.99374961091556, 130.27544320096987, 45.978147293498665', 'ulbr_2': '130.27544320096987, 46.00935192833246, 130.29790108307287, 45.99374961091556', 'ulbr_3': '130.27544320096987, 45.99374961091556, 130.29790108307287, 45.978147293498665', 'status': 0}
+        # current_pos = {'_id': ObjectId('6076840c1058790d7ece3745'), 'gridid': '12', 'city': '七台河市', 'ulbr': '130.11823802624895, 46.00935192833246, 130.16315379045494, 45.978147293498665', 'ulbr_0': '130.11823802624895, 46.00935192833246, 130.14069590835194, 45.99374961091556', 'ulbr_1': '130.11823802624895, 45.99374961091556, 130.14069590835194, 45.978147293498665', 'ulbr_2': '130.14069590835194, 46.00935192833246, 130.16315379045494, 45.99374961091556', 'ulbr_3': '130.14069590835194, 45.99374961091556, 130.16315379045494, 45.978147293498665', 'status': 0}
+        # print(current_pos)
+        big_pos=get_pos_big(current_pos)
+        small_pos_list=get_pos_small(current_pos)
+        # print(big_pos)
+        # for i in small_pos_list:
+        #     print(i)
+        code_dic = {}
+        code_dic=get_code(big_pos,small_pos_list,code_dic)
+        print('dict',code_dic)
+        sum=0
+        for pos,codes in code_dic.items():
+            # print(pos,code)            #pos,[code1,code2]
+            for code in codes:
+                data = get_html(code, pos, key)
+                num=sava_data(data, current_pos)
+                sum=sum+num
+                count_num = int(data['count'])
+                page = 2
+                while count_num - 20 > 0:
+                    data = get_html(code, pos, key, page=page)
+                    num=sava_data(data, current_pos)
+                    sum = sum + num
+                    count_num = count_num - 20
+                    page = page + 1
+        config.pos.update_one(current_pos, {"$set": {"status": 1}})
+        print('该地址获取条数',sum)
+        # break
+        input('')
+
+if __name__ == '__main__':
+    run()
+
+
 # print(type(current_pos))
 # l=config.pos.find_one(current_pos)
-# print(l)
 # x = config.use_pos.delete_many({})
 # print(x.deleted_count, "个文档已删除")
 # print(config.use_pos.count_documents({}))
 # print(config.poi.count_documents({}))
+
+
