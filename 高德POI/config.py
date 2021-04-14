@@ -1146,7 +1146,7 @@ MONGODB_CONFIG = {
 }
 
 #高德key
-gaode_key = ["4fabbb7c9a939ee3942c67715f9a8f33"]
+gaode_key = ["4fabbb7c9a939ee3942c67715f9a8f33","ac2d0d6951b7662e1b98aabb51b4aeb6"]
 
 gaode = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
