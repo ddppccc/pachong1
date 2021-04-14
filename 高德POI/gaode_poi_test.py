@@ -1,6 +1,7 @@
 import re
 import random
 import requests
+import time
 from requests.adapters import HTTPAdapter
 from bson.objectid import ObjectId
 
@@ -190,13 +191,32 @@ def handle_pos(pos=""):
 
 
 if __name__ == '__main__':
-    flag = True
-    while flag:
-        current_pos = get_pos()
-        if current_pos:
-            handle_process5X5(current_pos)
-            config.pos.update({"_id": current_pos["_id"]}, {"$set": {"status": 1}})
-        else:
-            flag = False
+    # flag = True
+    # while flag:
+    #     #current_pos = get_pos()
+    #     current_pos = {'_id': ObjectId('6076840d1058790d7ece375c'), 'gridid': '87', 'city': '七台河市',
+    #                    'ulbr': '130.25298531886688, 46.00935192833246, 130.29790108307287, 45.978147293498665',
+    #                    'ulbr_0': '130.25298531886688, 46.00935192833246, 130.27544320096987, 45.99374961091556',
+    #                    'ulbr_1': '130.25298531886688, 45.99374961091556, 130.27544320096987, 45.978147293498665',
+    #                    'ulbr_2': '130.27544320096987, 46.00935192833246, 130.29790108307287, 45.99374961091556',
+    #                    'ulbr_3': '130.27544320096987, 45.99374961091556, 130.29790108307287, 45.978147293498665',
+    #                    'status': 0}
+    #     if current_pos:
+    #         handle_process5X5(current_pos)
+    #         config.pos.update({"_id": current_pos["_id"]}, {"$set": {"status": 1}})
+    #     else:
+    #         flag = False
+    print(int(time.time() * 1000))
+    current_pos = {'_id': ObjectId('6076840d1058790d7ece375c'), 'gridid': '87', 'city': '七台河市',
+                      'ulbr': '130.25298531886688, 46.00935192833246, 130.29790108307287, 45.978147293498665',
+                      'ulbr_0': '130.25298531886688, 46.00935192833246, 130.27544320096987, 45.99374961091556',
+                      'ulbr_1': '130.25298531886688, 45.99374961091556, 130.27544320096987, 45.978147293498665',
+                      'ulbr_2': '130.27544320096987, 46.00935192833246, 130.29790108307287, 45.99374961091556',
+                      'ulbr_3': '130.27544320096987, 45.99374961091556, 130.29790108307287, 45.978147293498665',
+                      'status': 0}
+    if current_pos:
+        handle_process5X5(current_pos)
+                   #         config.pos.update({"_id": current_pos["_id"]}, {"$set": {"status": 1}})
+    print(int(time.time() * 1000))
     print("已经没有需要抓取的网格了...")
     print("应该已经抓取完成或者即将抓取完成...")

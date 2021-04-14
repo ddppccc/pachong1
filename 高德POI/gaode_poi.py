@@ -77,6 +77,7 @@ def get_pos_big(current_pos):
 def get_pos_small(current_pos):
     # search=config.pos                       #数据表格
     # has=config.use_pos                  #已抓取
+    small_pos_list =[]
     for i in config.pos.find(current_pos):
         small_pos_list=[]
         j=re.findall('(\d+\.\d+)?',i['ulbr_0'])
@@ -107,7 +108,6 @@ def get_pos_small(current_pos):
         l4 = format(eval(j[9]), '.6f')
         pos = l1 + ',' + l2 + '|' + l3 + ',' + l4
         small_pos_list.append(pos)
-        break
     return small_pos_list
 def sava_data(data,current_pos):                    #数据处理
     num=0
@@ -191,13 +191,16 @@ def run():
                     sum = sum + num
                     count_num = count_num - 20
                     page = page + 1
-        config.pos.update_one(current_pos, {"$set": {"status": 1}})
+        #config.pos.update_one(current_pos, {"$set": {"status": 1}})
         print('该地址获取条数',sum)
         # break
-        input('')
+        # input('')
 
 if __name__ == '__main__':
+    print(int(time.time()*1000))
+
     run()
+    print(int(time.time() * 1000))
 
 
 # print(type(current_pos))
