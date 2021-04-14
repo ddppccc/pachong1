@@ -1,7 +1,5 @@
-import config
 import re
 import random
-import json
 import time
 import requests
 from requests.adapters import HTTPAdapter
@@ -11,7 +9,6 @@ s = requests.Session()
 s.mount('http://', HTTPAdapter(max_retries=3))#设置重试次数为3次
 s.mount('https://', HTTPAdapter(max_retries=3))
 import requests
-import pymongo
 import config
 
 headers = {
@@ -41,9 +38,12 @@ def get_html(code,pos,key,page = 1):
             encod = 'gbk'
         response.encoding = encod
         data = response.json()
-        return data
+        if data.get("status" "") in [1,'1']:
+            return data
+        else:
+            time.sleep(3600)
     except Exception as e:
-        print('获取页面失败',e)
+        print('获取页面失败', e)
 def get_pos(id_list=[]):
     try:
         if id_list:
@@ -110,8 +110,11 @@ def get_pos_small(current_pos):
 def sava_data(data,current_pos):                    #数据处理
     num=0
     for i in data['pois']:
-        print(i)
-        config.poi.insert_one(i)
+        is_exists = config.poi.find_one({"_id": i["id"]})
+        if not is_exists:
+            i.update({"_id": i["id"]})
+            print(i)
+            config.poi.insert_one(i)
         num=num+1
     return num
 
@@ -166,37 +169,45 @@ def run():
         # current_pos = {'_id': ObjectId('6076840d1058790d7ece375c'), 'gridid': '87', 'city': '七台河市', 'ulbr': '130.25298531886688, 46.00935192833246, 130.29790108307287, 45.978147293498665', 'ulbr_0': '130.25298531886688, 46.00935192833246, 130.27544320096987, 45.99374961091556', 'ulbr_1': '130.25298531886688, 45.99374961091556, 130.27544320096987, 45.978147293498665', 'ulbr_2': '130.27544320096987, 46.00935192833246, 130.29790108307287, 45.99374961091556', 'ulbr_3': '130.27544320096987, 45.99374961091556, 130.29790108307287, 45.978147293498665', 'status': 0}
         # current_pos = {'_id': ObjectId('6076840c1058790d7ece3745'), 'gridid': '12', 'city': '七台河市', 'ulbr': '130.11823802624895, 46.00935192833246, 130.16315379045494, 45.978147293498665', 'ulbr_0': '130.11823802624895, 46.00935192833246, 130.14069590835194, 45.99374961091556', 'ulbr_1': '130.11823802624895, 45.99374961091556, 130.14069590835194, 45.978147293498665', 'ulbr_2': '130.14069590835194, 46.00935192833246, 130.16315379045494, 45.99374961091556', 'ulbr_3': '130.14069590835194, 45.99374961091556, 130.16315379045494, 45.978147293498665', 'status': 0}
         # print(current_pos)
-        big_pos=get_pos_big(current_pos)
-        small_pos_list=get_pos_small(current_pos)
-        # print(big_pos)
-        # for i in small_pos_list:
-        #     print(i)
-        code_dic = {}
-        code_dic=get_code(big_pos,small_pos_list,code_dic)
-        print('dict',code_dic)
-        sum=0
-        for pos,codes in code_dic.items():
-            # print(pos,code)            #pos,[code1,code2]
-            for code in codes:
-                data = get_html(code, pos, key)
-                num=sava_data(data, current_pos)
-                sum=sum+num
-                count_num = int(data['count'])
-                page = 2
-                while count_num - 20 > 0:
-                    data = get_html(code, pos, key, page=page)
+        try:
+            big_pos=get_pos_big(current_pos)
+            small_pos_list=get_pos_small(current_pos)
+        except Exception as e:
+            print("网格坐标出错了...", e)
+            continue
+        try:
+            # print(big_pos)
+            # for i in small_pos_list:
+            #     print(i)
+            code_dic = {}
+            code_dic=get_code(big_pos,small_pos_list,code_dic)
+            print('dict',code_dic)
+            sum=0
+            for pos,codes in code_dic.items():
+                # print(pos,code)            #pos,[code1,code2]
+                for code in codes:
+                    data = get_html(code, pos, key)
                     num=sava_data(data, current_pos)
-                    sum = sum + num
-                    count_num = count_num - 20
-                    page = page + 1
-        config.pos.update_one(current_pos, {"$set": {"status": 1}})
-        print('该地址获取条数',sum)
+                    sum=sum+num
+                    count_num = int(data['count'])
+                    page = 2
+                    while count_num - 20 > 0:
+                        data = get_html(code, pos, key, page=page)
+                        num=sava_data(data, current_pos)
+                        sum = sum + num
+                        count_num = count_num - 20
+                        page = page + 1
+            config.pos.update_one(current_pos, {"$set": {"status": 1}})
+            print('该地址获取条数',sum)
+        except Exception as e:
+            print("获取数据出错了...", e)
+            continue
 
 
 if __name__ == '__main__':
     t1=time.time()
     run()
-    print('耗时',time.time()-t1)
+    print('耗时', time.time()-t1)
 
 
 
