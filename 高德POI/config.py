@@ -1162,4 +1162,4 @@ poi = gaode.poi
 use_pos = gaode.use_pos
 
 
-api_url = "https://restapi.amap.com/v3/place/polygon?"
+api_url = "https://restapi.amap.com/v3/place/polygon?extensions=all&output=json"
