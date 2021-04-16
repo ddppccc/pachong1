@@ -26,7 +26,7 @@ headers = {
 # url='https://restapi.amap.com/v3/place/polygon?&types='+code+'&offset=20&page=1&extensions=all&output=json&polygon='+ pos + '&key=' + key
 # print(url)
 
-key=random.choice(config.gaode_key[:3])
+key = random.choice(config.gaode_key[:2])
 def get_html(code,pos,key,page = 1):
     try:
 
@@ -39,14 +39,14 @@ def get_html(code,pos,key,page = 1):
         response.encoding = encod
         data = response.json()
         if data.get("status" "") in [1,'1']:
-            return data['pois']
+            return data
         else:
-            time.sleep(30*60)
-            return []
+            time.sleep(5*60)
+            return {}
     except Exception as e:
         print('获取页面失败', e)
         time.sleep(5*60)
-        return []
+        return {}
 def get_pos(id_list=[]):
     try:
         if id_list:
@@ -112,7 +112,7 @@ def get_pos_small(current_pos):
     return small_pos_list
 def sava_data(data,current_pos):                    #数据处理
     num=0
-    for i in data:
+    for i in data['pois']:
         is_exists = config.poi.find_one({"_id": i["id"]})
         if not is_exists:
             i.update({"_id": i["id"]})
