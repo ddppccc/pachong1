@@ -26,7 +26,7 @@ headers = {
 # url='https://restapi.amap.com/v3/place/polygon?&types='+code+'&offset=20&page=1&extensions=all&output=json&polygon='+ pos + '&key=' + key
 # print(url)
 
-key=random.choice(config.gaode_key)
+key=random.choice(config.gaode_key[:3])
 def get_html(code,pos,key,page = 1):
     try:
 
@@ -39,11 +39,14 @@ def get_html(code,pos,key,page = 1):
         response.encoding = encod
         data = response.json()
         if data.get("status" "") in [1,'1']:
-            return data
+            return data['pois']
         else:
-            time.sleep(3600)
+            time.sleep(30*60)
+            return []
     except Exception as e:
         print('获取页面失败', e)
+        time.sleep(5*60)
+        return []
 def get_pos(id_list=[]):
     try:
         if id_list:
@@ -109,7 +112,7 @@ def get_pos_small(current_pos):
     return small_pos_list
 def sava_data(data,current_pos):                    #数据处理
     num=0
-    for i in data['pois']:
+    for i in data:
         is_exists = config.poi.find_one({"_id": i["id"]})
         if not is_exists:
             i.update({"_id": i["id"]})
@@ -166,9 +169,6 @@ def get_small_code(big_class_code,mid_class_code,code_dic,big_pos,small_pos):   
 def run():
     while True:
         current_pos = get_pos()
-        # current_pos = {'_id': ObjectId('6076840d1058790d7ece375c'), 'gridid': '87', 'city': '七台河市', 'ulbr': '130.25298531886688, 46.00935192833246, 130.29790108307287, 45.978147293498665', 'ulbr_0': '130.25298531886688, 46.00935192833246, 130.27544320096987, 45.99374961091556', 'ulbr_1': '130.25298531886688, 45.99374961091556, 130.27544320096987, 45.978147293498665', 'ulbr_2': '130.27544320096987, 46.00935192833246, 130.29790108307287, 45.99374961091556', 'ulbr_3': '130.27544320096987, 45.99374961091556, 130.29790108307287, 45.978147293498665', 'status': 0}
-        # current_pos = {'_id': ObjectId('6076840c1058790d7ece3745'), 'gridid': '12', 'city': '七台河市', 'ulbr': '130.11823802624895, 46.00935192833246, 130.16315379045494, 45.978147293498665', 'ulbr_0': '130.11823802624895, 46.00935192833246, 130.14069590835194, 45.99374961091556', 'ulbr_1': '130.11823802624895, 45.99374961091556, 130.14069590835194, 45.978147293498665', 'ulbr_2': '130.14069590835194, 46.00935192833246, 130.16315379045494, 45.99374961091556', 'ulbr_3': '130.14069590835194, 45.99374961091556, 130.16315379045494, 45.978147293498665', 'status': 0}
-        # print(current_pos)
         try:
             big_pos=get_pos_big(current_pos)
             small_pos_list=get_pos_small(current_pos)
@@ -176,23 +176,23 @@ def run():
             print("网格坐标出错了...", e)
             continue
         try:
-            # print(big_pos)
-            # for i in small_pos_list:
-            #     print(i)
             code_dic = {}
             code_dic=get_code(big_pos,small_pos_list,code_dic)
-            print('dict',code_dic)
+            print('dict', code_dic)
             sum=0
             for pos,codes in code_dic.items():
-                # print(pos,code)            #pos,[code1,code2]
                 for code in codes:
                     data = get_html(code, pos, key)
+                    if not data:
+                        continue
                     num=sava_data(data, current_pos)
                     sum=sum+num
                     count_num = int(data['count'])
                     page = 2
                     while count_num - 20 > 0:
                         data = get_html(code, pos, key, page=page)
+                        if not data:
+                            continue
                         num=sava_data(data, current_pos)
                         sum = sum + num
                         count_num = count_num - 20
@@ -201,13 +201,14 @@ def run():
             print('该地址获取条数',sum)
         except Exception as e:
             print("获取数据出错了...", e)
+            time.sleep(5*60)
             continue
 
 
 if __name__ == '__main__':
-    t1=time.time()
+    #t1=time.time()
     run()
-    print('耗时', time.time()-t1)
+    #print('耗时', time.time()-t1)
 
 
 
