@@ -8,7 +8,31 @@ import requests
 import re
 requests.packages.urllib3.disable_warnings()
 from concurrent.futures.thread import ThreadPoolExecutor
+import pymongo
+from urllib import parse
 
+MONGODB_CONFIG = {
+   "host": "8.135.119.198",
+   "port": "27017",
+   "user": "hladmin",
+   "password": parse.quote("Hlxkd3,dk3*3@"),
+   "db": "dianping",
+   "collections": "dianping_collections",
+}
+
+# 建立连接
+info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['小红书']['info']
+url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['小红书']['已爬取url']
 
 def get_proxy():
     return requests.get("http://47.106.223.4:50002/get/").json().get('proxy')
@@ -102,6 +126,12 @@ def get_html(page, label_id, data_all, label, lon, lat):
     url = 'https://www.xiaohongshu.com/web_api/sns/v1/page/poi/5a4b1086800086366cca864e/list?page={page}&page_size=20&req_type=nearby_filters&orig_filter_id={label_id}&latitude={lat}&longitude={lon}&search_id=b3187ee1-bc9f-4cae-a70d-f08aec08550f&sort_by=smart&category_id=&region_id='.format( page=page, label_id=label_id, lat=lat, lon=lon )
     print(url)
 
+    # 根据url查重
+    if url_data.find_one({'已爬取的url': url}):
+        print('已爬取')
+        return 0
+
+
     ip_number = 10
     while ip_number > 0:
         headers = {
@@ -121,12 +151,16 @@ def get_html(page, label_id, data_all, label, lon, lat):
                 return 0
             try:
                 # print("proxy: ",proxy)
+
+
                 res = requests.get(url, headers=headers, verify=False, timeout=(2, 5), proxies={
                                            "https": "https://{}".format(proxy),
                                            "http": "http://{}".format(proxy)
                                         })
+                url_data.insert_one({'已爬取的url':url})
 
                 if 'data' not in res.text:
+                    print('if data')
                     # print('出现滑动验证', res.text, proxy)
                     break
                 resJson = res.json()
@@ -139,7 +173,7 @@ def get_html(page, label_id, data_all, label, lon, lat):
                 return
             except Exception as e:
                 number -= 1
-                # print('error!!!', e)
+                print('error!!!', e)
                 continue
         delete_proxy(proxy)
         ip_number -= 1
@@ -156,6 +190,7 @@ def parse(response, data_all, label):
     p = []
     for data in data_list:
         item = {}
+        item['_id'] = data['id']
         item['id'] = data['id']
         item['label'] = label
         item['page_id'] = data['page_id']
@@ -167,11 +202,14 @@ def parse(response, data_all, label):
         item['人均'] = data.get('price')
         item['特色'] = "|".join(data['recommend_dishes'])
         item['详情链接'] = 'https://www.xiaohongshu.com/page/restaurants/{}?naviHidden=yes'.format(item['page_id'])
+        item['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         # get_info(item['详情链接'], item, data_all)
         # item.update(d)
         # print(item)
         # data_all.append(item)
+
         dd = pool.submit(get_info, item['详情链接'], item, data_all)
+        #print(item)
         p.append(dd)
     [obj.result() for obj in p]
     # return data_all
@@ -187,9 +225,11 @@ def get_info(url, item, data_all):
     item['地址'] = "".join(address)
     item['latitude'] = "".join(latitude)
     item['longitude'] = "".join(longitude)
-    item['电话'] = "".join(telephone)
+    item['电话'] = "".join(telephone)[2:-2]
     item['营业时间'] = "".join(openingHours)
     print(item)
+    #保存数据
+    info_base.insert_one(item)
     data_all.append(item)
 
 
@@ -225,7 +265,7 @@ def run(city, lon, lat):
             # if page != 100:continue
 
             print(city, '页数: ', page, label, label_id,)
-            t = get_html(page, label_id, data_all, label=label, lon=lon, lat=lat)
+            t = get_html(page, label_id, data_all, label=label, lon=lon, lat=lat)   # 获取到数据
             if t == 0:
                 break
 
