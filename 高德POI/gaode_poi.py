@@ -26,7 +26,7 @@ headers = {
 # url='https://restapi.amap.com/v3/place/polygon?&types='+code+'&offset=20&page=1&extensions=all&output=json&polygon='+ pos + '&key=' + key
 # print(url)
 
-key = config.gaode_key[:4]
+key = random.choice(config.gaode_key)
 def get_html(code,pos,key,page = 1):
     try:
 
