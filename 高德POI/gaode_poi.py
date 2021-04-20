@@ -44,12 +44,12 @@ def get_html(code,pos,key,page = 1):
         if data.get("status", "") in [1,'1']:
             return data
         else:
-            print("获取数据失败了,应该是key量使用完了...")
-            time.sleep(5*60)
+            print("获取数据失败了,应该是这个key量使用完了...=>"+key)
             return {}
     except Exception as e:
         print('高德接口访问失败了', e)
-        time.sleep(5*60)
+        print('先休息两分钟,让高德缓一下...')
+        time.sleep(2*60)
         return {}
 def get_pos(id_list=[]):
     try:
@@ -161,11 +161,6 @@ def get_small_code(big_class_code,mid_class_code,code_dic,big_pos,small_pos,key)
         data = get_html(small_class_code, big_pos, key)
         if int(data['count']) > max_len:
             code_dic[small_pos].append(small_class_code)
-            # data = get_html(small_class_code, small_pos, key)
-            # if int(data['count']) > max_len:
-            #     print('最小网格获取数量超过2000')
-            # else:
-            #    code_dic[small_pos].append(small_class_code)
         else:
             code_dic[big_pos].append(small_class_code)
     return code_dic
@@ -174,13 +169,13 @@ def get_small_code(big_class_code,mid_class_code,code_dic,big_pos,small_pos,key)
 def run():
     while True:
         key = random.choice(config.gaode_key)
-        print("key=>"+key)
+        print("这次是这个key=>"+key)
         current_pos = get_pos()
         try:
             big_pos = get_pos_big(current_pos)
             small_pos_list = get_pos_small(current_pos)
         except Exception as e:
-            print("获取网格坐标出错了...", e)
+            print("获取网格坐标出错了...重新来过！", e)
             continue
         try:
             code_dic = {}
@@ -207,8 +202,8 @@ def run():
             config.pos.update_one(current_pos, {"$set": {"status": 1}})
             print('该地址获取条数', sum)
         except Exception as e:
-            print("不知道异常了,反正就是没获取到数据，休息五分钟...", e)
-            time.sleep(5*60)
+            print("不知道什么异常了,反正就是没获取到数据，休息两分钟...", e)
+            time.sleep(2*60)
             continue
 
 
