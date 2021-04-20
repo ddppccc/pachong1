@@ -44,7 +44,8 @@ def get_html(code,pos,key,page = 1):
         if data.get("status", "") in [1,'1']:
             return data
         else:
-            print("获取数据失败了,应该是这个key量使用完了...=>"+key)
+            print("高德返回状态不成功,顾及是这个key量使用完了...=>"+key)
+            print("下面应该会开始切换key")
             return {}
     except Exception as e:
         print('高德接口访问失败了', e)
@@ -186,6 +187,8 @@ def run():
                 for code in codes:
                     data = get_html(code, pos, key)
                     if not data:
+                        print("没获取到数据,尝试切换key-1")
+                        key = random.choice(config.gaode_key)
                         continue
                     num=sava_data(data, current_pos)
                     sum=sum+num
@@ -194,6 +197,8 @@ def run():
                     while count_num - per_page_num > 0:
                         data = get_html(code, pos, key, page=page)
                         if not data:
+                            print("没获取到数据,尝试切换key-2")
+                            key = random.choice(config.gaode_key)
                             continue
                         num=sava_data(data, current_pos)
                         sum = sum + num
