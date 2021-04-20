@@ -4,8 +4,31 @@ import pandas as pd
 import requests
 import re
 import json
+import pymongo
 
 from config import create_assist_date, c_map, dataType
+from urllib import parse
+from multiprocessing import Process,Pool
+MONGODB_CONFIG = {
+   "host": "8.135.119.198",
+   "port": "27017",
+   "user": "hladmin",
+   "password": parse.quote("Hlxkd3,dk3*3@"),
+   "db": "dianping",
+   "collections": "dianping_collections",
+}
+qianruCity_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['百度迁徙_迁徙指数同期对比']['qianruCity']
+qianchuCity_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['百度迁徙_迁徙指数同期对比']['qianchuCity']
 
 
 # 迁入到市
@@ -78,7 +101,11 @@ def run(start_date, end_date):
                                                    str(date_qr)[4:6], str(date_qr)[6:])
                     item['级别'] = dtType
                     item["指数"] = value
-                    qianru_city.append(item)
+                    print(item)
+                    # qianru_city.append(item)
+                    if qianruCity_base.count_documents(item) == 0:
+                        qianruCity_base.insert_one(item)
+
 
 
                 qc_move_out_city = qc_city(cityCode, dtType)  # 迁出 城市
@@ -89,23 +116,28 @@ def run(start_date, end_date):
                                                    str(date_qc)[4:6], str(date_qc)[6:])
                     item['级别'] = dtType
                     item["指数"] = value
-                    qianchu_city.append(item)
+                    # qianchu_city.append(item)
+                    print(item)
+                if qianchuCity_base.count_documents(item) == 0:
+                    qianchuCity_base.insert_one(item)
 
-    qianru_city_df = pd.DataFrame(data=qianru_city)
-    qianchu_city_df = pd.DataFrame(data=qianchu_city)
 
-    name = 'data/{}_{}_百度人口迁移指数_同期对比.xlsx'.format(start_date.replace('-', ''), end_date.replace('-', ''))
-    writer = pd.ExcelWriter(name)
-    qianru_city_df.to_excel(writer, sheet_name='迁入来源地', index=False)
-    qianchu_city_df.to_excel(writer, sheet_name='迁出目的地', index=False)
-    writer.save()
-    writer.close()
+
+    # qianru_city_df = pd.DataFrame(data=qianru_city)
+    # qianchu_city_df = pd.DataFrame(data=qianchu_city)
+    #
+    # name = 'data/{}_{}_百度人口迁移指数_同期对比.xlsx'.format(start_date.replace('-', ''), end_date.replace('-', ''))
+    # writer = pd.ExcelWriter(name)
+    # qianru_city_df.to_excel(writer, sheet_name='迁入来源地', index=False)
+    # qianchu_city_df.to_excel(writer, sheet_name='迁出目的地', index=False)
+    # writer.save()
+    # writer.close()
 
 
 if __name__ == '__main__':
     # TODO 时间
-    start_date = '2020-11-01'
-    end_date = '2021-01-04'
+    start_date = '2021-01-01'
+    end_date = '2021-04-19'
     print(start_date, end_date)
     dateList = create_assist_date(start_date, end_date)
     run(start_date, end_date)
