@@ -1,7 +1,7 @@
 # 该脚本获取城市的分区
 import json
 import re
-
+import time
 import requests
 from lxml import etree
 import os
@@ -382,7 +382,8 @@ with open(os.path.join(os.path.dirname(__file__), 'city_map.json'), 'r', encodin
 def get_html(url, headers):
     while True:
         try:
-            response = requests.get(url, headers=headers, timeout=(2, 10))
+            proxies = {"https": get_proxy()}
+            response = requests.get(url, headers=headers,proxies=proxies,timeout=(10, 10))
             encod = response.apparent_encoding
             if encod == 'GB2312':
                 encod = 'gbk'
@@ -396,11 +397,24 @@ def get_html(url, headers):
                 continue
             return html
         except Exception as e:
-            print("请求出错: ", e)
+            print("请求出错: ",proxies, e)
             continue
 
 
 # 根据城市名获得行政区
+def get_proxy():
+    try:
+            return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+    except:
+        num = 3
+        while num:
+            try:
+                return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+            except:
+                print('暂无ip，等待20秒')
+                time.sleep(20)
+                num-=1
+        print('暂无ip')
 def get_regions(city_name, GetType):
     """
     根据城市名获得行政区

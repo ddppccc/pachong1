@@ -52,17 +52,33 @@ headers = {
     "upgrade-insecure-requests": "1",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 }
-
-def get_html(url):
+def get_proxy():
     try:
-        response = requests.get(url, headers=headers, timeout=2)
+            return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+            # return '111.202.83.35:80'
+    except:
+        num = 3
+        while num:
+            try:
+                return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+            except:
+                print('暂无ip，等待20秒')
+                time.sleep(20)
+
+                num -= 1
+        print('暂无ip')
+def get_html(url):
+    proxies = {"https": get_proxy()}
+    try:
+        response = requests.get(url, headers=headers,proxies=proxies, timeout=10)
         encod = response.apparent_encoding
         if encod.upper() in ['GB2312', 'WINDOWS-1254']:
             encod = 'gbk'
         response.encoding = encod
         return response
     except Exception as e:
-        pass
+        print('get_html错误', proxies,e)
+        return  get_html(url)
 
 
 class Esf_FTX:
@@ -299,7 +315,10 @@ class Esf_FTX:
             self.get_page(city, dist, GetType="二手房", exists_region=exists_region)
             print("抓取%s 总用时: %s" % (city, time.time() - start))
 
+import os
 
+def clear():
+    os.system('cls')
 if __name__ == '__main__':
     # TODO 二手房启动程序
     # TODO 请删除 log>lose_dist 中的缓存记录
@@ -307,6 +326,11 @@ if __name__ == '__main__':
     Year = 2021
     Month = 4
 
-    Pool = ThreadPoolExecutor(20)
-    Esf_FTX(year=Year, month=Month, pool=Pool).run(city_map)
-    Pool.shutdown()
+    while True:
+        try:
+
+            Pool = ThreadPoolExecutor(20)
+            Esf_FTX(year=Year, month=Month, pool=Pool).run(city_map)
+            Pool.shutdown()
+        except:
+            pass
