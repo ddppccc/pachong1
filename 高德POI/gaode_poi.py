@@ -26,10 +26,14 @@ headers = {
 # url='https://restapi.amap.com/v3/place/polygon?&types='+code+'&offset=20&page=1&extensions=all&output=json&polygon='+ pos + '&key=' + key
 # print(url)
 
-key = random.choice(config.gaode_key)
+per_page_num = 20
+
+max_len = per_page_num * 100
+
+
 def get_html(code,pos,key,page = 1):
     try:
-        url = 'https://restapi.amap.com/v3/place/polygon?&types=' + code + '&offset=20&page=' + str(page) + '&extensions=all&output=json&polygon=' + pos + '&key=' + key
+        url = 'https://restapi.amap.com/v3/place/polygon?&types=' + code + '&offset='+str(per_page_num)+'&page=' + str(page) + '&extensions=all&output=json&polygon=' + pos + '&key=' + key
         # print(url)
         response = requests.get(url, headers=headers, timeout=2)
         encod = response.apparent_encoding
@@ -37,14 +41,16 @@ def get_html(code,pos,key,page = 1):
             encod = 'gbk'
         response.encoding = encod
         data = response.json()
-        if data.get("status" "") in [1,'1']:
+        if data.get("status", "") in [1,'1']:
             return data
         else:
-            time.sleep(5*60)
+            print("高德返回状态不成功,估计是这个key量使用完了...=>"+key)
+            print("下面应该会开始切换key")
             return {}
     except Exception as e:
-        print('获取页面失败', e)
-        time.sleep(5*60)
+        print('高德接口访问失败了', e)
+        print('先休息两分钟,让高德缓一下...')
+        time.sleep(2*60)
         return {}
 def get_pos(id_list=[]):
     try:
@@ -120,14 +126,14 @@ def sava_data(data,current_pos):                    #数据处理
         num=num+1
     return num
 
-def get_code(big_pos,small_pos_list,code_dic):
+def get_code(big_pos,small_pos_list,code_dic, key):
     code_dic[big_pos] = []
     for small_pos in small_pos_list:
         code_dic[small_pos] = []
         # print('smallpos',small_pos)
     for big_class_code in config.poicode.keys():
         data = get_html(big_class_code, big_pos, key)
-        if int(data['count']) > 2000:
+        if int(data['count']) > max_len:
             for small_pos in small_pos_list:
                 data = get_html(big_class_code, small_pos, key)
                 if int(data['count']) > 1:
@@ -138,12 +144,12 @@ def get_code(big_pos,small_pos_list,code_dic):
             code_dic[big_pos].append(big_class_code)
     return code_dic
 
-def get_mid_code(big_class_code,code_dic,big_pos,small_pos):      #获取中类
+def get_mid_code(big_class_code,code_dic,big_pos,small_pos,key):      #获取中类
     for mid_class_code in config.poicode[big_class_code].keys():
         data = get_html(mid_class_code, big_pos, key)
         if int(data['count']) > 1:
             data = get_html(mid_class_code, small_pos, key)
-            if int(data['count']) > 2000:
+            if int(data['count']) > max_len:
                 get_small_code(big_class_code,mid_class_code, code_dic, big_pos, small_pos)
             else:
                 code_dic[small_pos].append(mid_class_code)
@@ -151,15 +157,11 @@ def get_mid_code(big_class_code,code_dic,big_pos,small_pos):      #获取中类
             code_dic[big_pos].append(mid_class_code)
     return code_dic
 
-def get_small_code(big_class_code,mid_class_code,code_dic,big_pos,small_pos):        #获取小类
+def get_small_code(big_class_code,mid_class_code,code_dic,big_pos,small_pos,key):        #获取小类
     for small_class_code in config.poicode[big_class_code][mid_class_code]:
         data = get_html(small_class_code, big_pos, key)
-        if int(data['count']) > 2000:
-            data = get_html(small_class_code, small_pos, key)
-            if int(data['count']) > 2000:
-                print('最小网格获取数量超过2000')
-            else:
-                code_dic[small_pos].append(small_class_code)
+        if int(data['count']) > max_len:
+            code_dic[small_pos].append(small_class_code)
         else:
             code_dic[big_pos].append(small_class_code)
     return code_dic
@@ -167,47 +169,51 @@ def get_small_code(big_class_code,mid_class_code,code_dic,big_pos,small_pos):   
 
 def run():
     while True:
+        key = random.choice(config.gaode_key)
+        print("这次是这个key=>"+key)
         current_pos = get_pos()
         try:
-            big_pos=get_pos_big(current_pos)
-            small_pos_list=get_pos_small(current_pos)
+            big_pos = get_pos_big(current_pos)
+            small_pos_list = get_pos_small(current_pos)
         except Exception as e:
-            print("网格坐标出错了...", e)
+            print("获取网格坐标出错了...重新来过！", e)
             continue
         try:
             code_dic = {}
-            code_dic=get_code(big_pos,small_pos_list,code_dic)
+            code_dic=get_code(big_pos,small_pos_list,code_dic,key)
             print('dict', code_dic)
-            sum=0
+            sum = 0
             for pos,codes in code_dic.items():
                 for code in codes:
                     data = get_html(code, pos, key)
                     if not data:
+                        print("没获取到数据,尝试切换key-1")
+                        key = random.choice(config.gaode_key)
                         continue
                     num=sava_data(data, current_pos)
                     sum=sum+num
                     count_num = int(data['count'])
                     page = 2
-                    while count_num - 20 > 0:
+                    while count_num - per_page_num > 0:
                         data = get_html(code, pos, key, page=page)
                         if not data:
+                            print("没获取到数据,尝试切换key-2")
+                            key = random.choice(config.gaode_key)
                             continue
                         num=sava_data(data, current_pos)
                         sum = sum + num
-                        count_num = count_num - 20
+                        count_num = count_num - per_page_num
                         page = page + 1
             config.pos.update_one(current_pos, {"$set": {"status": 1}})
-            print('该地址获取条数',sum)
+            print('该地址获取条数', sum)
         except Exception as e:
-            print("获取数据出错了...", e)
-            time.sleep(5*60)
+            print("不知道什么异常了,反正就是没获取到数据，休息两分钟...", e)
+            time.sleep(2*60)
             continue
 
 
 if __name__ == '__main__':
-    #t1=time.time()
     run()
-    #print('耗时', time.time()-t1)
 
 
 
