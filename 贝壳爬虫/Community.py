@@ -33,6 +33,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['port']),
             retryWrites="false")['贝壳']['XiaoQu']
 
+xqxq = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['贝壳']['xiaoqu_url']
+
 url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
@@ -209,6 +216,7 @@ class Community_BeiKe:
             data['在售套数'] = house.xpath(".//div[@class='xiaoquListItemSellCount']/a/span/text()")[0]
             data['抓取月份'] = self.month
             data['抓取年份'] = self.year
+            xqxq.insert_one(data)
             print(data)
             if data['小区url'] == 'https://wx.ke.com/xiaoqu/4120034740837231/':
                 continue

@@ -7,12 +7,17 @@ import time
 import requests
 import pandas as pd
 from lxml import etree
+from requests.adapters import HTTPAdapter
 
 from beike_map import get_regions, get_esf_code_map
 from city_spider import cities
 import multiprocessing
 from urllib import parse
 import pymongo
+
+s = requests.Session()
+s.mount('http://', HTTPAdapter(max_retries=3))#设置重试次数为3次
+s.mount('https://', HTTPAdapter(max_retries=3))
 
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
@@ -25,12 +30,12 @@ headers = {
 
 def get_proxy():
     try:
-        return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+        return s.get('http://47.106.223.4:50002/get/').json().get('proxy')
     except:
         num = 3
         while num:
             try:
-                return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+                return s.get('http://47.106.223.4:50002/get/').json().get('proxy')
             except:
                 print('暂无ip，等待20秒')
                 time.sleep(20)
@@ -132,7 +137,7 @@ def get_deal_time_2(df, region):
 
 # 获取更小一级的行政分类区
 def get_next_register(url):
-    html = requests.get(url, headers=headers)
+    html = s.get(url, headers=headers)
     html.encoding = html.apparent_encoding
     tree = etree.HTML(html.text)
     regions_xpath = "//div[@data-role='ershoufang']/div[2]/a"
@@ -142,7 +147,7 @@ def get_next_register(url):
     next_data = {}
     next_dist = {}
     for dist, distUrl in regions.items():
-        html = requests.get(distUrl, headers=headers)
+        html = s.get(distUrl, headers=headers)
         html.encoding = html.apparent_encoding
         html = etree.HTML(html.text)
         chengjiao_number = html.xpath("//div[@class='total fl']/span/text()")[0].strip()
@@ -166,7 +171,7 @@ def get_data(url, city):
                 print('以爬取，下一页')
                 return 0
 
-            html = requests.get(url,proxies=proixy, headers=headers)
+            html = s.get(url,proxies=proixy, headers=headers)
             html.encoding = html.apparent_encoding
             tree = etree.HTML(html.text)
         except Exception as e:
@@ -252,6 +257,7 @@ def get_page_data(page, url, city, dis=None):
     # g_list = []
     for i in range(1, number + 1):
         urls = url + "pg%s/" % i
+        print(urls)
         get_data(urls, city)
 
         # if get_data(urls, city, district, dealTime) == 1:
@@ -269,14 +275,15 @@ def get_page_data(page, url, city, dis=None):
 # 获取每一个行政区,
 def get_html_page(url, city, district):
     try:
-        html = requests.get(url, headers=headers)
+        html = s.get(url, headers=headers)
         html.encoding = html.apparent_encoding
         tree = etree.HTML(html.text)
+        chengjiao_number = tree.xpath("//div[@class='total fl']/span/text()")[0].strip()
     except Exception as e:
         return "请求失败"
 
     # 判断 当前区下的成交的房数量
-    chengjiao_number = tree.xpath("//div[@class='total fl']/span/text()")[0].strip()
+
 
     if int(chengjiao_number) == 0:
         print(district, '没有数据')
@@ -301,28 +308,31 @@ def run():
     print("city_map: ", city_map)
 
     for city_name in cities:  # 城市名
+        try:
 
-        register, CHENGJIAO = get_regions(city_name, city_map)
-        print("当前城市: %s, \n抓取到的分区: %s, \n" % (city_name, register))
-        if not CHENGJIAO:  # 没有成交字段
-            print("%s: 没有成交字段," % city_name)
-            continue
+            register, CHENGJIAO = get_regions(city_name, city_map)
+            print("当前城市: %s, \n抓取到的分区: %s, \n" % (city_name, register))
+            if not CHENGJIAO:  # 没有成交字段
+                print("%s: 没有成交字段," % city_name)
+                continue
 
-        # star = time.time()  # 计时,单个城市的爬取速率
-        # p_list = []
-        for district, disturl in register.items():
-            disturl = disturl.replace("ershoufang", "chengjiao")
-            get_html_page(disturl, city_name, district)
+            # star = time.time()  # 计时,单个城市的爬取速率
+            # p_list = []
+            for district, disturl in register.items():
+                disturl = disturl.replace("ershoufang", "chengjiao")
+                get_html_page(disturl, city_name, district)
 
-        #     dealTime = get_deal_time_2(df, district) # 获取最近成交时间
-        #
-        #     p = multiprocessing.Process(target=get_html_page, args=(disturl, city_name, district, dealTime))
-        #     p.start()
-        #     p_list.append(p)
-        # for p in p_list:
-        #     p.join()
+            #     dealTime = get_deal_time_2(df, district) # 获取最近成交时间
+            #
+            #     p = multiprocessing.Process(target=get_html_page, args=(disturl, city_name, district, dealTime))
+            #     p.start()
+            #     p_list.append(p)
+            # for p in p_list:
+            #     p.join()
 
-        print(city_name)
+            print(city_name)
+        except Exception as  e:
+            print(e)
 
 
 if __name__ == '__main__':
