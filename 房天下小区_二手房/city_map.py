@@ -372,10 +372,10 @@ city_list=[
  '衢州',
  '重庆']
 with open(os.path.join(os.path.dirname(__file__), 'city_map.json'), 'r', encoding='utf-8') as f:
-    old_city_map = json.load(f)
-    city_map = {}
-    for i in range(len(city_list)):
-        city_map[city_list[i]] = old_city_map[city_list[i]]
+    city_map = json.load(f)
+    # city_map = {}
+    # for i in range(len(city_list)):
+    #     city_map[city_list[i]] = old_city_map[city_list[i]]
 
 
 # 下载请求页面
