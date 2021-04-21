@@ -10,7 +10,6 @@ import re
 
 from selenium.webdriver.support.wait import WebDriverWait
 
-import ys
 
 from PIL import Image
 
