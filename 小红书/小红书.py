@@ -269,12 +269,9 @@ def run(city, lon, lat):
             if t == 0:
                 break
 
-        df = pd.DataFrame(data_all)
 
-        if os.path.exists(path):
-            df.to_csv(path, mode='a', encoding='utf-8', index=False, header=False)
-        else:
-            df.to_csv(path, mode='a', encoding='utf-8', index=False, header=True)
+
+
 
 
 if __name__ == '__main__':
@@ -651,7 +648,3 @@ if __name__ == '__main__':
 
         run(city, lon, lat)
     pool.shutdown()
-
-
-
-
