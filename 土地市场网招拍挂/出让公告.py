@@ -101,11 +101,9 @@ def get_html(QuerySubmitConditionData, page=1):
             while True:
                 try:
                     print('准备代理和cookie')
-                    proxy = get_proxy()
-
-                    cookie = TuDi(proxy).run_get_ip_cookie(proxy)
-                    print(f'proxy={proxy}')
-                    print(f'cookie={cookie}')
+                    proxy, cookie = TuDi().run()
+                    # print(f'proxy={proxy}')
+                    # print(f'cookie={cookie}')
                     proxies = {
                         'http': 'http://{}'.format(proxy),
                         'https': 'https://{}'.format(proxy),
@@ -116,9 +114,9 @@ def get_html(QuerySubmitConditionData, page=1):
                     continue
             headers['cookie'] = cookie
             try:
-                res = requests.post(url=url, data=formData, headers=headers, proxies=proxies,timeout=(2,7))
+                res = requests.post(url=url, data=formData, headers=headers, proxies=proxy,timeout=(7,7))
             except:
-                delete_proxy(proxy)
+                # delete_proxy(proxy)
                 continue
             res.encoding = 'gbk'
             # print(res.text)
@@ -209,8 +207,9 @@ def run(startdate, enddate, df_map):
         d_list = []
         for tr in response.xpath('//*[@id="TAB_contentTable"]//tr[@id]'):
             item = {}
-            item['行政区'] = tr.xpath('./td[2]/text() | ./td[2]/span/@title').get()
-            item['供应标题'] = tr.xpath('./td[3]/a/span/@title | ./td[3]/a/text()').get()
+            item['行政区'] = tr.xpath('./td[2]/text() | ./td[2]/span/@title')[0]
+            item['供应标题'] = tr.xpath('./td[3]/a/span/@title | ./td[3]/a/text()')[0]
+            print('行政区 供应标题',item['行政区'],item['供应标题'])
             city, province, region = get_city_province(df_map, item['行政区'], item['供应标题'])
 
             # -----------------------
@@ -222,10 +221,10 @@ def run(startdate, enddate, df_map):
             item['城市'] = city
 
             item['行政区'] = region
-            item['公告类型'] = tr.xpath('./td[4]/text()').get()
-            item['发布时间'] = tr.xpath('./td[5]/text()').get()
+            item['公告类型'] = tr.xpath('./td[4]/text()')[0]
+            item['发布时间'] = tr.xpath('./td[5]/text()')[0]
             # item['网上创建时间'] = tr.xpath('./td[6]/text()').get()
-            item['标题url'] = 'https://www.landchina.com' + tr.xpath('./td[3]/a/@href').get()
+            item['标题url'] = 'https://www.landchina.com' + tr.xpath('./td[3]/a/@href')[0]
             print(item)
             if item['公告类型'] not in ['招标', '拍卖', '挂牌', '公开公告']:
                 continue
@@ -288,7 +287,7 @@ if __name__ == '__main__':
     # startdate, enddate = '2011-1-1', '2020-11-1'
     startdate, enddate = '2021-01-01', '2021-04-19'
     df_map = pd.read_excel('城市_区县_映射表.xlsx')
-    threadPool = ThreadPoolExecutor(max_workers=12)
-    future = threadPool.submit(run ,startdate,enddate,df_map)
-    threadPool.shutdown(wait=True)
-    # run(startdate, enddate, df_map)
+    # threadPool = ThreadPoolExecutor(max_workers=12)
+    # future = threadPool.submit(run ,startdate,enddate,df_map)
+    # threadPool.shutdown(wait=True)
+    run(startdate, enddate, df_map)

@@ -149,8 +149,10 @@ def get_font_woff(url):
             except Exception as e:
                 print('字体下载error: ', e)
                 continue
-
-    font = TTFont(fileName)
+    try:
+        font = TTFont(fileName)
+    except:
+        return None
     return font
 
 def getInfo():

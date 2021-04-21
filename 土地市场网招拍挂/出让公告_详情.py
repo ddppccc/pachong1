@@ -186,7 +186,13 @@ def parse_info(url,item):
         print()
         # queue.task_done()
 
-
+def getInfo():
+    list = f.readline()
+    l = list.split(',')
+    info_url = l[-1].strip()
+    date = l[2]
+    region=l[0]
+    return info_url,region,date
 if __name__ == '__main__':
     f = open(r'土地数据/出让公告.csv', encoding='gbk', mode='r')
     df = pd.read_csv(f, error_bad_lines=False,index_col='标题url')
@@ -198,15 +204,15 @@ if __name__ == '__main__':
     # df['公示日期'] = df['公示日期'].map(lambda x: str(x).split(' ')[0])
     # f.close()
     # print(df.head(5))
-    threadPool = ThreadPoolExecutor(max_workers=8)
+    # threadPool = ThreadPoolExecutor(max_workers=8)
     p = []
-    try:
-        f = open(r'土地数据/出让公告_详情.csv',encoding='gbk',mode='r')
-        df2 = pd.read_csv(f,error_bad_lines=False)
-        f.close()
-        has_spider_list = df2['标题url'].tolist()
-    except:
-        has_spider_list = []
+    # try:
+    #     f = open(r'土地数据/出让公告_详情.csv',encoding='gbk',mode='r')
+    #     df2 = pd.read_csv(f,error_bad_lines=False)
+    #     f.close()
+    #     has_spider_list = df2['标题url'].tolist()
+    # except:
+    #     has_spider_list = []
 
     for url in df.index:
         if url in has_spider_list:
@@ -222,12 +228,12 @@ if __name__ == '__main__':
             item['发布时间'] = df.loc[[url]]['公示日期'][0]
 
             # print(url)
-            # parse_info(url,item)
-            future = threadPool.submit(parse_info, item['标题url'],item)
-            p.append(future)
+            parse_info(url,item)
+            # future = threadPool.submit(parse_info, item['标题url'],item)
+            # p.append(future)
         except:
             continue
     #
-    [i.result() for i in p]
+    # [i.result() for i in p]
     #
-    threadPool.shutdown()
+    # threadPool.shutdown()
