@@ -58,6 +58,7 @@ def getCity_Url():
         url=data.xpath('./@href')[0]
         city_url[city]=url
     return city_url
+
 def get_html(url):
     ip_number = 100
     while ip_number > 0:
