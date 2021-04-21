@@ -3,7 +3,7 @@ import requests
 import pymongo
 
 from lxml import etree
-from config import get_proxy,get_ua,delete_proxy,statis_output, city_url
+from config import get_proxy,get_ua,delete_proxy,statis_output
 from capter_verify.captcha_run import AJK_Slide_Captcha
 from urllib import parse
 MONGODB_CONFIG = {
@@ -37,7 +37,6 @@ has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
 #     '上海':'https://shanghai.anjuke.com/sale/t1/',
 #             }
 
-
 headers = {
     "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "accept-encoding": "gzip, deflate, br",
@@ -48,14 +47,24 @@ headers = {
     "upgrade-insecure-requests": "1",
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
 }
-
+def getCity_Url():
+    response = requests.get('https://www.anjuke.com/sy-city.html', headers=headers, timeout=(5, 5))
+    response.encoding = 'utf-8'
+    html = etree.HTML(response.text)
+    lists=html.xpath('/html/body/div[3]/div/div[2]/ul/li/div/a')
+    city_url={}
+    for data in lists:
+        city=data.xpath('./text()')[0]
+        url=data.xpath('./@href')[0]
+        city_url[city]=url
+    return city_url
 def get_html(url):
     ip_number = 100
     while ip_number > 0:
         proxy = get_proxy()
-        if not proxy:
-            print("没有ip, 等待2分钟")
-            time.sleep(120)
+        # if not proxy:
+        #     print("没有ip, 等待2分钟")
+        #     time.sleep(120)
 
         number = 3
         while number > 0:
@@ -168,6 +177,7 @@ def get_parseInfo(city,url):
 
 if __name__ == '__main__':
     num = []
+    city_url = getCity_Url()
     for item in city_url:
         key = item
         url = city_url[item]
@@ -175,4 +185,5 @@ if __name__ == '__main__':
         # statis_output('安居客_五城_{}_二手房.csv'.format(time.strftime("%Y-%m-%d", time.localtime())),
         #
         #               ['城市','标题','户型','面积','楼层','建筑年份','地址','标签','总价','单价'], info_base,key)
+
 
