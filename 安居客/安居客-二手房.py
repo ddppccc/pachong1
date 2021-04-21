@@ -155,8 +155,8 @@ def get_parseInfo(city,url):
             num.append(1)
             print(len(num))
             print(item)
-            # info_base.insert_one(item)
-        # has_spider.insert_one({'标题': url})
+            info_base.insert_one(item)
+        has_spider.insert_one({'标题': url})
 
         next_page_url = html.xpath('string(//div[@class="pagination"]/a[@class="next next-active"]/@href)')
         if next_page_url:
