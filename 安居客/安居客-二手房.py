@@ -134,13 +134,17 @@ def get_parseInfo(city,url):
             return
     else:
         html, response, _ = get_html(url)
-        li_list = html.xpath('//*[@id="__layout"]//div[@class="property"]//div[@class="property-content"]')
+        li_list = html.xpath('//*[@id="__layout"]//div[@class="property"]')
         for li in li_list:
             item = {}
             item['城市'] = city
+            item['区县'] = li.xpath('string(.//p[@class="property-content-info-comm-address"]/span[1]/text())').replace('\n', '').strip()
             item['标题'] = li.xpath('string(.//div[@class="property-content-detail"]/div[@class="property-content-title"]/h3)').replace('\n','').strip()
+            item['标题url'] = li.xpath('string(./a/@href)').replace('\n','').strip()
+            item['小区'] = li.xpath('string(.//p[@class="property-content-info-comm-name"])').replace('\n','').strip()
             item['户型'] = li.xpath('string(.//div[@class="property-content-info"]/p[1])').replace('\n','').strip()
             item['面积'] = li.xpath('string(.//div[@class="property-content-info"]/p[2])').replace('\n','').strip()
+            item['朝向'] = li.xpath('string(.//div[@class="property-content-info"]/p[3])').replace('\n','').strip()
             item['楼层'] = li.xpath('string(.//div[@class="property-content-info"]/p[4])').replace('\n','').strip()
             item['建筑年份'] = li.xpath('string(.//div[@class="property-content-info"]/p[5])').replace('\n','').strip()
             item['地址'] = li.xpath('string(.//p[@class="property-content-info-comm-address"])').replace('\n','').replace('\xa0','').replace(' ','').strip()
@@ -151,8 +155,8 @@ def get_parseInfo(city,url):
             num.append(1)
             print(len(num))
             print(item)
-            info_base.insert_one(item)
-        has_spider.insert_one({'标题': url})
+            # info_base.insert_one(item)
+        # has_spider.insert_one({'标题': url})
 
         next_page_url = html.xpath('string(//div[@class="pagination"]/a[@class="next next-active"]/@href)')
         if next_page_url:
