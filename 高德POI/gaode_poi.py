@@ -44,7 +44,7 @@ def get_html(code,pos,key,page = 1):
         if data.get("status", "") in [1,'1']:
             return data
         else:
-            print("高德返回状态不成功,顾及是这个key量使用完了...=>"+key)
+            print("高德返回状态不成功,估计是这个key量使用完了...=>"+key)
             print("下面应该会开始切换key")
             return {}
     except Exception as e:
