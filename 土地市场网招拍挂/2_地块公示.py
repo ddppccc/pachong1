@@ -237,7 +237,7 @@ def parse_part_page(bs, time_part):
 
 
 def main():
-    startdate, enddate = '2020-12-31', '2021-4-19'
+    startdate, enddate = '2021-1-1', '2021-4-19'
     date_list = get_time_range_list(startdate, enddate)
     print(date_list)
 

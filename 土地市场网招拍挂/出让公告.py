@@ -35,6 +35,7 @@ def get_time_range_list(startdate, enddate):
             break
         date_range_list.append((startdate, tempdate - relativedelta(days=1)))
         startdate = tempdate
+    print('list',date_range_list)
     return date_range_list
 
 
@@ -285,7 +286,7 @@ def run(startdate, enddate, df_map):
 
 if __name__ == '__main__':
     # startdate, enddate = '2011-1-1', '2020-11-1'
-    startdate, enddate = '2021-1-1', '2021-4-19'
+    startdate, enddate = '2021-01-01', '2021-04-19'
     df_map = pd.read_excel('城市_区县_映射表.xlsx')
     threadPool = ThreadPoolExecutor(max_workers=12)
     future = threadPool.submit(run ,startdate,enddate,df_map)
