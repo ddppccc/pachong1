@@ -28,12 +28,14 @@ if __name__ == "__main__":
 
     # 百度关键词
     keywords = ['招聘', '招工', '房价', '股票', '失业金', '买房', '卖房', '租房']
-    start_date = '2021-01-01'
+    start_date = '2021-01-28'
     end_date = datetime.datetime.now().strftime("%Y-%m-%d")
 
 
     for number in [22, 23]:     # TODO 每次递增
         for city, city_code in CITY_CODE.items():
+            data = random.sample(CITY_CODE.items(), 1)
+            city, city_code = data[0][0], data[0][1]
             name = '%s_%s.xlsx' % (city, number)
             # if name in os.listdir('原始数据'):
             #     print(name, '存在')
