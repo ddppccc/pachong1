@@ -12,6 +12,27 @@ from threading import Thread
 from config import get_cityId
 
 
+import pymongo
+from urllib import parse
+MONGODB_CONFIG = {
+   "host": "8.135.119.198",
+   "port": "27017",
+   "user": "hladmin",
+   "password": parse.quote("Hlxkd3,dk3*3@"),
+   "db": "dianping",
+   "collections": "dianping_collections",
+}
+
+# 建立连接
+# mymong = pymongo.MongoClient(host='localhost',port=27017)['中国房价网']['已爬取url']
+url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['携程酒店']['已爬取文件']
+
+
 class HotelInfo(object):
     queue = Queue()
     cookie = '' \
@@ -98,13 +119,20 @@ class HotelInfo(object):
             number = 3
             while number > 0:
                 try:
+
                     res = requests.get(url, params=params, headers=headers, timeout=(2, 5), proxies=proxies)
+                    # if url_data.find_one({'已爬取的url': res.url}):
+                    #     print('当前url已爬取')
+                    #     continue
+                    # print(res.url)
+                    # url_data.insert_one({'已爬取的url': res.url})
+                    #print(res.url)###################################################################################################################################
                     if '404Apf_NotFoundController' in res.text:
                         return ''
                     return res
 
                 except Exception as e:
-                    print(url, e)
+                    # print(url, e)
                     number -= 1
                     continue
 
@@ -261,11 +289,11 @@ class HotelInfo(object):
                     it['户型均价'] = np.mean(
                         [round(float(i.get('money').get('price') or 0), 2) for i in rooms.get('saleRoom')])
                 except Exception as e:
-                    print(e)
+                    #print(e)
                     it['户型均价'] = ''
                 it_d[roomName] = it
             item['户型详情'] = it_d
-            print(item)
+            print(item)##########################################################################################
             data.append(item)
 
             self.queue.task_done()
@@ -301,9 +329,13 @@ if __name__ == '__main__':
 
     save_file = '酒店详情信息'
     for i in os.listdir('酒店数据'):
-        print('\n', i)
+        if url_data.find_one({'已爬取的文件名': i}):
+            print('当前文件所有字段已爬取并保存完毕')
+            continue
+        print('开始：', i)
         path = '酒店数据/' + i
         city = i.split('_')[1]
         city_id = get_cityId(city)
         HotelInfo(path, city, city_id, save_file).run()
+        url_data.insert_one({'已爬取的文件名': i})
 

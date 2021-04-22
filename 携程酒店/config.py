@@ -2,7 +2,7 @@
 
 # TODO 修改为当前年份和月份
 Year = 2021
-Month = '01'
+Month = '04'
 
 elevent_list = []
 city_map_list = [{'display': '吐鲁番', 'data': 'turpan|吐鲁番|40', 'group': 'S', 'cityCode': '0995'},

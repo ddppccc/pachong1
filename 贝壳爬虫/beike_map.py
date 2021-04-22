@@ -28,11 +28,12 @@ def get_esf_code_map():
     # url中包含fang,则没有二手房数据
     a_list = tree.xpath(
         "//div[@class='city-item VIEWDATA']//div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")
-
+        # "//div[@class='city_list_ul']li[@class='city_list_li city_list_li_selected']/div[@class='city_list']/div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")
     for a in a_list:
         city = a.xpath("./text()")[0]
         city_code = a.xpath("./@href")[0].split(".")[0][2:]
         esfDict[city] = city_code
+    print(esfDict)
 
     with open("bk_city_map.json", 'w', encoding='utf-8') as fp:
         fp.write(json.dumps(esfDict, ensure_ascii=False))
