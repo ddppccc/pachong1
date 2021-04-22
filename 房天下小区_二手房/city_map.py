@@ -371,8 +371,31 @@ city_list=[
  '舟山',
  '衢州',
  '重庆']
-with open(os.path.join(os.path.dirname(__file__), 'city_map.json'), 'r', encoding='utf-8') as f:
-    city_map = json.load(f)
+headers = {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Language": "zh-CN,zh;q=0.9",
+    "upgrade-insecure-requests": "1",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
+}
+def getCity_Code():
+    item={}
+    response = requests.get('https://www.fang.com/SoufunFamily.htm', headers=headers, timeout=(5, 5))
+    response.encoding = 'gbk'
+    html = etree.HTML(response.text)
+    lists=html.xpath('//div[@class="onCont"]/table//a')
+    for i in lists:
+        city=i.xpath('./text()')[0]
+        url=i.xpath('./@href')[0]
+        code=url.split('.')[0][7:]
+        # print(city,code,url)
+        if city in ['波士顿','保加利亚','昌吉','德国','海外','西雅图','广德','旧金山','洛杉矶','日本','塞浦路斯','西雅图','西班牙','希腊','悉尼','芝加哥','马来西亚','澳大利亚']:
+            continue
+        item[city]=code
+    return item
+city_map=getCity_Code()
+# with open(os.path.join(os.path.dirname(__file__), 'city_map.json'), 'r', encoding='utf-8') as f:
+#     city_map = json.load(f)
     # city_map = {}
     # for i in range(len(city_list)):
     #     city_map[city_list[i]] = old_city_map[city_list[i]]

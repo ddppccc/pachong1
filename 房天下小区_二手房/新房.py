@@ -58,7 +58,7 @@ def getCity_Code():
         url=i.xpath('./@href')[0]
         code=url.split('.')[0][7:]
         # print(city,code,url)
-        if city in ['波士顿','保加利亚','昌吉','德国','海外','西雅图','广德','旧金山']:
+        if city in ['波士顿','保加利亚','昌吉','德国','海外','西雅图','广德','旧金山','洛杉矶','日本','塞浦路斯','西雅图','西班牙','希腊','悉尼','芝加哥','马来西亚','澳大利亚','美国','纽约','葡萄牙','蒙城']:
             continue
         item[city]=code
     return item
