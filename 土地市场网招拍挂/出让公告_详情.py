@@ -14,6 +14,28 @@ from concurrent.futures import ThreadPoolExecutor
 
 from queue import Queue
 from threading import Thread, Lock
+import pymongo
+from urllib import parse
+MONGODB_CONFIG = {
+   "host": "8.135.119.198",
+   "port": "27017",
+   "user": "hladmin",
+   "password": parse.quote("Hlxkd3,dk3*3@"),
+   "db": "dianping",
+   "collections": "dianping_collections",
+}
+info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['土地市场网招拍挂_出让公告详情']['info']
+has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['土地市场网招拍挂_出让公告详情']['has_spider']
 
 
 # 获取详情页面
@@ -80,14 +102,18 @@ def get_font_woff(url):
     return font
 
 
-def parse_info(url,item={}):
+def parse_info(data):
+    url=data['标题url']
+    if has_spider.count_documents({'标题url': url}) == 1:
+        print('该地址已抓取')
+        return
     global Font
     # global response
     while 1:
         try:
             response = get_parse_url(url)
             if response == '没有相关说明信息':
-                break
+                return
             font_url = re.findall("url\('\.\./\.\./\.\./(.*)'\) format\('woff'\),", response.text)[0]
             Font = get_font_woff(font_url)
             break
@@ -97,6 +123,10 @@ def parse_info(url,item={}):
     if re.search('没有相关说明信息.', response.text):
         print('该url没有信息')
         # print(response.text)
+        return
+    if re.search('未找到', response.text):
+        print('该url没有信息')
+            # print(response.text)
         return
         # time.sleep(100)
     # print(response.text)
@@ -123,6 +153,12 @@ def parse_info(url,item={}):
             t = re.findall("\((.*)\)", title)
         except:
             continue
+        item = {}
+        item['行政区'] = data['region']
+        item['标题'] = data['title']
+        item['省份'] = data['省市']
+        item['城市'] = data['城市']
+        item['日期'] = data['时间']
         item['公告编号'] = "".join(t) if len(t) < 2 else t[1]
         # print("item['公告编号']: ",item['公告编号'])
         item['宗地编号'] = str((
@@ -152,17 +188,21 @@ def parse_info(url,item={}):
                 div.xpath(".//td[contains(text(), '起始价：')]/following-sibling::td[1]/text()").get() or '').strip()
         item['加价幅度'] = (
                 div.xpath(".//td[contains(text(), '加价幅度：')]/following-sibling::td[1]/text()").get() or '').strip()
-        # item['挂牌开始时间'] = (div.xpath(
-        #     ".//td[contains(text(), '挂牌开始时间：')]/following-sibling::td[1]/text()").get() or '').strip()
-        # item['挂牌截止时间'] = (div.xpath(
-        #     ".//td[contains(text(), '挂牌截止时间：')]/following-sibling::td[1]/text()").get() or '').strip()
+        item['挂牌开始时间'] = (div.xpath(
+            ".//td[contains(text(), '挂牌开始时间：')]/following-sibling::td[1]/text()").get() or '').strip()
+        item['挂牌截止时间'] = (div.xpath(
+            ".//td[contains(text(), '挂牌截止时间：')]/following-sibling::td[1]/text()").get() or '').strip()
         item['投资强度'] = (
                 div.xpath(".//td[contains(text(), '投资强度：')]/following-sibling::td[1]/text()").get() or '').strip()
         item['保证金'] = (
                 div.xpath(".//td[contains(text(), '保证金：')]/following-sibling::td[1]/text()").get() or '').strip()
-        # item['估价报告备案号'] = (div.xpath(
-        #     ".//td[contains(text(), '估价报告备案号：')]/following-sibling::td[1]/text()").get() or '').strip()
+        item['估价报告备案号'] = (div.xpath(
+            ".//tr[9]/td[6]/text()").get() or '').strip()
+        item['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+        # item['url']=url
         print(item)
+        info_base.insert_one(item)
+    has_spider.insert_one({'标题url': url})
 
         # # yield item
         # # 保存数据
@@ -188,19 +228,28 @@ def parse_info(url,item={}):
 
 def getInfo():
     data={}
-    list = f.readline()
-    l = list.split(',')
-    data['region']=l[0]
-    data['title']=l[1]
-    data['省市']=l[2]
-    data['城市']=l[3]
-    data['类型']=l[4]
-    data['时间']=l[5]
-    data['标题url']=l[6]
-    print(data)
+    try:
+        list = f.readline()
+        l = list.split(',')
+        data['region']=l[0]
+        data['title']=l[1]
+        data['省市']=l[2]
+        data['城市']=l[3]
+        data['类型']=l[4]
+        data['时间']=l[5]
+        data['标题url']=l[6]
+        # print(data)
+    except:
+        return  None
     return data
 if __name__ == '__main__':
     f = open(r'土地数据/出让公告.csv', encoding='gbk', mode='r')
+    while True:
+        data = getInfo()
+        if not data:
+            continue
+        parse_info(data)
+    f.close()
     # df = pd.read_csv(f, error_bad_lines=False,index_col='标题url')
     # # 这里是筛选日期
     #
@@ -244,6 +293,3 @@ if __name__ == '__main__':
     #
     # threadPool.shutdown()
 
-    data=getInfo()
-    parse_info(data['标题url'])
-    f.close()
