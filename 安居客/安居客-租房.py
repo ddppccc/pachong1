@@ -67,13 +67,14 @@ def getCity_Url():
         city_url[city]=url
     return city_url
 
+
 def get_html(url):
     ip_number = 100
     while ip_number > 0:
         proxy = get_proxy()
-        if not proxy:
-            print("没有ip, 等待2分钟")
-            time.sleep(120)
+        # if not proxy:
+        #     print("没有ip, 等待2分钟")
+        #     time.sleep(120)
 
         number = 3
         while number > 0:
@@ -81,7 +82,6 @@ def get_html(url):
             try:
                 # response = requests.get(url, headers=headers,
                 #                         proxies={"https": "https://{}".format(proxy)}, timeout=(2, 5))
-
                 response = requests.get(url, headers=headers, timeout=(2, 5))
                 response.encoding = 'utf-8'
                 html = etree.HTML(response.text)
@@ -104,8 +104,12 @@ def get_html(url):
 
             # 安居客滑动验证, js破解
             if html.xpath('//*[@id="captchaForm"]'):
-                proixy = "https://" + proxy
+                # print("出现滑动验证, 更改ip")
+                # number = -1
+                # continue
+
                 try:
+                    proixy = "https://" + proxy
                     message = AJK_Slide_Captcha(proixy).run()
                     if message != '校验成功':
                         break

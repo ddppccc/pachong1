@@ -10,7 +10,7 @@ import requests
 import pandas as pd
 from lxml import etree
 from urllib import parse
-from city_map import city_map
+# from city_map import city_map
 
 # from sqlalchemy import create_engine
 from concurrent.futures.thread import ThreadPoolExecutor
@@ -46,6 +46,21 @@ headers = {
     "upgrade-insecure-requests": "1",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 }
+
+def getCity_Code():
+    item={}
+    response = requests.get('https://www.fang.com/SoufunFamily.htm', headers=headers, timeout=(5, 5))
+    response.encoding = 'gbk'
+    html = etree.HTML(response.text)
+    lists=html.xpath('//div[@class="onCont"]/table//a')
+    for i in lists:
+        city=i.xpath('./text()')[0]
+        url=i.xpath('./@href')[0]
+        code=url.split('.')[0][7:]
+        # print(city,code,url)
+        item[city]=code
+    return item
+
 
 def get_proxy():
     try:
@@ -315,6 +330,7 @@ if __name__ == '__main__':
     year = 2021
     month = 4
     day = 28
+    city_map=getCity_Code()
     while True:
         try:
             pool = ThreadPoolExecutor(30)

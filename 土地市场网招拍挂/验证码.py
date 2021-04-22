@@ -25,9 +25,8 @@ def get_proxy():
 
 def run1(url):
     while 1:
-        proxy = get_proxy()
-        cookie = TuDi().run_get_ip_cookie(proxy)
-        print(proxy, cookie,url)
+        proxy, cookie = TuDi().run()
+        # print(proxy, cookie,url)
         proxies = {
             'http': 'http://{}'.format(proxy),
             'https': 'https://{}'.format(proxy),
@@ -51,7 +50,7 @@ def run1(url):
         }
         try:
             # res = requests.get(url, headers=headers, proxies=proxies)
-            res = requests.get(url, headers=headers, proxies=proxies,timeout=(10,10))
+            res = requests.get(url, headers=headers, proxies=proxy,timeout=(10,10))
             res.encoding = 'gbk'
 
             return res

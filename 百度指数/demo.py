@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     # 百度关键词
     keywords = ['招聘', '招工', '房价', '股票', '失业金', '买房', '卖房', '租房']
-    start_date = '2021-01-28'
+    start_date = '2021-01-01'
     end_date = datetime.datetime.now().strftime("%Y-%m-%d")
 
 

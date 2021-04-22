@@ -97,8 +97,9 @@ def get_html(url):
                 # print("出现滑动验证, 更改ip")
                 # number = -1
                 # continue
-                proixy = "https://" + proxy
+
                 try:
+                    proixy = "https://" + proxy
                     message = AJK_Slide_Captcha(proixy).run()
                     if message != '校验成功':
                         break

@@ -284,7 +284,7 @@ def run(dateList, start_date, end_date):
                         # qianchu_province.append(q)
                         # print(qianchuProvince_base.count_documents(qc))
                         qianchuProvince_base.insert_one(qc)
-                        print(qr)
+                        print(qc)
                         # print(qianchuProvince_base.count_documents(qc))
 
 

@@ -12,7 +12,7 @@ from lxml import etree
 from concurrent.futures.thread import ThreadPoolExecutor
 
 from IP_config import delete_proxy
-from city_map import make_url, city_map
+from city_map import make_url
 from config.config import baidu_chang_gaode
 # from jtu_ydm.selenium_screenshot import verification
 from save_data import saveData, save_grab_dist, get_exists_dist, get_ua
@@ -46,6 +46,21 @@ headers = {
     "upgrade-insecure-requests": "1",
     "User-Agent": get_ua()
 }
+def getCity_Code():
+    item={}
+    response = requests.get('https://www.fang.com/SoufunFamily.htm', headers=headers, timeout=(5, 5))
+    response.encoding = 'gbk'
+    html = etree.HTML(response.text)
+    lists=html.xpath('//div[@class="onCont"]/table//a')
+    for i in lists:
+        city=i.xpath('./text()')[0]
+        url=i.xpath('./@href')[0]
+        code=url.split('.')[0][7:]
+        # print(city,code,url)
+        item[city]=code
+    return item
+
+
 def get_proxy():
     try:
             return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
@@ -401,7 +416,7 @@ if __name__ == '__main__':
     # TODO 每月启动前,清空 log/lose_dist, log/小区  中的文件
     year = 2021
     month = 4
-
+    city_map=getCity_Code()
     pool = ThreadPoolExecutor(30)
     name = []
     for city, city_code in city_map.items():
