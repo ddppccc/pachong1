@@ -1,6 +1,7 @@
 import datetime
 import os
 import random
+import time
 
 import pandas as pd
 
@@ -50,9 +51,11 @@ if __name__ == "__main__":
                                      end_date=end_date,
                                      area=city_code, cookies=cookie)
             for index in baidu_index.get_index():
-
+                index['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+                index['城市'] = city
                 if info_base.count_documents(index) == 0:
                     info_base.insert_one(index)
+
                     print(index)
                 else:
                     print('该条数据已存在')

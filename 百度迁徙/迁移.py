@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 import re
 import json
+import time
 
 from config import create_assist_date, c_map, dataType
 import pymongo
@@ -228,6 +229,8 @@ def run(dateList, start_date, end_date):
                         qr['级别'] = dtType
                         qr["比例(%)"] = qr.pop("value")
                         qr["迁入来源地"] = qr.pop("city_name")
+                        qr['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+
                         # print(f'{qr=}')
                         # qianru_city.append(qr)
                         # print(qianruCity_base.count_documents(qr))
@@ -245,6 +248,7 @@ def run(dateList, start_date, end_date):
                         qr['级别'] = dtType
                         qr["比例(%)"] = qr.pop("value")
                         qr["迁入来源地"] = qr.pop("province_name")
+                        qr['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
                         # print(f'{qr=}')
                         # qianru_province.append(qr)
                         # print(qianruProvince_base.count_documents(qr))
@@ -262,6 +266,7 @@ def run(dateList, start_date, end_date):
                         qc['级别'] = dtType
                         qc["比例(%)"] = qc.pop("value")
                         qc["迁出目的地"] = qc.pop("city_name")
+                        qc['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
                         # print(f'{qc=}')
 
                         # qianchu_city.append(qc)
@@ -279,6 +284,7 @@ def run(dateList, start_date, end_date):
                         qc['级别'] = dtType
                         qc["比例(%)"] = qc.pop("value")
                         qc["迁出目 的地"] = qc.pop("province_name")
+                        qc['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
                         # print(f'{q=}')
 
                         # qianchu_province.append(q)
