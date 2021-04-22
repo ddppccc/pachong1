@@ -233,6 +233,7 @@ class Spider(scrapy.Spider):
                 yield items
 
 
+
             # next_page = json.loads(response.xpath("//div[@class='page-box house-lst-page-box']/@page-data").get())
             # next_page1 = response.xpath("//div[@class='pagination_group_a']/a")
             # totalPage = next_page['totalPage']
