@@ -72,14 +72,15 @@ class Spider(scrapy.Spider):
         regions, cj = get_regions(self.city_name, cities)
         city_name = self.city_name
         for region_name, base_url in regions.items():
-            url = base_url
-            yield scrapy.Request(url=url,
-                                 callback=self.parse,
-                                 meta={
-                                     'item': {'base_url': base_url,
-                                              'region_name': region_name,
-                                              'city': city_name}
-                                 })
+            for i in range(1,101):
+                url = base_url+"pg"+str(i)+"/"
+                yield scrapy.Request(url=url,
+                                     callback=self.parse,
+                                     meta={
+                                         'item': {'base_url': base_url,
+                                                  'region_name': region_name,
+                                                  'city': city_name}
+                                     })
 
 
     def fetch_html(self, url ):
@@ -232,20 +233,22 @@ class Spider(scrapy.Spider):
                 yield items
 
 
-            next_page = json.loads(response.xpath("//div[@class='page-box house-lst-page-box']/@page-data").get())
-            totalPage = next_page['totalPage']
-            curPage = next_page['curPage']
-            print('当前页',curPage)
-            for i in range(curPage, totalPage + 1):
-                curPage = i + 1
-                if curPage > totalPage:
-                    print(f'{district}\t总页数：{totalPage}, 已经爬完')
-                    return
-                else:
-                    print(f'当前城市：{city},\t当前区：{district},\t总页数：{totalPage}, 当前页：{curPage}')
-                    next_page_url = dist_url + 'pg' + str(curPage) + '/'
-                    print(next_page_url)
-                    yield scrapy.Request(url=next_page_url, callback=self.parse,dont_filter=True)
+
+            # next_page = json.loads(response.xpath("//div[@class='page-box house-lst-page-box']/@page-data").get())
+            # next_page1 = response.xpath("//div[@class='pagination_group_a']/a")
+            # totalPage = next_page['totalPage']
+            # curPage = next_page['curPage']
+            # print('当前页',curPage)
+            # for i in range(curPage, totalPage + 1):
+            #     curPage = i + 1
+            #     if curPage > totalPage:
+            #         print(f'{district}\t总页数：{totalPage}, 已经爬完')
+            #         return
+            #     else:
+            #         print(f'当前城市：{city},\t当前区：{district},\t总页数：{totalPage}, 当前页：{curPage}')
+            #         next_page_url = dist_url + 'pg' + str(curPage) + '/'
+            #         print(next_page_url)
+            #         yield scrapy.Request(url=next_page_url, callback=self.parse,dont_filter=True)
                     #return scrapy.Request(url=sum, callback=self.parse, meta={'item': items})
                 # break
         #
