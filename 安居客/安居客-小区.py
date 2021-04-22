@@ -70,74 +70,87 @@ def getCity_Url():
         city_url[city]=url
     return city_url
 
+# def get_html(url):
+#     ip_number = 100
+#     while ip_number > 0:
+#         proxy = get_proxy()
+#         # if not proxy:
+#         #     print("没有ip, 等待2分钟")
+#         #     time.sleep(120)
+#
+#         number = 3
+#         while number > 0:
+#             headers['user-agent'] = get_ua()
+#             try:
+#                 # response = requests.get(url, headers=headers,
+#                 #                         proxies={"https": "https://{}".format(proxy)}, timeout=(2, 5))
+#                 response = requests.get(url, headers=headers, timeout=(2, 5))
+#                 response.encoding = 'utf-8'
+#                 html = etree.HTML(response.text)
+#             except requests.exceptions.ProxyError:
+#                 number = -1
+#                 continue
+#             except requests.exceptions.ConnectionError:
+#                 number = -1
+#                 continue
+#             except Exception as  e:
+#                 print("出错, 正在进行第%s尝试, ip: %s, %s" % (number, proxy, type(e)))
+#                 number -= 1
+#                 continue
+#
+#             # 检查是否出现 58滑动验证
+#             if html.xpath("//div[@class='pop']/p[@class='title']"):
+#                 print("出现滑动验证, 更改ip")
+#                 number = -1
+#                 continue
+#
+#             # 安居客滑动验证, js破解
+#             if html.xpath('//*[@id="captchaForm"]'):
+#                 # print("出现滑动验证, 更改ip")
+#                 # number = -1
+#                 # continue
+#
+#                 try:
+#                     proixy = "https://" + proxy
+#                     message = AJK_Slide_Captcha(proixy).run()
+#                     if message != '校验成功':
+#                         break
+#                 except Exception as e:
+#                     print("错误原因: ", e)
+#                     continue
+#
+#             # ip被封
+#             if "访问过于频繁" in "".join(html.xpath("//h2[@class='item']/text()")):
+#                 print(proxy, "ip被封")
+#                 number = -1
+#                 continue
+#
+#             if response.status_code in [403]:
+#                 print(403, "休息一分钟")
+#                 time.sleep(60)
+#                 continue
+#             return html, response, proxy
+#
+#         # 出错3次, 删除代理池中代理
+#         delete_proxy(proxy)
+#         ip_number -= 1
+#         continue
+#     print("全部出处")
+#     return '', '', ''
 def get_html(url):
-    ip_number = 100
-    while ip_number > 0:
-        proxy = get_proxy()
-        # if not proxy:
-        #     print("没有ip, 等待2分钟")
-        #     time.sleep(120)
-
-        number = 3
-        while number > 0:
-            headers['user-agent'] = get_ua()
-            try:
-                # response = requests.get(url, headers=headers,
-                #                         proxies={"https": "https://{}".format(proxy)}, timeout=(2, 5))
-                response = requests.get(url, headers=headers, timeout=(2, 5))
-                response.encoding = 'utf-8'
-                html = etree.HTML(response.text)
-            except requests.exceptions.ProxyError:
-                number = -1
-                continue
-            except requests.exceptions.ConnectionError:
-                number = -1
-                continue
-            except Exception as  e:
-                print("出错, 正在进行第%s尝试, ip: %s, %s" % (number, proxy, type(e)))
-                number -= 1
-                continue
-
-            # 检查是否出现 58滑动验证
-            if html.xpath("//div[@class='pop']/p[@class='title']"):
-                print("出现滑动验证, 更改ip")
-                number = -1
-                continue
-
-            # 安居客滑动验证, js破解
-            if html.xpath('//*[@id="captchaForm"]'):
-                # print("出现滑动验证, 更改ip")
-                # number = -1
-                # continue
-
-                try:
-                    proixy = "https://" + proxy
-                    message = AJK_Slide_Captcha(proixy).run()
-                    if message != '校验成功':
-                        break
-                except Exception as e:
-                    print("错误原因: ", e)
-                    continue
-
-            # ip被封
-            if "访问过于频繁" in "".join(html.xpath("//h2[@class='item']/text()")):
-                print(proxy, "ip被封")
-                number = -1
-                continue
-
-            if response.status_code in [403]:
-                print(403, "休息一分钟")
-                time.sleep(60)
-                continue
-            return html, response, proxy
-
-        # 出错3次, 删除代理池中代理
-        delete_proxy(proxy)
-        ip_number -= 1
-        continue
-    print("全部出处")
-    return '', '', ''
-
+    proxies = {"https": get_proxy()}
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        encod = response.apparent_encoding
+        if encod.upper() in ['GB2312', 'WINDOWS-1254']:
+            encod = 'gbk'
+        response.encoding = encod
+        html = etree.HTML(response.text)
+        return html,response,''
+    except Exception as e:
+        print('get_html错误',proxies, e)
+        time.sleep(2)
+        return get_html(url)
 
 
 def get_parseInfo(city,url,area_name):
