@@ -58,6 +58,8 @@ def getCity_Code():
         url=i.xpath('./@href')[0]
         code=url.split('.')[0][7:]
         # print(city,code,url)
+        if city in ['波士顿','保加利亚','昌吉','德国','海外','西雅图','广德','旧金山']:
+            continue
         item[city]=code
     return item
 
@@ -85,26 +87,18 @@ def delete_proxy(proxy):
 
 
 def get_html(url):
-    proxies={"https" : get_proxy()}
-    # ip_number = 100
-    # while ip_number > 0:
-    #     proxy = get_proxy()
-    #     if not proxy:
-    #         print("没有ip, 等待2分钟")
-    #         time.sleep(120)
-    #     response = requests.get(url, headers=headers,
-    #                             proxies={"https": "https://{}".format(proxy)}, timeout=(2, 5))
+    proxies = {"https": get_proxy()}
     try:
-        response = requests.get(url, headers=headers,proxies=proxies, timeout=(10, 10))
-        # response = requests.get(url, headers=headers, timeout=2)
+        response = requests.get(url, headers=headers,proxies=proxies, timeout=10)
         encod = response.apparent_encoding
         if encod.upper() in ['GB2312', 'WINDOWS-1254']:
             encod = 'gbk'
         response.encoding = encod
+        return response
     except Exception as e:
-        print('get_html错误',proxies,e)
-        response=get_html(url)
-    return response
+        print('get_html错误',proxies, url,e)
+        # time.sleep(10)
+        return get_html(url)
 def get_community_area(url, title):
     while True:
         # proxies = {"https": get_proxy()}
