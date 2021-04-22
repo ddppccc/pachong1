@@ -10,7 +10,7 @@ import requests
 import pandas as pd
 from lxml import etree
 from urllib import parse
-from city_map import city_map
+# from city_map import city_map
 
 # from sqlalchemy import create_engine
 from concurrent.futures.thread import ThreadPoolExecutor
@@ -47,22 +47,70 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 }
 
+def getCity_Code():
+    item={}
+    response = requests.get('https://www.fang.com/SoufunFamily.htm', headers=headers, timeout=(5, 5))
+    response.encoding = 'gbk'
+    html = etree.HTML(response.text)
+    lists=html.xpath('//div[@class="onCont"]/table//a')
+    for i in lists:
+        city=i.xpath('./text()')[0]
+        url=i.xpath('./@href')[0]
+        code=url.split('.')[0][7:]
+        # print(city,code,url)
+        item[city]=code
+    return item
+
+
+def get_proxy():
+    try:
+            return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+            # return '111.202.83.35:80'
+    except:
+        num = 3
+        while num:
+            try:
+                return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+            except:
+                print('暂无ip，等待20秒')
+                time.sleep(20)
+
+                num -= 1
+        print('暂无ip')
+
+def delete_proxy(proxy):
+    html = requests.get('http://47.106.223.4:50002/delete/?proxy={}'.format(proxy))
+    return html.text
+
 
 
 def get_html(url):
+    proxies={"https" : get_proxy()}
+    # ip_number = 100
+    # while ip_number > 0:
+    #     proxy = get_proxy()
+    #     if not proxy:
+    #         print("没有ip, 等待2分钟")
+    #         time.sleep(120)
+    #     response = requests.get(url, headers=headers,
+    #                             proxies={"https": "https://{}".format(proxy)}, timeout=(2, 5))
     try:
-        response = requests.get(url, headers=headers, timeout=2)
+        response = requests.get(url, headers=headers,proxies=proxies, timeout=(10, 10))
+        # response = requests.get(url, headers=headers, timeout=2)
         encod = response.apparent_encoding
         if encod.upper() in ['GB2312', 'WINDOWS-1254']:
             encod = 'gbk'
         response.encoding = encod
     except Exception as e:
-        pass
+        print('get_html错误',proxies,e)
+        response=get_html(url)
     return response
 def get_community_area(url, title):
     while True:
+        # proxies = {"https": get_proxy()}
         try:
-            response = requests.get(url, headers=headers, timeout=2)
+            # response = requests.get(url, headers=headers,proxies=proxies, timeout=10)
+            response = get_html(url)
             encod = response.apparent_encoding
             if encod.upper() in ['GB2312', 'WINDOWS-1254']:
                 encod = 'gbk'
@@ -70,7 +118,7 @@ def get_community_area(url, title):
             tree = etree.HTML(response.text)
             break
         except Exception as e:
-            # print('新房详情中...', e, url)
+            print('新房详情中...', e, url)
             time.sleep(2)
             continue
     item, data = [], {}
@@ -88,12 +136,16 @@ def get_community_area(url, title):
         item.append(dict(zip(txt[0::2], txt[1::2])))
     [data.update(i) for i in item]
     return data
-
+def badip(proxies):
+    with open('1.txt','a',encoding='utf8') as f:
+        f.write(proxies)
 def get_detail_url(url, title, dataDict, data):
     while True:
         Infodata = dict()
+        proxies = {"https": get_proxy()}
         try:
-            response = requests.get(url, headers=headers, timeout=2)
+            # response = requests.get(url, headers=headers,proxies=proxies, timeout=10)
+            response = get_html(url)
             encod = response.apparent_encoding
             if encod.upper() in ['GB2312', 'WINDOWS-1254']:
                 encod = 'gbk'
@@ -101,7 +153,8 @@ def get_detail_url(url, title, dataDict, data):
             tree = etree.HTML(response.text)
             break
         except Exception as e:
-            print("get_detail_url error: ", e)
+            badip(proxies)
+            print("get_detail_url error: ",proxies,e)
             continue
 
     # 楼盘详情url
@@ -115,7 +168,7 @@ def get_detail_url(url, title, dataDict, data):
             # print('执行get_community_area')
             Infodata = get_community_area(detail_url, title)
     except Exception as e:
-        print(e)
+        print('get_detail_url函数中, 详情错误',e)
         # print('get_detail_url函数中, 详情错误')
         Infodata = dict()
     dataDict['销售状态'] = Infodata.get('销售状态', '')
@@ -204,10 +257,11 @@ def get_data(url, city,page_number,page, data):
 
 def get_html_page(url, city):
     # res = get_Html_IP(url, headers)
+    proxies = {"https": get_proxy()}
     try:
-        res = requests.get(url, headers=headers, timeout=(2, 5))
+        # res = requests.get(url, headers=headers,proxies=proxies, timeout=(10, 10))
+        res = get_html(url)
         res.encoding = 'utf-8'
-        html = etree.HTML(res.text)
         if not res:
             print('米有res')
             return
@@ -237,7 +291,7 @@ def get_html_page(url, city):
             l.append(done)
         [obj.result() for obj in l]
     except Exception as e:
-        print(e)
+        print('获取页面失败',e)
     # if not data:
     #     print('没有数据')
     #     return
@@ -276,8 +330,12 @@ if __name__ == '__main__':
     year = 2021
     month = 4
     day = 28
-
-    pool = ThreadPoolExecutor(20)
-    run()
-    pool.shutdown()
+    city_map=getCity_Code()
+    while True:
+        try:
+            pool = ThreadPoolExecutor(30)
+            run()
+            pool.shutdown()
+        except:
+            pass
 

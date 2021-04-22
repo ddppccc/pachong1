@@ -4,7 +4,7 @@ import requests
 import pymongo
 
 from lxml import etree
-from config import get_proxy,get_ua,delete_proxy,statis_output, city_url
+from config import get_proxy,get_ua,delete_proxy,statis_output
 from capter_verify.captcha_run import AJK_Slide_Captcha
 from zujin_descde import decode_zujin,get_font
 from urllib import parse
@@ -55,14 +55,26 @@ headers = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
 }
 
+def getCity_Url():
+    response = requests.get('https://www.anjuke.com/sy-city.html', headers=headers, timeout=(5, 5))
+    response.encoding = 'utf-8'
+    html = etree.HTML(response.text)
+    lists=html.xpath('/html/body/div[3]/div/div[2]/ul/li/div/a')
+    city_url={}
+    for data in lists:
+        city=data.xpath('./text()')[0]
+        url=data.xpath('./@href')[0]
+        city_url[city]=url
+    return city_url
+
 
 def get_html(url):
     ip_number = 100
     while ip_number > 0:
         proxy = get_proxy()
-        if not proxy:
-            print("没有ip, 等待2分钟")
-            time.sleep(120)
+        # if not proxy:
+        #     print("没有ip, 等待2分钟")
+        #     time.sleep(120)
 
         number = 3
         while number > 0:
@@ -70,7 +82,6 @@ def get_html(url):
             try:
                 # response = requests.get(url, headers=headers,
                 #                         proxies={"https": "https://{}".format(proxy)}, timeout=(2, 5))
-
                 response = requests.get(url, headers=headers, timeout=(2, 5))
                 response.encoding = 'utf-8'
                 html = etree.HTML(response.text)
@@ -93,8 +104,12 @@ def get_html(url):
 
             # 安居客滑动验证, js破解
             if html.xpath('//*[@id="captchaForm"]'):
-                proixy = "https://" + proxy
+                # print("出现滑动验证, 更改ip")
+                # number = -1
+                # continue
+
                 try:
+                    proixy = "https://" + proxy
                     message = AJK_Slide_Captcha(proixy).run()
                     if message != '校验成功':
                         break
@@ -199,6 +214,7 @@ def get_zu_url(index_url):
 
 
 if __name__ == '__main__':
+    city_url = getCity_Url()
     for item in city_url:
         key = item
         # unuse_city = ['吉安', '达州', '鸡西', '陵水', '信阳', '泰州', '舟山', '周口', '赤峰', '湘西', '丽水', '威海', '普洱', '昆明', '晋中', '儋州', '岳阳', '日喀则', '保山', '长春', '澳门', '乐山', '固原', '宁波', '白山', '永州', '曲靖', '阿克苏', '黑河', '自贡', '景德镇', '齐齐哈尔', '锦州', '巴中', '武汉', '海南', '衢州', '石河子', '常德', '许昌', '合肥', '果洛', '铁岭', '怒江', '晋城', '大兴安岭', '屯昌', '石嘴山', '新余', '湘潭', '松原', '西双版纳', '常州', '通化', '丹东', '五家渠', '琼中', '嘉兴', '山南', '迪庆', '呼伦贝尔', '邵阳', '海东', '双鸭山', '银川', '潍坊', '临汾', '佳木斯', '温州', '葫芦岛', '大同', '朝阳', '泸州', '德宏', '娄底', '牡丹江', '抚州', '苏州', '林芝', '天门', '雅安', '大理', '鞍山', '营口', '张家界', '铜川', '文昌', '黄冈', '阿里', '济南', '本溪', '菏泽', '宜宾', '昌吉', '重庆', '吉林', '无锡', '乌鲁木齐', '鄂州', '南通', '吐鲁番', '昌都', '海西', '潜江', '绥化', '烟台', '和田', '长治', '渭南', '呼和浩特', '宿迁', '克拉玛依', '抚顺', '恩施', '保亭', '临沂', '广元', '遂宁', '眉山', '随州', '鹤岗', '榆林', '广安', '漯河', '宝鸡', '玉溪', '日照', '哈密', '萍乡', '孝感', '濮阳', '伊犁', '延安', '临沧', '咸宁', '辽阳', '莱芜', '博尔塔拉', '吴忠', '七台河', '德阳', '绍兴', '黄石', '中卫', '宜昌', '淮安', '金华', '新乡', '鹰潭', '定安', '乌海', '喀什', '怀化', '东方', '大庆', '滨州', '十堰', '襄阳', '朔州', '那曲', '徐州', '益阳', '沈阳', '天津', '聊城', '青岛', '文山', '楚雄', '延边', '绵阳', '荆州', '克孜勒苏', '商洛', '西宁', '包头', '伊春', '攀枝花', '神农架', '长沙', '衡阳', '运城', '九江', '湖州', '咸阳', '株洲', '盐城', '盘锦', '万宁', '汉中', '连云港', '大连', '南京', '黄南', '镇江', '宜春', '成都', '泰安', '太原', '资阳', '甘孜', '昭通', '乌兰察布', '荆门', '阜新', '安康', '西安', '红河', '琼海', '通辽', '赣州', '吕梁', '内江', '辽源', '忻州', '杭州', '东营', '上海', '凉山', '丽江', '哈尔滨', '台州', '香港', '南昌', '南充', '济宁', '驻马店', '拉萨', '扬州', '淄博', '图木舒克', '阳泉', '巴音郭楞', '阿坝', '台湾', '德州', '白城', '玉树', '枣庄', '仙桃', '四平', '上饶', '鄂尔多斯', '海北', '郴州', '阿拉尔']

@@ -8,26 +8,25 @@ from requests import Session
 
 
 def get_proxy():
-    # return requests.get("http://192.168.88.51:5010/get/").json()
-    while 1:
-        proxy = requests.get("http://47.106.223.4:50002/get/").json().get('proxy')
-        time.sleep(1.5)
-        try:
-            if ':' in proxy:
-                return proxy
-            else:
-                print('暂无proxy，等待20s')
+    try:
+        return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+        # return '111.202.83.35:80'
+    except:
+        num = 3
+        while num:
+            try:
+                return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+            except:
+                print('暂无ip，等待20秒')
                 time.sleep(20)
-                continue
-        except:
-            time.sleep(30)
-            continue
+
+                num -= 1
+        print('暂无ip')
 
 def run1(url):
     while 1:
-        proxy = get_proxy()
-        cookie = TuDi().run_get_ip_cookie(proxy)
-        print(proxy, cookie,url)
+        proxy, cookie = TuDi().run()
+        # print(proxy, cookie,url)
         proxies = {
             'http': 'http://{}'.format(proxy),
             'https': 'https://{}'.format(proxy),
@@ -51,7 +50,7 @@ def run1(url):
         }
         try:
             # res = requests.get(url, headers=headers, proxies=proxies)
-            res = requests.get(url, headers=headers, proxies=proxies,timeout=(10,10))
+            res = requests.get(url, headers=headers, proxies=proxy,timeout=(10,10))
             res.encoding = 'gbk'
 
             return res
@@ -97,7 +96,7 @@ class TuDi:
         }
         url = 'https://www.landchina.com/default.aspx?tabid=261'
         session = Session()
-        res = session.get(url, proxies=proxies, timeout=(10,5))
+        res = session.get(url, proxies=proxy, timeout=(10,5))
         cookie = requests.utils.dict_from_cookiejar(res.cookies)
         cookie['srcurl'] = self.stringToHex(url)
         try:
@@ -113,20 +112,18 @@ class TuDi:
     def run(self):
 
         while True:
-            proxy = get_proxy()
-            if ':' not in str(proxy):
-                time.sleep(2*60)
-                continue
+            # proxy = get_proxy()
+            # if ':' not in str(proxy):
+            #     time.sleep(2*60)
+            #     continue
             number = 2
             while number > 0:
                 try:
 
-                    proxies = {
-                        'http': 'http://{}'.format(proxy),
-                        'https': 'https://{}'.format(proxy),
-                    }
-                    cookie = self.run_get_ip_cookie(proxy)
-                    print(proxies,cookie)
+                    proxies = {"https": get_proxy()}
+                    # cookie = self.run_get_ip_cookie(proxies)
+                    cookie='ASP.NET_SessionId=w3a5ne3kmsfwg4f224j1ip3w; Hm_lvt_83853859c7247c5b03b527894622d3fa=1618816746; Hm_lpvt_83853859c7247c5b03b527894622d3fa=1618888646'
+                    # print(proxies,cookie)
                     return proxies, cookie
                 except Exception as e:
                     print(' 解析cookie时失败: ', e)

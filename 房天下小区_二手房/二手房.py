@@ -20,7 +20,7 @@ from sqlalchemy import create_engine
 from concurrent.futures import ThreadPoolExecutor
 
 from IP_config import get_Html_IP
-from city_map import make_url, city_map
+from city_map import make_url
 from save_data import saveData, save_grab_dist, get_exists_dist
 
 MONGODB_CONFIG = {
@@ -53,16 +53,46 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 }
 
-def get_html(url):
+def getCity_Code():
+    item={}
+    response = requests.get('https://www.fang.com/SoufunFamily.htm', headers=headers, timeout=(5, 5))
+    response.encoding = 'gbk'
+    html = etree.HTML(response.text)
+    lists=html.xpath('//div[@class="onCont"]/table//a')
+    for i in lists:
+        city=i.xpath('./text()')[0]
+        url=i.xpath('./@href')[0]
+        code=url.split('.')[0][7:]
+        # print(city,code,url)
+        item[city]=code
+    return item
+def get_proxy():
     try:
-        response = requests.get(url, headers=headers, timeout=2)
+            return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+            # return '111.202.83.35:80'
+    except:
+        num = 3
+        while num:
+            try:
+                return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+            except:
+                print('暂无ip，等待20秒')
+                time.sleep(20)
+
+                num -= 1
+        print('暂无ip')
+def get_html(url):
+    proxies = {"https": get_proxy()}
+    try:
+        response = requests.get(url, headers=headers,proxies=proxies, timeout=10)
         encod = response.apparent_encoding
         if encod.upper() in ['GB2312', 'WINDOWS-1254']:
             encod = 'gbk'
         response.encoding = encod
         return response
     except Exception as e:
-        pass
+        print('get_html错误', proxies,e)
+        return  get_html(url)
 
 
 class Esf_FTX:
@@ -299,14 +329,22 @@ class Esf_FTX:
             self.get_page(city, dist, GetType="二手房", exists_region=exists_region)
             print("抓取%s 总用时: %s" % (city, time.time() - start))
 
+import os
 
+def clear():
+    os.system('cls')
 if __name__ == '__main__':
     # TODO 二手房启动程序
     # TODO 请删除 log>lose_dist 中的缓存记录
     # TODO 修改 Month为当前要抓取的月份
     Year = 2021
     Month = 4
+    city_map=getCity_Code()
+    while True:
+        try:
 
-    Pool = ThreadPoolExecutor(20)
-    Esf_FTX(year=Year, month=Month, pool=Pool).run(city_map)
-    Pool.shutdown()
+            Pool = ThreadPoolExecutor(20)
+            Esf_FTX(year=Year, month=Month, pool=Pool).run(city_map)
+            Pool.shutdown()
+        except:
+            pass

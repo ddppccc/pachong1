@@ -80,7 +80,7 @@ def get_font_woff(url):
     return font
 
 
-def parse_info(url,item):
+def parse_info(url,item={}):
     global Font
     # global response
     while 1:
@@ -164,32 +164,44 @@ def parse_info(url,item):
         #     ".//td[contains(text(), '估价报告备案号：')]/following-sibling::td[1]/text()").get() or '').strip()
         print(item)
 
-        # yield item
-        # 保存数据
-        savePath = os.path.join('土地数据', '出让公告_详情.csv')
-        # 判断是否存在当前文件夹
-        if not os.path.exists(savePath):  # 不存在
-            with open(savePath, 'a', newline='', encoding='gbk') as csvfile:
-                writer = csv.writer(csvfile)
-                lock = Lock()
-                lock.acquire()
-                writer.writerow(list(item.keys()))
-                writer.writerow(list(item.values()))
-                lock.release()
-        else:
-            with open(savePath, 'a', newline='', encoding='gbk') as csvfile:
-                writer = csv.writer(csvfile)
-                lock = Lock()
-                lock.acquire()
-                writer.writerow(list(item.values()))
-                lock.release()
-        print()
-        # queue.task_done()
+        # # yield item
+        # # 保存数据
+        # savePath = os.path.join('土地数据', '出让公告_详情.csv')
+        # # 判断是否存在当前文件夹
+        # if not os.path.exists(savePath):  # 不存在
+        #     with open(savePath, 'a', newline='', encoding='gbk') as csvfile:
+        #         writer = csv.writer(csvfile)
+        #         lock = Lock()
+        #         lock.acquire()
+        #         writer.writerow(list(item.keys()))
+        #         writer.writerow(list(item.values()))
+        #         lock.release()
+        # else:
+        #     with open(savePath, 'a', newline='', encoding='gbk') as csvfile:
+        #         writer = csv.writer(csvfile)
+        #         lock = Lock()
+        #         lock.acquire()
+        #         writer.writerow(list(item.values()))
+        #         lock.release()
+        # print()
+        # # queue.task_done()
 
-
+def getInfo():
+    data={}
+    list = f.readline()
+    l = list.split(',')
+    data['region']=l[0]
+    data['title']=l[1]
+    data['省市']=l[2]
+    data['城市']=l[3]
+    data['类型']=l[4]
+    data['时间']=l[5]
+    data['标题url']=l[6]
+    print(data)
+    return data
 if __name__ == '__main__':
     f = open(r'土地数据/出让公告.csv', encoding='gbk', mode='r')
-    df = pd.read_csv(f, error_bad_lines=False,index_col='标题url')
+    # df = pd.read_csv(f, error_bad_lines=False,index_col='标题url')
     # # 这里是筛选日期
     #
     # df['公示日期'] = df['公示日期'].map(lambda x: '' if '20' not in x or '公示' in x else x)
@@ -198,36 +210,40 @@ if __name__ == '__main__':
     # df['公示日期'] = df['公示日期'].map(lambda x: str(x).split(' ')[0])
     # f.close()
     # print(df.head(5))
-    threadPool = ThreadPoolExecutor(max_workers=8)
-    p = []
-    try:
-        f = open(r'土地数据/出让公告_详情.csv',encoding='gbk',mode='r')
-        df2 = pd.read_csv(f,error_bad_lines=False)
-        f.close()
-        has_spider_list = df2['标题url'].tolist()
-    except:
-        has_spider_list = []
+    # threadPool = ThreadPoolExecutor(max_workers=8)
+    # p = []
+    # try:
+    #     f = open(r'土地数据/出让公告_详情.csv',encoding='gbk',mode='r')
+    #     df2 = pd.read_csv(f,error_bad_lines=False)
+    #     f.close()
+    #     has_spider_list = df2['标题url'].tolist()
+    # except:
+    #     has_spider_list = []
 
-    for url in df.index:
-        if url in has_spider_list:
-            continue
-        try:
-            item = {}
-            item['标题url'] = url
-            item['行政区'] = df.loc[[url]]['行政区'][0]
-            item['供应标题'] = df.loc[[url]]['供应标题'][0]
-            item['省份'] = df.loc[[url]]['省份'][0]
-            item['城市'] = df.loc[[url]]['城市'][0]
-            item['公告类型'] = df.loc[[url]]['公告类型'][0]
-            item['发布时间'] = df.loc[[url]]['公示日期'][0]
+    # for url in df.index:
+    #     if url in has_spider_list:
+    #         continue
+    #     try:
+    #         item = {}
+    #         item['标题url'] = url
+    #         item['行政区'] = df.loc[[url]]['行政区'][0]
+    #         item['供应标题'] = df.loc[[url]]['供应标题'][0]
+    #         item['省份'] = df.loc[[url]]['省份'][0]
+    #         item['城市'] = df.loc[[url]]['城市'][0]
+    #         item['公告类型'] = df.loc[[url]]['公告类型'][0]
+    #         item['发布时间'] = df.loc[[url]]['公示日期'][0]
 
-            # print(url)
-            # parse_info(url,item)
-            future = threadPool.submit(parse_info, item['标题url'],item)
-            p.append(future)
-        except:
-            continue
+        #     # print(url)
+        #     parse_info(url,item)
+        #     # future = threadPool.submit(parse_info, item['标题url'],item)
+        #     # p.append(future)
+        # except:
+        #     continue
     #
-    [i.result() for i in p]
+    # [i.result() for i in p]
     #
-    threadPool.shutdown()
+    # threadPool.shutdown()
+
+    data=getInfo()
+    parse_info(data['标题url'])
+    f.close()

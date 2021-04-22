@@ -4,7 +4,7 @@ import requests
 import pymongo
 
 from lxml import etree
-from config import get_proxy,get_ua,delete_proxy,statis_output, city_url
+from config import get_proxy,get_ua,delete_proxy,statis_output
 from capter_verify.captcha_run import AJK_Slide_Captcha
 from zujin_descde import decode_zujin,get_font
 from urllib import parse
@@ -58,15 +58,25 @@ headers = {
     "upgrade-insecure-requests": "1",
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
 }
-
+def getCity_Url():
+    response = requests.get('https://www.anjuke.com/sy-city.html', headers=headers, timeout=(5, 5))
+    response.encoding = 'utf-8'
+    html = etree.HTML(response.text)
+    lists=html.xpath('/html/body/div[3]/div/div[2]/ul/li/div/a')
+    city_url={}
+    for data in lists:
+        city=data.xpath('./text()')[0]
+        url=data.xpath('./@href')[0]
+        city_url[city]=url
+    return city_url
 
 def get_html(url):
     ip_number = 100
     while ip_number > 0:
         proxy = get_proxy()
-        if not proxy:
-            print("没有ip, 等待2分钟")
-            time.sleep(120)
+        # if not proxy:
+        #     print("没有ip, 等待2分钟")
+        #     time.sleep(120)
 
         number = 3
         while number > 0:
@@ -74,7 +84,6 @@ def get_html(url):
             try:
                 # response = requests.get(url, headers=headers,
                 #                         proxies={"https": "https://{}".format(proxy)}, timeout=(2, 5))
-
                 response = requests.get(url, headers=headers, timeout=(2, 5))
                 response.encoding = 'utf-8'
                 html = etree.HTML(response.text)
@@ -97,8 +106,12 @@ def get_html(url):
 
             # 安居客滑动验证, js破解
             if html.xpath('//*[@id="captchaForm"]'):
-                proixy = "https://" + proxy
+                # print("出现滑动验证, 更改ip")
+                # number = -1
+                # continue
+
                 try:
+                    proixy = "https://" + proxy
                     message = AJK_Slide_Captcha(proixy).run()
                     if message != '校验成功':
                         break
@@ -204,7 +217,7 @@ def get_parseInfo(city,url,area_name):
 
 
 if __name__ == '__main__':
-
+    city_url=getCity_Url()
     for item in city_url:
         key = item
         url = city_url[item]

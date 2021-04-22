@@ -48,7 +48,10 @@ def get_time_range_list(startdate, enddate):
 def get_query(brows, time_part):
     time.sleep(1)
     for i in range(0, 10):
-        mode_e = brows.find_elements_by_css_selector('input#TAB_queryTblEnumItem_210')
+        try:
+            mode_e = brows.find_elements_by_css_selector('input#TAB_queryTblEnumItem_210')
+        except:
+            continue
         if len(mode_e) == 0:
             time.sleep(1)
             continue
@@ -234,13 +237,13 @@ def parse_part_page(bs, time_part):
 
 
 def main():
-    startdate, enddate = '2011-1-1', '2020-11-1'
+    startdate, enddate = '2021-1-1', '2021-4-19'
     date_list = get_time_range_list(startdate, enddate)
     print(date_list)
 
     # op = webdriver.ChromeOptions()
     # op.add_argument('-headless')
-    bs = webdriver.Chrome()
+    bs = webdriver.Firefox()
     bs.get(url)
     if '验证' in bs.page_source:
         print('等待验证')

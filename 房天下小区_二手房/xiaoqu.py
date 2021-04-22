@@ -11,8 +11,8 @@ from urllib import parse
 from lxml import etree
 from concurrent.futures.thread import ThreadPoolExecutor
 
-from IP_config import delete_proxy, get_proxy
-from city_map import make_url, city_map
+from IP_config import delete_proxy
+from city_map import make_url
 from config.config import baidu_chang_gaode
 # from jtu_ydm.selenium_screenshot import verification
 from save_data import saveData, save_grab_dist, get_exists_dist, get_ua
@@ -46,17 +46,47 @@ headers = {
     "upgrade-insecure-requests": "1",
     "User-Agent": get_ua()
 }
+def getCity_Code():
+    item={}
+    response = requests.get('https://www.fang.com/SoufunFamily.htm', headers=headers, timeout=(5, 5))
+    response.encoding = 'gbk'
+    html = etree.HTML(response.text)
+    lists=html.xpath('//div[@class="onCont"]/table//a')
+    for i in lists:
+        city=i.xpath('./text()')[0]
+        url=i.xpath('./@href')[0]
+        code=url.split('.')[0][7:]
+        # print(city,code,url)
+        item[city]=code
+    return item
 
-def get_html(url):
+
+def get_proxy():
     try:
-        response = requests.get(url, headers=headers, timeout=2)
+            return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+    except:
+        num = 3
+        while num:
+            try:
+                return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+            except:
+                print('暂无ip，等待20秒')
+                time.sleep(20)
+
+                num -= 1
+        print('暂无ip')
+def get_html(url):
+    proxies = {"https": get_proxy()}
+    try:
+        response = requests.get(url, headers=headers,proxies=proxies, timeout=10)
         encod = response.apparent_encoding
         if encod.upper() in ['GB2312', 'WINDOWS-1254']:
             encod = 'gbk'
         response.encoding = encod
         return response
     except Exception as e:
-        pass
+        print('get_html错误',proxies, e)
+        return get_html(url)
 
 def get_Html_IP_xq(url, headers):
     retry_count = 10
@@ -68,7 +98,7 @@ def get_Html_IP_xq(url, headers):
         number = 3
         while number > 0:
             try:
-                response = requests.get(url, headers=headers, timeout=(2,7), proxies={'http': 'http://%s'%proxy, 'https': 'https://%s'%proxy})
+                response = requests.get(url, headers=headers, timeout=(10,10), proxies={'http': 'http://%s'%proxy, 'https': 'https://%s'%proxy})
                 encod = response.apparent_encoding
 
                 if encod in ['GB2312', 'Windows-1254']  :
@@ -386,7 +416,7 @@ if __name__ == '__main__':
     # TODO 每月启动前,清空 log/lose_dist, log/小区  中的文件
     year = 2021
     month = 4
-
+    city_map=getCity_Code()
     pool = ThreadPoolExecutor(30)
     name = []
     for city, city_code in city_map.items():
@@ -407,7 +437,11 @@ if __name__ == '__main__':
         if not dist:
             name.append(city)
         # print('没有小区的城市: ', name)
-        get_page(city, dist, GetType="小区")
+        while True:
+            try:
+                get_page(city, dist, GetType="小区")
+            except:
+                pass
 
     pool.shutdown()
 
