@@ -108,8 +108,9 @@ def get_city():
     city = {}
     for sxz in sx[:592]:
         citys = html.xpath("//ul[@class='city_list_ul']/li[@class='city_list_li city_list_li_selected']//ul/li[@data-action='%s']/a/text()"%sxz)
-        hrefs = html.xpath("//ul[@class='city_list_ul']/li[@class='city_list_li city_list_li_selected']//ul/li[@data-action='%s']/a/@href"%sxz)
-        city[citys[0]] = 'https://'+hrefs[0][2:]+'/ershoufang/'
+        hrefs = html.xpath("//ul[@class='city_list_ul']/li[@class='city_list_li city_list_li_selected']//ul/li[@data-action='%s']/a[not(contains(@href, 'fang'))]" % sxz)  # 有.fang的没有二手房
+        if hrefs != []:
+            city[citys[0]] = hrefs[0].xpath('./@href')[0][2:-7]
     # print(city)
     return city
     # {'合肥': 'https://hf.ke.com/ershoufang/',...}
