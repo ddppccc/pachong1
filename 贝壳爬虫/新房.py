@@ -89,6 +89,7 @@ class NewHouse:
 
     def get_page_info(self, city, url, data, **kwargs):
         if url_data.find_one({'url':url}):
+            print('已爬取')
             return 0
         ''' 获取详情页信息 '''
         res = self.get_html(url)

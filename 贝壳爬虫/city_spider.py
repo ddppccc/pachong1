@@ -85,7 +85,7 @@ def crawl_city_process(city_name, spider_class):
 
 
 # 城市 + 拼音映射表
-with open("bk_city_map2.json", 'r', encoding='utf-8') as fp:
+with open("bk_city_map.json", 'r', encoding='utf-8') as fp:
     cities = json.loads(fp.read())
 
 
