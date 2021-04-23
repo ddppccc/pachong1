@@ -183,7 +183,6 @@ class Community_BeiKe:
     def get_list_page(self, url, city, region, data_list):
         '''获取每一页列表页数据'''
         if url_data.find_one({'url':url}):
-            print('已爬取')
             return 0
         html = self.fetch_html(url)
         if not html: return
