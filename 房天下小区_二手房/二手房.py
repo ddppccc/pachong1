@@ -20,7 +20,7 @@ from sqlalchemy import create_engine
 from concurrent.futures import ThreadPoolExecutor
 
 from IP_config import get_Html_IP
-from city_map import make_url
+from city_map import make_url,city_map
 from save_data import saveData, save_grab_dist, get_exists_dist
 
 MONGODB_CONFIG = {
@@ -342,7 +342,7 @@ if __name__ == '__main__':
     # TODO 修改 Month为当前要抓取的月份
     Year = 2021
     Month = 4
-    city_map=getCity_Code()
+    # city_map=getCity_Code()
     Pool = ThreadPoolExecutor(20)
     Esf_FTX(year=Year, month=Month, pool=Pool).run(city_map)
     Pool.shutdown()
