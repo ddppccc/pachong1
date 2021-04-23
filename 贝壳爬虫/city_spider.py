@@ -87,6 +87,15 @@ def crawl_city_process(city_name, spider_class):
 # 城市 + 拼音映射表
 with open("bk_city_map.json", 'r', encoding='utf-8') as fp:
     cities = json.loads(fp.read())
+    exits_citys = ["东莞","佛山","北京","合肥","安庆",
+                   "广州", "惠州", "江门", "泉州", "淮南",
+                   "湛江", "漳州", "珠海", "福州", "芜湖",
+                   "重庆", "马鞍山",
+    ]
+    cities_dict = cities.copy()
+    for k in cities_dict.keys():
+        if k in exits_citys:
+            cities.pop(k)
 
 
 # 返回城市列表
