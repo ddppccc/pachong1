@@ -63,7 +63,9 @@ class Spider(scrapy.Spider):
         self.city_name = self.settings.get("city_name", '全国')
         city_names = list(filter(lambda x: self.city_name in x, cities))
         print("city_names", city_names)
-
+        if info_base.find_one({"城市": city_names}):
+            print("这个城市正在抓或者已经抓过了: %s" % self.city_name)
+            return
         if not city_names:
             print("没有找到城市: %s" % self.city_name)
             return
