@@ -61,7 +61,6 @@ url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             retryWrites="false")['中国房价网']['小区名查重']
 
 
-
 s = requests.Session()
 s.mount('http://', HTTPAdapter(max_retries=3))  # 设置重试次数为3次
 s.mount('https://', HTTPAdapter(max_retries=3))
@@ -149,18 +148,23 @@ def mn_click(chaxun, city, xq):
     item_df['城市'] = city
     item_df['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
     WebDriverWait(chaxun, 30, 0.2)
-    chaxun.find_element_by_xpath('//input[@class="search_bar"]').send_keys(city + xq)
+    chaxun.find_element_by_xpath('//input[@class="search_bar"]').send_keys(city + xq)  # 输入
     chaxun = yanzheng(chaxun)
     time.sleep(random.randint(2, 5))
-    chaxun.find_element_by_xpath('//input[@class="search_bar"]').send_keys(Keys.ENTER)
+    chaxun.find_element_by_xpath('//input[@class="search_bar"]').send_keys(Keys.ENTER)  # 回车
     # WebDriverWait(cha, 30, 1)xun
     chaxun = yanzheng(chaxun)
+    chaxun = yanzheng(chaxun)
     time.sleep(random.randint(5, 15))
-    item_df['小区url'] = chaxun.find_element_by_xpath('//ul[@class="mt5"]/li/a').get_attribute('href')
-    chaxun.find_element_by_xpath('//ul[@class="mt5"]/li/a').click()
+    try:
+        item_df['小区url'] = chaxun.find_element_by_xpath('//ul[@class="mt5"]/li/a').get_attribute('href')
+        chaxun.find_element_by_xpath('//ul[@class="mt5"]/li/a').click()  # 点击第一个（可以用NPL分词来优化相关度）
+    except:
+        print('无点击')
     try:
         WebDriverWait(chaxun, 30, 0.2)
         time.sleep(5)
+        chaxun = yanzheng(chaxun)
         chaxun = yanzheng(chaxun)
         # 选择近5年    有的没有近5年的数据
         chaxun.find_element_by_xpath('//a[@class="yearsel "]/following-sibling::a').click()
@@ -309,7 +313,7 @@ def mn_click(chaxun, city, xq):
 
     # 返回到最初页面
     chaxun.find_element_by_xpath('//img[@class="newHeader"]').click()
-    return item_df, gd_url, chaxun
+    return item_df, gd_url
 
 
 def get_gd(url, item_dt):
@@ -330,12 +334,21 @@ def get_gd(url, item_dt):
     for li in ls:
         t = li.text.split('：\n')
         item_dt[t[0]] = t[1]
-
-    req = requests.get(
-        'http://api.map.baidu.com/geocoder/v2/?address=%s&output=json&ak=Z8OaLxT8vIhoPHeAfp1ic1cbDBXMyZZu' % item_dt[
-            '位置'])
-    jwd = req.json()['result']['location']
-    item_dt['坐标'] = jwd
+    try:
+        req = requests.get(
+            'http://api.map.baidu.com/geocoder/v2/?address=%s&output=json&ak=Z8OaLxT8vIhoPHeAfp1ic1cbDBXMyZZu' %
+            item_dt[
+                '位置'])
+        print(item_dt['位置'])
+        jwd = req.json()['result']['location']
+        item_dt['坐标'] = jwd
+    except:
+        wzaa = gd.find_elements_by_xpath("//div[@class='tbox clearfix']/h1")[0].text
+        req = requests.get(
+            'http://api.map.baidu.com/geocoder/v2/?address=%s&output=json&ak=Z8OaLxT8vIhoPHeAfp1ic1cbDBXMyZZu' % wzaa)
+        print(wzaa)
+        jwd = req.json()['result']['location']
+        item_dt['坐标'] = jwd
 
     jj = gd.find_element_by_xpath('//div[@class="ha_infobox"]').text
     item_dt['简介'] = jj
@@ -401,9 +414,26 @@ def get_gd(url, item_dt):
     gd.quit()
     return item_dt
 
-def logingw():
+def run1(chaxun, city_name, xq):
+    try:
+        item,url = mn_click(login, city_name, xq) # IP容易被封
+        return item,url
+    except Exception as e:
+        print(e)
+        chaxun1 = chaxun.find_element_by_xpath('//img[@class="newHeader"]').click()
+        run1(chaxun, city_name, xq)
+def run2(url, item):
+    try:
+        new_item = get_gd(url, item)
+        return new_item
+    except Exception as e:
+        print(e)
+        run2(url, item)
+
+
+if __name__ == '__main__':
     logins = webdriver.ChromeOptions()
-    # logins.add_argument('HOSTS=119.167.208.147 www.creprice.cn')
+    logins.add_argument('HOSTS=119.167.208.147 www.creprice.cn')
 
     logins.add_argument(
         'User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36')
@@ -416,38 +446,47 @@ def logingw():
     time.sleep(2)
     # 切换iframe
     login.switch_to_frame('layui-layer-iframe1')
-    login.find_element_by_xpath("//li[@class='i1 mb20']/input").send_keys('urasr') # 用户名
-    login.find_element_by_xpath("//li[@class='i2']/input").send_keys('urasr2018') # 密码
+    login.find_element_by_xpath("//li[@class='i1 mb20']/input").send_keys('urasr')
+    login.find_element_by_xpath("//li[@class='i2']/input").send_keys('urasr2018')
     login.find_element_by_xpath("//div[@class='mt20']/input").click()
     time.sleep(2)
     input()
-    return login
-
-def run(chaxun):
 
     # 顺序取小区
-    try:
-        citys = info_base.find({}, {"city_name": 1, '标题': 1, "_id": 0})
-        for length in range(citys.count()):
-            city_name = citys[length]['city_name']
-            xq = citys[length]['标题']
-            # 判断是否爬取过
-            if url_data.find_one({'已爬取的小区': xq}):
-                continue
-            # 把爬取的小区名存入
+    citys = info_base.find({}, {"city_name": 1, '标题': 1, "_id": 0})
+    for length in range(citys.count()):
+        city_name = citys[length]['city_name']
+        xq = citys[length]['标题']
+        # 判断是否爬取过
+        if url_data.find_one({'已爬取的小区': xq}):
+            continue
+        # 把爬取的小区名存入
 
-            item,url,chaxun = mn_click(chaxun, city_name, xq) # IP容易被封
-            new_item = get_gd(url, item)
-            url_data.insert_one({'已爬取的小区': xq})
-            if new_item == {}:
-                continue
-            xqxx_data.insert_one(new_item)
-    except:
-        chaxun.find_element_by_xpath('//img[@class="newHeader"]').click()
-        run(chaxun)
+        item, url = run1(login, city_name, xq)  # IP容易被封
+        new_item = run2(url, item)
+        url_data.insert_one({'已爬取的小区': xq})
+        if new_item == {}:
+            continue
+        xqxx_data.insert_one(new_item)
 
-
-if __name__ == '__main__':
-    # 每次重新执行时把下面 登录的代码去掉注释 然后找赵诣获取短信验证码登录或者更改用户 然后回车
-    chaxun = logingw()
-    run(chaxun)
+    # # 随机取小区
+    # count = ys.info_base.find().count()
+    # lis = []
+    # for i in range(count):
+    #     lis.append(i)
+    # for i in range(count):
+    #     length = random.choice(lis)
+    #
+    #     citys = ys.info_base.find({}, {"city_name": 1, '标题': 1, "_id": 0})[length]
+    #     city_name = citys['city_name']
+    #     xq = citys['标题']
+    #     city = city_name + xq
+    #     # 判断是否爬取过
+    #     if ys.url_data.find_one({'已爬取的小区': city}):
+    #         lis.remove(length)
+    #         continue
+    #     lis.remove(length)
+    #     # 把爬取的小区名存入
+    #     ys.url_data.insert_one({'已爬取的小区': city})
+    #     url = mn_click(login, city)  # IP容易被封
+    #     get_gd(url, city)
