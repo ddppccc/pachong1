@@ -77,6 +77,7 @@ class NewHouse:
             "X-Requested-With": "XMLHttpRequest"
         }
         params = {"_t": "1"}
+        print(url)
         while True:
             try:
                 res = requests.get(url, headers=headers, params=params).json()
@@ -87,16 +88,13 @@ class NewHouse:
 
 
     def get_page_info(self, city, url, data, **kwargs):
-        has_spider_urllist = []
-        for i in url_data.find():
-            has_spider_urllist.append(i['url'])
-        if url in has_spider_urllist:
-            print('以爬取，下一页')
+        if url_data.find_one({'url':url}):
+            print('已爬取')
             return 0
         ''' 获取详情页信息 '''
         res = self.get_html(url)
         houseList = res['data']['list']
-        print(f"当前城市: {city}, 总数量: {kwargs['totalNumber']}, 总页数; {kwargs['totalPage']}, 页数: {kwargs['page']}, 当前数量: {len(houseList)}")
+        print(f"当前城市: {city}")
         if not houseList: return
         for house in houseList:
             houseDict = dict()
@@ -130,7 +128,6 @@ class NewHouse:
             houseDict['抓取年份'] = self.year
             houseDict['抓取月份'] = self.month
             houseDict['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-            print('====================================',house)
             print(houseDict)
             data.append(houseDict)
             info_base.insert_one(houseDict)
@@ -139,14 +136,16 @@ class NewHouse:
 
     # 获取所有城市映射表
     def get_city_info(self, city, url):
+        print(url)
         res = self.get_html(url=url)
         data = []
-        totalNumber = res['data']['total']
-        if totalNumber == '0': return
-        totalPage = int(totalNumber) // 10 + 1
-        for i in range(1, totalPage + 1):  # 获取每一页的详细信息
-            page_url = url + '/pg%s' % i
-            self.get_page_info(city, page_url, data=data, page=i, totalPage=totalPage, totalNumber=totalNumber)
+        print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',res)
+        # totalNumber = res['data']['total']
+        # if totalNumber == '0': return
+        # totalPage = int(totalNumber) // 10 + 1
+        for i in range(1, 100):  # 获取每一页的详细信息
+            page_url = url + 'pg%s/' % i
+            self.get_page_info(city, page_url, data=data, page=i)
 
         # df = pd.DataFrame(data)
         # df = Update_NewHouse().update(df)
