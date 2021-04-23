@@ -131,6 +131,7 @@ def get_qx(url):
 
 def get_data(city,qx,houses):
 
+
     # with open("city_href.json", 'r', encoding='utf-8') as fp:
     #     cities = json.loads(fp.read())
     # for ke in cities.keys():
