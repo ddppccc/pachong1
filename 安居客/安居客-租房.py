@@ -157,7 +157,7 @@ def get_parseInfo(city,url):
             font = get_font(response.text)
             break
         except:
-            continue
+            return
 
     has_spider_urlList = []
     for has_spider_url in has_spider.find():
@@ -240,7 +240,7 @@ if __name__ == '__main__':
         if new_url == "https://haiwai.anjuke.com" or (not new_url):
             continue
         print(new_url)
-        if key in ['阿里','阿勒泰']:
+        if key in ['阿里','阿勒泰','茌平']:
             continue
         get_parseInfo(key, new_url)
     print("已完成...")
