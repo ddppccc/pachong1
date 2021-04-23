@@ -10,7 +10,7 @@ import requests
 import pandas as pd
 from lxml import etree
 from urllib import parse
-# from city_map import city_map
+from city_map import city_map
 
 # from sqlalchemy import create_engine
 from concurrent.futures.thread import ThreadPoolExecutor
@@ -324,12 +324,8 @@ if __name__ == '__main__':
     year = 2021
     month = 4
     day = 28
-    city_map=getCity_Code()
-    while True:
-        try:
-            pool = ThreadPoolExecutor(30)
-            run()
-            pool.shutdown()
-        except:
-            pass
+    # city_map=getCity_Code()
+    pool = ThreadPoolExecutor(30)
+    run()
+    pool.shutdown()
 

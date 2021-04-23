@@ -12,7 +12,7 @@ from lxml import etree
 from concurrent.futures.thread import ThreadPoolExecutor
 
 from IP_config import delete_proxy
-from city_map import make_url
+from city_map import make_url,city_map
 from config.config import baidu_chang_gaode
 # from jtu_ydm.selenium_screenshot import verification
 from save_data import saveData, save_grab_dist, get_exists_dist, get_ua
@@ -419,7 +419,7 @@ if __name__ == '__main__':
     # TODO 每月启动前,清空 log/lose_dist, log/小区  中的文件
     year = 2021
     month = 4
-    city_map=getCity_Code()
+    # city_map=getCity_Code()
     pool = ThreadPoolExecutor(30)
     name = []
     for city, city_code in city_map.items():
