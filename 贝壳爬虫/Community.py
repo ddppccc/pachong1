@@ -87,12 +87,6 @@ class Community_BeiKe:
             return 0
 
     def fetch_html(self, url ):
-        has_spider_urllist = []
-        for i in url_data.find():
-            has_spider_urllist.append(i['url'])
-        if url in has_spider_urllist:
-            print('以爬取，下一页')
-            return 0
         '''获取页面代码'''
         number = 3
         while number > 0:
@@ -188,6 +182,9 @@ class Community_BeiKe:
 
     def get_list_page(self, url, city, region, data_list):
         '''获取每一页列表页数据'''
+        if url_data.find_one({'url':url}):
+            print('已爬取')
+            return 0
         html = self.fetch_html(url)
         if not html: return
         tree = etree.HTML(html)
@@ -201,7 +198,6 @@ class Community_BeiKe:
             data['小区'] = house.xpath(".//div[@class='title']/a/@title")[0]
             data['小区url'] = house.xpath(".//div[@class='title']/a/@href")[0]
             houseInfo = house.xpath(".//div[@class='houseInfo']/a/text()")
-            print(houseInfo)
             data['成交情况'] = "".join([i for i in houseInfo if '成交' in i])
             data['再租套数'] = "".join(["".join(re.findall("\d+", i)) for i in houseInfo if '出租' in i])
 
