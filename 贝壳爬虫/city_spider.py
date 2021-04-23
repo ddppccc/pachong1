@@ -90,7 +90,7 @@ with open("bk_city_map.json", 'r', encoding='utf-8') as fp:
     exits_citys = ["东莞","佛山","北京","合肥","安庆",
                    "广州", "惠州", "江门", "泉州", "淮南",
                    "湛江", "漳州", "珠海", "福州", "芜湖",
-                   "重庆", "马鞍山",
+                   "重庆", "马鞍山","厦门",
     ]
     cities_dict = cities.copy()
     for k in cities_dict.keys():
