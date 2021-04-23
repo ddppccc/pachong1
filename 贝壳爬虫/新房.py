@@ -77,13 +77,13 @@ class NewHouse:
             "X-Requested-With": "XMLHttpRequest"
         }
         params = {"_t": "1"}
-        urla = url[:-4]+url[-3:]
+        print(url)
         while True:
             try:
-                res = requests.get(urla, headers=headers, params=params).json()
+                res = requests.get(url, headers=headers, params=params).json()
                 return res
             except Exception as e:
-                print('error!!! ', urla, params, e)
+                print('error!!! ', url, params, e)
                 continue
 
 
@@ -127,7 +127,6 @@ class NewHouse:
             houseDict['抓取年份'] = self.year
             houseDict['抓取月份'] = self.month
             houseDict['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-            print('====================================',house)
             print(houseDict)
             data.append(houseDict)
             info_base.insert_one(houseDict)
@@ -144,7 +143,7 @@ class NewHouse:
         # if totalNumber == '0': return
         # totalPage = int(totalNumber) // 10 + 1
         for i in range(1, 100):  # 获取每一页的详细信息
-            page_url = url + '/pg%s' % i
+            page_url = url + 'pg%s/' % i
             self.get_page_info(city, page_url, data=data, page=i)
 
         # df = pd.DataFrame(data)
