@@ -88,7 +88,7 @@ class Update_NewHouse:
 with open('bk_newHouse_map2.json', 'r', encoding='utf-8') as fp:
     newHouse_map = json.load(fp)
 
-with open("bk_city_map.json", 'r', encoding='utf-8') as fp:
+with open("bk_city_map2.json", 'r', encoding='utf-8') as fp:
     cities = json.loads(fp.read())
 
 

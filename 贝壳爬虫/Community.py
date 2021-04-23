@@ -33,13 +33,6 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['port']),
             retryWrites="false")['贝壳']['XiaoQu']
 
-xqxq = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
-            MONGODB_CONFIG['user'],
-            MONGODB_CONFIG['password'],
-            MONGODB_CONFIG['host'],
-            MONGODB_CONFIG['port']),
-            retryWrites="false")['贝壳']['xiaoqu_url']
-
 url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
@@ -182,8 +175,6 @@ class Community_BeiKe:
 
     def get_list_page(self, url, city, region, data_list):
         '''获取每一页列表页数据'''
-        if url_data.find_one({'url':url}):
-            return 0
         html = self.fetch_html(url)
         if not html: return
         tree = etree.HTML(html)
@@ -196,6 +187,8 @@ class Community_BeiKe:
             data['区县'] = region
             data['小区'] = house.xpath(".//div[@class='title']/a/@title")[0]
             data['小区url'] = house.xpath(".//div[@class='title']/a/@href")[0]
+            if url_data.find_one({'url': data['小区url']}):
+                continue
             houseInfo = house.xpath(".//div[@class='houseInfo']/a/text()")
             data['成交情况'] = "".join([i for i in houseInfo if '成交' in i])
             data['再租套数'] = "".join(["".join(re.findall("\d+", i)) for i in houseInfo if '出租' in i])
@@ -211,14 +204,14 @@ class Community_BeiKe:
             data['在售套数'] = house.xpath(".//div[@class='xiaoquListItemSellCount']/a/span/text()")[0]
             data['抓取月份'] = self.month
             data['抓取年份'] = self.year
-            xqxq.insert_one(data)
             print(data)
             if data['小区url'] == 'https://wx.ke.com/xiaoqu/4120034740837231/':
                 continue
             done = pool.submit(self.get_page_information, data['小区url'], data, data_list)
+            url_data.insert_one({'url': data['小区url']})
             p.append(done)
         [obj.result() for obj in p]
-        url_data.insert_one({'url': url})
+
 
     def get_page_information(self, url, item, data_list):
         ''' 获取每一页列表页数据 '''

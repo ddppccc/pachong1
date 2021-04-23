@@ -232,7 +232,7 @@ def run():
         city,qx,href = get_qx(city, cityurl)
 
 
-        for pg in range(100):
+        for pg in range(1,100):
             url = href+'pg'+str(pg)+'/'
             res = fetch_html(url)
             response = etree.HTML(res)
