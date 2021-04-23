@@ -115,15 +115,16 @@ def get_city():
     # {'合肥': 'https://hf.ke.com/ershoufang/',...}
 
 
-def get_qx(city,url):
+def get_qx(url):
     res = fetch_html(url)
     html = etree.HTML(res)
     alist = html.xpath("//div[@data-role='ershoufang']/div/a")
+    item = {}
     for a in alist:
         href = url+a.xpath("./@href")[0][12:]
         qx = a.xpath("./text()")[0]
-        print(city,qx,href)
-        return city,qx,href
+        item[qx] = href
+    return item
 
 
 
@@ -229,20 +230,20 @@ def run():
     citycod = get_city()
     for city in citycod:
         cityurl = citycod[city]
-        city,qx,href = get_qx(city, cityurl)
+        qx = get_qx(cityurl)
+        for ke in qx:
+            href = qx[ke]
+            for pg in range(1,100):
+                url = href+'pg'+str(pg)+'/'
+                res = fetch_html(url)
+                response = etree.HTML(res)
 
-
-        for pg in range(1,100):
-            url = href+'pg'+str(pg)+'/'
-            res = fetch_html(url)
-            response = etree.HTML(res)
-
-            houses = response.xpath("//ul[@log-mod='list']//li[@class='clear']")
-            if houses:
-                print('运行',url)
-                get_data(city,qx,houses)
-            else:
-                break
+                houses = response.xpath("//ul[@log-mod='list']//li[@class='clear']")
+                if houses:
+                    print('运行',url)
+                    get_data(city,ke,houses)
+                else:
+                    break
 
 
 
