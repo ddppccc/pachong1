@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from scrapy.crawler import CrawlerProcess, Settings
 from multiprocessing import Process
 from urllib import parse
+import pymongo
 
 from beike_map import get_esf_code_map
 

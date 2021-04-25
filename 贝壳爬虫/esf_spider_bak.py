@@ -209,12 +209,20 @@ class Spider(scrapy.Spider):
                     items['标签'] = np.NaN
 
                 # 总价
-                totalPrice = house.xpath(".//div[@class='totalPrice']/span/text()").get().strip()
-                # totalPrice = "".join(re.findall('(\d+\.?\d+)万', str(totalPrice)))
                 try:
+                    totalPrice = house.xpath(".//div[@class='totalPrice']/span/text()").get().strip()
                     items['总价'] = float(totalPrice)
                 except:
-                    items['总价'] = np.NaN
+                    try:
+                        totalPrice = house.xpath(".//div[@class='totalPrice totalPrice2']/span/text()").get().strip()
+                        items['总价'] = float(totalPrice)
+                    except:
+                        items['总价'] = np.NaN
+                # totalPrice = "".join(re.findall('(\d+\.?\d+)万', str(totalPrice)))
+                # try:
+                #     items['总价'] = float(totalPrice)
+                # except:
+                #     items['总价'] = np.NaN
 
                 # 单价
                 unitPrace = house.xpath(".//div[@class='unitPrice']/span/text()").get().strip()
