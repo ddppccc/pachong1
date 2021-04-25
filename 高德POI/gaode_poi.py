@@ -1,22 +1,11 @@
-<<<<<<< HEAD
-from bson import ObjectId
-import random
-import config
-=======
 import re
 import random
-import time
->>>>>>> origin/master
 import requests
-import os
 import time
-import pandas as pd
 from requests.adapters import HTTPAdapter
-<<<<<<< HEAD
 from bs4 import BeautifulSoup
-=======
 from bson.objectid import ObjectId
->>>>>>> origin/master
+
 
 s = requests.Session()
 s.mount('http://', HTTPAdapter(max_retries=3))#设置重试次数为3次
