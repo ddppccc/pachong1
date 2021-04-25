@@ -53,7 +53,6 @@ def get_html(code,pos,key,page = 1):
         time.sleep(2*60)
         return {}
 def get_pos(id_list=[]):
-    print(int(time.time()))
     try:
         if id_list:
             current_pos = config.pos.find_one({"status": 0, "_id": {"$nin": id_list}})
@@ -172,8 +171,7 @@ def run():
     while True:
         key = random.choice(config.gaode_key)
         print("这次是这个key=>"+key)
-        current_pos = get_pos()
-        print(int(time.time()))
+        current_pos = get_pos(id_list=[])
         try:
             big_pos = get_pos_big(current_pos)
             small_pos_list = get_pos_small(current_pos)

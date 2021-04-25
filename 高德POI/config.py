@@ -1139,7 +1139,7 @@ poicode = {
 }
 
 MONGODB_CONFIG = {
-   "host": "8.135.108.43",
+   "host": "8.135.119.198",
    "port": "27017",
    "user": "hladmin",
    "password": parse.quote("Hlxkd3,dk3*3@"),
