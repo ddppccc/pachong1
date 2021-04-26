@@ -10,6 +10,7 @@ s.mount('http://', HTTPAdapter(max_retries=3))#设置重试次数为3次
 s.mount('https://', HTTPAdapter(max_retries=3))
 import requests
 import config
+import json
 
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
@@ -40,7 +41,7 @@ def get_html(code,pos,key,page = 1):
         if encod.upper() in ['GB2312', 'WINDOWS-1254']:
             encod = 'gbk'
         response.encoding = encod
-        data = response.json()
+        data = json.loads(response.text)
         if data.get("status", "") in [1,'1']:
             return data
         else:
@@ -191,7 +192,9 @@ def run():
                     if not data:
                         print("没获取到数据,尝试切换key-1")
                         key = random.choice(config.gaode_key)
-                        continue
+                        data = get_html(code, pos, key)
+                        if not data:
+                            raise ValueError("数据获取失败: code->"+str(code)+"; pos->"+str(pos)+"; key->"+str(key))
                     num=sava_data(data, current_pos)
                     sum=sum+num
                     count_num = int(data['count'])
@@ -201,7 +204,9 @@ def run():
                         if not data:
                             print("没获取到数据,尝试切换key-2")
                             key = random.choice(config.gaode_key)
-                            continue
+                            data = get_html(code, pos, key)
+                            if not data:
+                                raise ValueError("数据获取失败: code->" + str(code) + "; pos->" + str(pos) + "; key->" + str(key))
                         num=sava_data(data, current_pos)
                         sum = sum + num
                         count_num = count_num - per_page_num
