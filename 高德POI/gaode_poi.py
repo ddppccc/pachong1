@@ -171,7 +171,9 @@ def run():
     while True:
         key = random.choice(config.gaode_key)
         print("这次是这个key=>"+key)
+        print(int(time.time()))
         current_pos = get_pos(id_list=[])
+        print(int(time.time()))
         try:
             big_pos = get_pos_big(current_pos)
             small_pos_list = get_pos_small(current_pos)
@@ -205,6 +207,7 @@ def run():
                         count_num = count_num - per_page_num
                         page = page + 1
             config.pos.update_one(current_pos, {"$set": {"status": 1}})
+            config.use_pos.remove(current_pos)
             print('该地址获取条数', sum)
         except Exception as e:
             print("不知道什么异常了,反正就是没获取到数据，休息两分钟...", e)
