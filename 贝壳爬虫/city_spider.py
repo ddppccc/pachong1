@@ -103,6 +103,7 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
 with open("bk_city_map.json", 'r', encoding='utf-8') as fp:
     cities = json.loads(fp.read())
     ret = info_base.distinct("城市")
+    ret.append('信阳')
     #exits_citys = ['东莞', '中山', '佛山', '兰州', '北京', '北海', '南京', '南宁', '南通', '厦门', '合肥', '吉林', '启东', '哈尔滨', '唐山', '如皋', '安庆', '常州', '广州', '廊坊', '张家口', '徐州', '惠州', '无锡', '昆山', '柳州', '桂林', '江门', '江阴', '泉州', '海门', '淮南', '淮安', '清远', '湛江', '漳州', '珠海', '石家庄', '福州', '芜湖', '苏州', '贵阳', '连云港', '遵义', '邯郸', '郑州', '重庆', '镇江', '长春', '防城港', '马鞍山', '深圳']
     cities_dict = cities.copy()
     for k in cities_dict.keys():
