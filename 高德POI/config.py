@@ -1159,11 +1159,11 @@ gaode = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['port']),
             retryWrites="false")['gaode']
 # 网格表
-pos = gaode.pos
+pos = gaode.pos_new
 # 数据表，用于存入抓取到的数据
 poi = gaode.poi
 # 已抓取过的网格表
-use_pos = gaode.use_pos
+use_pos = gaode.use_pos_new
 
 
 api_url = "https://restapi.amap.com/v3/place/polygon?extensions=all&output=json"
