@@ -154,7 +154,7 @@ def getDetailInfo(city,data):
     item['longitude'] = data['longitude']
     item['抓取年份'] = year
     item['抓取月份'] = month
-    item['数据来源'] = '旭辉集团'
+    item['数据来源'] = '阳光城'
     item['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
     info_base.insert_one(item)
     has_spider.insert_one({'标题url': url})
