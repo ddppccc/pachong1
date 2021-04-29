@@ -86,5 +86,7 @@ def getUrl():
     url=html.xpath('//@href')
     print(url)
     print(len(url))
-getlist()
-  
+# getlist()
+#
+#   无实质数据
+#
