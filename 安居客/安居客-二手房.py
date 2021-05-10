@@ -1,6 +1,7 @@
 import time
 import requests
 import pymongo
+import random
 
 from lxml import etree
 from config import get_proxy,get_ua,delete_proxy,statis_output
@@ -125,7 +126,20 @@ def get_html(url):
         continue
     print("全部出处")
     return '', '', ''
-
+# def get_html(url):
+#     proxies = {"https": get_proxy()}
+#     try:
+#         response = requests.get(url, headers=headers,proxies=proxies, timeout=10)
+#         encod = response.apparent_encoding
+#         if encod.upper() in ['GB2312', 'WINDOWS-1254']:
+#             encod = 'gbk'
+#         response.encoding = encod
+#         html = etree.HTML(response.text)
+#         return html,response,''
+#     except Exception as e:
+#         print('get_html错误',proxies, e)
+#         # time.sleep(2)
+#         return get_html(url)
 
 def get_parseInfo(city,url):
     has_spider_urlList = []
@@ -179,12 +193,16 @@ def get_parseInfo(city,url):
 if __name__ == '__main__':
     num = []
     city_url = getCity_Url()
-    for item in city_url:
-        key = item
-        url = city_url[item]
-        get_parseInfo(key,url+"/sale/")
-        # statis_output('安居客_五城_{}_二手房.csv'.format(time.strftime("%Y-%m-%d", time.localtime())),
-        #
-        #               ['城市','标题','户型','面积','楼层','建筑年份','地址','标签','总价','单价'], info_base,key)
+    # for item in city_url:
+    #     key = item
+    #     url = city_url[item]
+    #     get_parseInfo(key,url+"/sale/")
+    #     # statis_output('安居客_五城_{}_二手房.csv'.format(time.strftime("%Y-%m-%d", time.localtime())),
+    #     #
+    #     #               ['城市','标题','户型','面积','楼层','建筑年份','地址','标签','总价','单价'], info_base,key)
+    while True:
+        data = random.sample(city_url.items(), 1)
+        city, url = data[0][0], data[0][1]
+        get_parseInfo(city, url + "/sale/")
 
 

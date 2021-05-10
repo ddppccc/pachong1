@@ -2,6 +2,7 @@ import re
 import time
 import requests
 import pymongo
+import random
 
 from lxml import etree
 from config import get_proxy,get_ua,delete_proxy,statis_output
@@ -140,7 +141,7 @@ def getCity_Url():
 def get_html(url):
     proxies = {"https": get_proxy()}
     try:
-        response = requests.get(url, headers=headers, timeout=10)
+        response = requests.get(url, headers=headers,timeout=10)
         encod = response.apparent_encoding
         if encod.upper() in ['GB2312', 'WINDOWS-1254']:
             encod = 'gbk'
@@ -154,14 +155,15 @@ def get_html(url):
 
 
 def get_parseInfo(city,url,area_name):
-    has_spider_list = has_spider.find()
+    # has_spider_list = has_spider.find()
     has_spider_url = []
-    for i in has_spider_list:
+    for i in has_spider.find():
         try:
-            has_spider_url.append(i[area_name])
+            has_spider_url.append(i['url'])
         except:
             break
     if url in has_spider_url:
+        print('数据已抓取')
         return
 
     # 判断是否最后一页
@@ -231,18 +233,18 @@ def get_parseInfo(city,url,area_name):
 
 if __name__ == '__main__':
     city_url=getCity_Url()
-    for item in city_url:
+
+    for item,url in city_url.items():
         key = item
-        url = city_url[item]
         print(key,url)
         html, response, _ = get_html(url+"/community/")
         area = html.xpath('//ul[@class="region-parents"]/li')[1:-1]
         for area_else in area:
             url = area_else.xpath('string(./a/@href)')
             area_name = area_else.xpath('string(./a)')
-            has_spider_list = has_spider.find()
-            if url in has_spider_list:
-                continue
+            # has_spider_list = has_spider.find()
+            # if url in has_spider_list:
+            #     continue
             get_parseInfo(key,url,area_name)
         # statis_output('{}_{}.csv'.format(key,time.strftime("%Y-%m", time.localtime())),
         #
