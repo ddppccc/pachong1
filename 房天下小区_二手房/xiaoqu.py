@@ -12,11 +12,31 @@ from lxml import etree
 from concurrent.futures.thread import ThreadPoolExecutor
 
 from IP_config import delete_proxy
-from city_map import make_url,city_map
+from city_map import make_url,city_map,citylist
 from config.config import baidu_chang_gaode
-# from jtu_ydm.selenium_screenshot import verification
-from save_data import saveData, save_grab_dist, get_exists_dist, get_ua
-
+def get_ua():
+    user_agents = [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
+        'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36 OPR/26.0.1656.60',
+        'Opera/8.0 (Windows NT 5.1; U; en)',
+        'Mozilla/5.0 (Windows NT 5.1; U; en; rv:1.8.1) Gecko/20061208 Firefox/2.0.0 Opera 9.50',
+        'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; en) Opera 9.50',
+        'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0',
+        'Mozilla/5.0 (X11; U; Linux x86_64; zh-CN; rv:1.9.2.10) Gecko/20100922 Ubuntu/10.10 (maverick) Firefox/3.6.10',
+        'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.57.2 (KHTML, like Gecko) Version/5.1.7 Safari/534.57.2 ',
+        'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36',
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
+        'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16',
+        'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko',
+        'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.11 TaoBrowser/2.0 Safari/536.11',
+        'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.71 Safari/537.1 LBBROWSER',
+        'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; QQDownload 732; .NET4.0C; .NET4.0E)',
+        'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.84 Safari/535.11 SE 2.X MetaSr 1.0',
+        'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; SV1; QQDownload 732; .NET4.0C; .NET4.0E; SE 2.X MetaSr 1.0) '
+    ]
+    user_agent = random.choice(user_agents)
+    return user_agent
 MONGODB_CONFIG = {
    "host": "8.135.119.198",
    "port": "27017",
@@ -212,7 +232,7 @@ def get_data(url, baseUrl, city, dist, pageNumber, currPage, item):
     for has_spider_url in has_spider.find():
         has_spider_urlList.append(has_spider_url['标题'])
     if url in has_spider_urlList:
-        print('该页数据已爬取，下一页')
+        # print('该页数据已爬取，下一页')
         return
 
     headers["User-Agent"] = get_ua()
@@ -281,6 +301,8 @@ def get_data(url, baseUrl, city, dist, pageNumber, currPage, item):
         # print("城市-区县: {}-{}, 小区: {}, 小区url: {}".format(city, dist, item_dict['小区'], item_dict['小区url']))
         get_info_community(community_url, Referer=item_dict['小区url'], item=item, item_dict=item_dict)
         print(item_dict)
+        if info_base.count_documents({'小区url':item_dict['小区url']}) == 1:
+            continue
         info_base.insert_one(item_dict)
     has_spider.insert_one({'标题': url})
 
@@ -422,7 +444,15 @@ if __name__ == '__main__':
     # city_map=getCity_Code()
     pool = ThreadPoolExecutor(30)
     name = []
-    for city, city_code in city_map.items():
+
+    while True:
+        data = random.sample(city_map.items(), 1)
+        city, city_code = data[0][0], data[0][1]
+
+
+    # for city, city_code in city_map.items():
+
+
         if city == '海南省': continue
 
         print(city, city_code)
@@ -430,9 +460,10 @@ if __name__ == '__main__':
             city_code = 'shaoxing'
 
         # 罗定, 望城  无用效的城市
+        if city not in citylist: continue
         if city in ["罗定", "望城", '安宁', '霸州', '博罗', '长岛', '昌都', '长寿','万州', '文安', '吴江', '新建'
                     '定州', '丰都', '奉化', '涪陵', '合川', '惠东', '江都', '江津', '金坛', '莱芜', '临安', '黔江',
-                    '綦江', '三河', '上虞', '顺德', '香港']:
+                    '綦江', '三河', '上虞', '顺德', '香港','东兴']:
             continue
 
         # GetType="小区",   抓取的是小区数据
