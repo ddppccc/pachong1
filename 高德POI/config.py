@@ -36,6 +36,8 @@ poicode = {
             "110209"
         ]
     },
+    # gridid:548,city:湛江市,urbl:110.22625878505572, 21.628665060447005, 110.27117454926169, 21.58690568737001
+    # 缺此类
     "120000":{
         "120100":{
         },
@@ -1050,6 +1052,8 @@ poicode = {
             "072001"
         ]
     },
+    # gridid:411,city:惠州市,urbl:114.27973582474107, 23.362482310480978, 114.32465158894705, 23.32124258228553
+    # 缺此类
     "080000":{
         "080100":[
             "080101",
@@ -1155,11 +1159,11 @@ gaode = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['port']),
             retryWrites="false")['gaode']
 # 网格表
-pos = gaode.pos
+pos = gaode.pos_new
 # 数据表，用于存入抓取到的数据
 poi = gaode.poi
 # 已抓取过的网格表
-use_pos = gaode.use_pos
+use_pos = gaode.use_pos_new
 
 
 api_url = "https://restapi.amap.com/v3/place/polygon?extensions=all&output=json"

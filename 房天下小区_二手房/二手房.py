@@ -16,12 +16,9 @@ import pandas as pd
 
 from urllib import parse
 from lxml import etree
-from sqlalchemy import create_engine
 from concurrent.futures import ThreadPoolExecutor
-
 from IP_config import get_Html_IP
-from city_map import make_url,city_map
-from save_data import saveData, save_grab_dist, get_exists_dist
+from city_map import make_url,city_map,citylist
 
 MONGODB_CONFIG = {
    "host": "8.135.119.198",
@@ -104,21 +101,6 @@ class Esf_FTX:
         self.month = month
         self.pool = pool
 
-    # def get_exists_dists(self, month):
-    #     """
-    #      查看当月已经存的城市行政区
-    #     """
-    #     print('等待获取当前月已经抓取的城市列表......')
-    #     # TODO 连接本地电脑
-    #     # engine = create_engine('postgresql://postgres:123456@127.0.0.1/ESF').connect()
-    #     # TODO 连接NAS
-    #     engine = create_engine('postgresql://postgres:1q2w3e4r@192.168.88.254:15432/ESF').connect()
-    #     # TODO, 年份不同修改 表名
-    #     sql = f"""SELECT distinct "城市", "区县" FROM public."Esf_2021" where 抓取月份={month} and 数据来源='房天下';"""
-    #     df = pd.read_sql_query(sql=sql, con=engine)
-    #     engine.close()
-    #     print(f'已经抓取城市数量: {df["城市"].unique().shape}')
-    #     return df
 
     def get_everyone_city_region(self, df, city):
         """生成每一个城市已经获取的region"""
@@ -154,7 +136,7 @@ class Esf_FTX:
             for has_spider_url in has_spider.find():
                 has_spider_urlList.append(has_spider_url['标题'])
             if gen_url in has_spider_urlList:
-                print('该页数据已爬取，下一页')
+                # print('该页数据已爬取，下一页')
                 break
 
 
@@ -241,6 +223,8 @@ class Esf_FTX:
                 item_dict['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
                 data.append(item_dict)
                 print(item_dict)
+                if info_base.count_documents({'标题url':item_dict['标题url']}) == 0:
+                    continue
                 info_base.insert_one(item_dict)
             has_spider.insert_one({'标题': gen_url})
             return data
@@ -251,10 +235,6 @@ class Esf_FTX:
         获取每个区下的页面
         """
         for dist_url, dist in dist_dict.items():
-
-            # if dist in exists_region or dist in get_exists_dist(city, GetType):
-            #     print(city, dist, '----->  已经存在')
-            #     continue
 
             base_url = re.findall("https.*com", dist_url)[0]
             print("base_url: ", base_url, "dist_url: ", dist_url)  # https://abazhou.esf.fang.com
@@ -296,21 +276,23 @@ class Esf_FTX:
                 [obj.result() for obj in l]
                 print("最终数据量: ", len(data))
 
-                # try:
-                #     useTime = saveData(data, city, GetType)  # 保存数据
-                #     print("数据保存成功, 用时: ", useTime)
-                # except Exception as e:
-                #     print('城市: %s, 区域: %s, 数据保存失败, %s' % (city, dist, e))
                 break
 
     def run(self, city_map):
-        # df = self.get_exists_dists(self.month)
 
         print(len(city_map))
-        for city, city_code in city_map.items():
-            # exists_region = self.get_everyone_city_region(df, city)
-            exists_region = []
 
+        while True:
+            data = random.sample(city_map.items(), 1)
+            city, city_code = data[0][0], data[0][1]
+        
+        # for city, city_code in city_map.items():
+            
+            
+
+            exists_region = []
+            
+            if city in citylist:continue
             if city in ["罗定", "阿坝州", "农安", "怒江", "盘锦", '香港', '海南省']: continue
             if city in ['安达', '安宁', '安丘', '安溪', '宝应', '巴彦', '霸州', '三河', '三沙', '商河', '尚志', '韶山',
                         '宾县', '宾阳', '博罗', '长岛', '长丰', '长乐', '昌乐', '昌黎', '常宁', '长清', '长寿', '昌邑', '巢湖',

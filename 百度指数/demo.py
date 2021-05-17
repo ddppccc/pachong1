@@ -35,8 +35,6 @@ if __name__ == "__main__":
 
     for number in [22, 23]:     # TODO 每次递增
         for city, city_code in CITY_CODE.items():
-            data = random.sample(CITY_CODE.items(), 1)
-            city, city_code = data[0][0], data[0][1]
             name = '%s_%s.xlsx' % (city, number)
             # if name in os.listdir('原始数据'):
             #     print(name, '存在')
@@ -53,7 +51,7 @@ if __name__ == "__main__":
             for index in baidu_index.get_index():
                 index['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
                 index['城市'] = city
-                if info_base.count_documents(index) == 0:
+                if info_base.count_documents({'keyword':index['keyword'],'type':index['type'],'date':index['date'],'城市':city}) == 0:
                     info_base.insert_one(index)
 
                     print(index)

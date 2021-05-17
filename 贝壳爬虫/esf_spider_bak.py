@@ -62,10 +62,10 @@ class Spider(scrapy.Spider):
 
         self.city_name = self.settings.get("city_name", '全国')
         city_names = list(filter(lambda x: self.city_name in x, cities))
-        print("city_names", city_names)
-        if info_base.find_one({"城市": city_names}):
-            print("这个城市正在抓或者已经抓过了: %s" % self.city_name)
-            return
+        # print("city_names", city_names)
+        # if info_base.find_one({"城市": city_names}):
+        #     print("这个城市正在抓或者已经抓过了: %s" % self.city_name)
+        #     return
         if not city_names:
             print("没有找到城市: %s" % self.city_name)
             return
@@ -213,18 +213,29 @@ class Spider(scrapy.Spider):
                     items['标签'] = np.NaN
 
                 # 总价
-                totalPrice = house.xpath(".//div[@class='totalPrice']/span/text()").get().strip()
-                # totalPrice = "".join(re.findall('(\d+\.?\d+)万', str(totalPrice)))
                 try:
+                    totalPrice = house.xpath(".//div[@class='totalPrice']/span/text()").get().strip()
                     items['总价'] = float(totalPrice)
                 except:
-                    items['总价'] = np.NaN
+                    try:
+                        totalPrice = house.xpath(".//div[@class='totalPrice totalPrice2']/span/text()").get().strip()
+                        items['总价'] = float(totalPrice)
+                    except:
+                        items['总价'] = np.NaN
+                # totalPrice = "".join(re.findall('(\d+\.?\d+)万', str(totalPrice)))
+                # try:
+                #     items['总价'] = float(totalPrice)
+                # except:
+                #     items['总价'] = np.NaN
 
                 # 单价
-                unitPrace = house.xpath(".//div[@class='unitPrice']/span/text()").get().strip()
-                unitPrace = "".join(re.findall('(\d+\.?\d+)元', unitPrace))
                 try:
-                    items['单价'] = float(unitPrace)
+                    unitPrace = house.xpath(".//div[@class='unitPrice']/span/text()").get().strip()
+                    unitPrace = "".join(re.findall('(\d+\.?\d+)元', unitPrace))
+                    try:
+                        items['单价'] = float(unitPrace)
+                    except:
+                        items['单价'] = np.NaN
                 except:
                     items['单价'] = np.NaN
 
