@@ -28,7 +28,7 @@ def get_esf_code_map():
 
     # url中包含fang,则没有二手房数据
     a_list = tree.xpath(
-        "//div[@class='city-item VIEWDATA']//div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")#[53:60]     # 可以在这里设置需要爬取的城市区间  [x:y]
+        "//div[@class='city-item VIEWDATA']//div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")[53:60]     # 可以在这里设置需要爬取的城市区间  [x:y]
         # "//div[@class='city-item ']//div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")
         # "//div[@class='city_list_ul']//div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")
     for a in a_list:
@@ -63,7 +63,7 @@ def get_cj_code_map():
 
     # url中包含fang,则没有二手房数据
     a_list = tree.xpath(
-        "//div[@class='city-item VIEWDATA']//div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")#[53:60]      # 可以在这里设置需要爬取的城市区间  [x:y]
+        "//div[@class='city-item VIEWDATA']//div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")[53:60]      # 可以在这里设置需要爬取的城市区间  [x:y]
         # "//div[@class='city-item ']//div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")
         # "//div[@class='city_list_ul']//div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")
     for a in a_list:
