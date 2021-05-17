@@ -6,7 +6,7 @@ import re
 import time
 import uuid
 from urllib import parse
-# shen
+
 import requests
 from lxml import etree
 import numpy as np
@@ -16,6 +16,10 @@ import scrapy
 from beike_map import get_regions, get_esf_code_map
 from city_spider import crawl_city_process
 from city_spider import cities
+
+with open("bk_city_map.json", 'r', encoding='utf-8') as fp:
+    cities = json.loads(fp.read())
+
 from config import make_date
 
 year, month, day = make_date()
@@ -63,9 +67,9 @@ class Spider(scrapy.Spider):
         self.city_name = self.settings.get("city_name", '全国')
         city_names = list(filter(lambda x: self.city_name in x, cities))
         print("city_names", city_names)
-        # if info_base.find_one({"城市": city_names[0]}):
-        #     print("这个城市正在抓或者已经抓过了: %s" % self.city_name)
-        #     return
+        if info_base.find_one({"城市": city_names[0]}):
+            print("这个城市正在抓或者已经抓过了: %s" % self.city_name)
+            return
         if not city_names:
             print("没有找到城市: %s" % self.city_name)
             return
@@ -76,7 +80,7 @@ class Spider(scrapy.Spider):
         for region_name, base_urlss in regions.items():   #  {区县：[{url:数据条数},...] , ......}
             for base_urls in base_urlss:             # base_urlss：  [{url:数据条数},...]
                 base_url = list(base_urls.keys())[0]         # url
-                print(base_url,base_urls[base_url])
+                print(base_url)
                 for i in range(1, base_urls[base_url]):       # 遍历有数据的页
                     url = ''.join(re.findall('(.+ershoufang/.+/)', base_url)) + "pg" + str(i) + ''.join(
                         re.findall('ershoufang/.+/(.+)', base_url))
@@ -213,29 +217,18 @@ class Spider(scrapy.Spider):
                     items['标签'] = np.NaN
 
                 # 总价
+                totalPrice = house.xpath(".//div[@class='totalPrice']/span/text()").get().strip()
+                # totalPrice = "".join(re.findall('(\d+\.?\d+)万', str(totalPrice)))
                 try:
-                    totalPrice = house.xpath(".//div[@class='totalPrice']/span/text()").get().strip()
                     items['总价'] = float(totalPrice)
                 except:
-                    try:
-                        totalPrice = house.xpath(".//div[@class='totalPrice totalPrice2']/span/text()").get().strip()
-                        items['总价'] = float(totalPrice)
-                    except:
-                        items['总价'] = np.NaN
-                # totalPrice = "".join(re.findall('(\d+\.?\d+)万', str(totalPrice)))
-                # try:
-                #     items['总价'] = float(totalPrice)
-                # except:
-                #     items['总价'] = np.NaN
+                    items['总价'] = np.NaN
 
                 # 单价
+                unitPrace = house.xpath(".//div[@class='unitPrice']/span/text()").get().strip()
+                unitPrace = "".join(re.findall('(\d+\.?\d+)元', unitPrace))
                 try:
-                    unitPrace = house.xpath(".//div[@class='unitPrice']/span/text()").get().strip()
-                    unitPrace = "".join(re.findall('(\d+\.?\d+)元', unitPrace))
-                    try:
-                        items['单价'] = float(unitPrace)
-                    except:
-                        items['单价'] = np.NaN
+                    items['单价'] = float(unitPrace)
                 except:
                     items['单价'] = np.NaN
 
@@ -292,7 +285,8 @@ if __name__ == '__main__':
     #     'save_dir': "data/esf",  # 保存位置
     #     'save_name': 'beke_esf'  # 保存数据名,
     #    }
-
+    # with open("bk_city_map.json", 'r', encoding='utf-8') as fp:
+    #     cities = json.loads(fp.read())
     for city_name in cities:  #
         print("城市: ", city_name)
         p = crawl_city_process(city_name, Spider)

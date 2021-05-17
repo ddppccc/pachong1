@@ -3,7 +3,7 @@ import re
 
 import requests
 from lxml import etree
-#shen
+
 
 # 生成最新的 映射表
 def get_esf_code_map():
@@ -28,7 +28,7 @@ def get_esf_code_map():
 
     # url中包含fang,则没有二手房数据
     a_list = tree.xpath(
-        "//div[@class='city-item VIEWDATA']//div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")     # 可以在这里设置需要爬取的城市区间  [x:y]
+        "//div[@class='city-item VIEWDATA']//div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")      # 可以在这里设置需要爬取的城市区间  [x:y]
         # "//div[@class='city-item ']//div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")
         # "//div[@class='city_list_ul']//div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")
     for a in a_list:
@@ -63,7 +63,7 @@ def get_cj_code_map():
 
     # url中包含fang,则没有二手房数据
     a_list = tree.xpath(
-        "//div[@class='city-item VIEWDATA']//div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")      # 可以在这里设置需要爬取的城市区间  [x:y]
+        "//div[@class='city-item VIEWDATA']//div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")[30:]      # 可以在这里设置需要爬取的城市区间  [x:y]
         # "//div[@class='city-item ']//div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")
         # "//div[@class='city_list_ul']//div[@class='city_province']/ul/li/a[not(contains(@href, 'fang'))]")
     for a in a_list:
@@ -177,27 +177,18 @@ def get_regionscj(city_name, city_code_map):
         url1 = ''.join(re.findall('(.+)/chengjiao', url0)) + ur
         tree1 = get_html(url1)
         strnum = ''.join(tree1.xpath('//div[@class="total fl"]/span/text()'))
-        try:
-            length0 = int(strnum)
-        except:
-            length0 = 0
+        length0 = int(strnum)
         if length0 > 3000:
             urlList = []
             for i in range(1, 9):
                 url2 = url1 + 'p' + str(i)
                 tree2 = get_html(url2)
-                try:
-                    length1 = int(''.join(tree2.xpath('//div[@class="total fl"]/span/text()')))
-                except:
-                    length1 = 0
+                length1 = int(''.join(tree2.xpath('//div[@class="total fl"]/span/text()')))
                 if length1 > 3000:
                     for j in range(1, 4):
                         url3 = url1 + 'de' + str(j) + 'p' + str(i)
                         tree3 = get_html(url3)
-                        try:
-                            length2 = int(''.join(tree3.xpath('//div[@class="total fl"]/span/text()')))
-                        except:
-                            length2 = 0
+                        length2 = int(''.join(tree3.xpath('//div[@class="total fl"]/span/text()')))
                         if length2 == length0:
                             continue
                         elif length2 == length1:
