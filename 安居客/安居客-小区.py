@@ -231,9 +231,9 @@ if __name__ == '__main__':
         key = item
         print(key,url)
 
-        # if info_base.find_one({'city_name':key}):
-        #     print('当前城市已被爬取或正在爬取：',key)
-        #     continue
+        if info_base.find_one({'city_name':key}):
+            print('当前城市已被爬取或正在爬取：',key)
+            continue
 
         html, response, _ = get_html(url+"/community/")
         area = html.xpath('//ul[@class="region-parents"]/li')[1:-1]
