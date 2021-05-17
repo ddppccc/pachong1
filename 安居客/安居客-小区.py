@@ -249,19 +249,28 @@ if __name__ == '__main__':
             # 增加判断长度 1250
             html1, response1, _ = get_html(url1)
             text = ''.join(html1.xpath('//div[@class="sort-row"]/span/text()'))
-            length = int(''.join(re.findall('(\d+)',text)))
+            try:
+                length = int(''.join(re.findall('(\d+)',text)))
+            except:
+                continue
             if length >= 1250:
                 hlist = html1.xpath('//div[@class="filter-wrap"][1]//ul[@class="line"]/li/a/@href')[1:]
                 for url2 in hlist:
                     html2, response2, _ = get_html(url2)
                     text2 = ''.join(html2.xpath('//div[@class="sort-row"]/span/text()'))
-                    length2 = int(''.join(re.findall('(\d+)', text2)))
+                    try:
+                        length2 = int(''.join(re.findall('(\d+)', text2)))
+                    except:
+                        continue
                     if length2 >= 1250:
                         hlist2 = html2.xpath('//div[@class="filter-wrap"][2]//ul[@class="line"]/li/a/@href')[1:]
                         for url3 in hlist2:
                             html3, response3, _ = get_html(url3)
                             text3 = ''.join(html3.xpath('//div[@class="sort-row"]/span/text()'))
-                            length3 = int(''.join(re.findall('(\d+)', text3)))
+                            try:
+                                length3 = int(''.join(re.findall('(\d+)', text3)))
+                            except:
+                                continue
                             if length3 >= 1250:
                                 hlist3 = html3.xpath('//div[@class="filter-wrap"][2]//ul[@class="line"]/li/a/@href')[1:]
                                 for url4 in hlist3:
