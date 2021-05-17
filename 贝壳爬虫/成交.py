@@ -327,8 +327,11 @@ def run():
     print("city_map: ", city_map)
 # shen
 
-    for city_name in cities:  # 城市名   多个程序一起跑时更改 city_name
+    for city_name in city_map:  # 城市名   多个程序一起跑时更改 city_name
         try:
+            if info_base.find_one({"城市": city_name[0]}):
+                print("这个城市正在抓或者已经抓过了: %s" % city_name)
+                continue
 
             register, CHENGJIAO = get_regionscj(city_name, city_map)
             print("当前城市: %s, \n抓取到的分区: %s, \n" % (city_name, register))
