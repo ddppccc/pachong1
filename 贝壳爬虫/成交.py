@@ -325,6 +325,7 @@ def run():
     # 生成最新的二手房映射表
     city_map = get_esf_code_map()
     print("city_map: ", city_map)
+# shen
 
     for city_name in cities:  # 城市名   多个程序一起跑时更改 city_name
         try:
