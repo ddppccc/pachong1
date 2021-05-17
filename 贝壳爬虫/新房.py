@@ -6,6 +6,7 @@ import time
 import pymongo
 import requests
 import pandas as pd
+from lxml import etree
 
 from sqlalchemy import create_engine
 from config import Update_NewHouse, make_date, newHouse_map
@@ -25,14 +26,14 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['贝壳']['XinFang']
+            retryWrites="false")['贝壳shen']['XinFang']
 
 url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['贝壳']['xf_url']
+            retryWrites="false")['贝壳shen']['xf_url']
 
 
 class NewHouse:
@@ -80,7 +81,7 @@ class NewHouse:
         print(url)
         while True:
             try:
-                res = requests.get(url, headers=headers, params=params).json()
+                res = requests.get(url, headers=headers, params=params, timeout=(3, 5)).json()
                 return res
             except Exception as e:
                 print('error!!! ', url, params, e)
@@ -88,9 +89,6 @@ class NewHouse:
 
 
     def get_page_info(self, city, url, data, **kwargs):
-        if url_data.find_one({'url':url}):
-            print('已爬取')
-            return 0
         ''' 获取详情页信息 '''
         res = self.get_html(url)
         houseList = res['data']['list']
@@ -112,6 +110,9 @@ class NewHouse:
 
             houseDict['latitude'], houseDict['longitude'] = self.baidu_chang_gaode(house['latitude'], house['longitude'])
             houseDict['标题url'] = re.sub("(/loupan/.*)", house['url'], url)
+            if url_data.find_one({'url': houseDict['标题url']}):
+                print('已爬取')
+                continue
             houseDict['地址'] = house['address']
             houseDict['分类'] = house['house_type']
             date = house['open_date'].replace('-99', '-01') if '99' in house['open_date'] else house['open_date']
@@ -131,26 +132,61 @@ class NewHouse:
             print(houseDict)
             data.append(houseDict)
             info_base.insert_one(houseDict)
-        url_data.insert_one({'url':url})
+            url_data.insert_one({'url': houseDict['标题url']})
 
 
     # 获取所有城市映射表
     def get_city_info(self, city, url):
         print(url)
-        res = self.get_html(url=url)
-        data = []
-        print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',res)
-        # totalNumber = res['data']['total']
-        # if totalNumber == '0': return
-        # totalPage = int(totalNumber) // 10 + 1
-        for i in range(1, 100):  # 获取每一页的详细信息
-            page_url = url + 'pg%s/' % i
-            self.get_page_info(city, page_url, data=data, page=i)
+        headers = {
+            "Accept": "application/json, text/javascript, */*; q=0.01",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "zh-CN,zh;q=0.9",
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "Pragma": "no-cache",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-origin",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36",
+            "X-Requested-With": "XMLHttpRequest"
+        }
+        num = 1
+        while num > 0:
+            try:
+                res = requests.get(url, headers=headers)
+                tree = etree.HTML(res.text)
+                num -= 1
+            except Exception as e:
+                print(url, "出错195", e)
+                continue
 
-        # df = pd.DataFrame(data)
-        # df = Update_NewHouse().update(df)
-        # df.to_sql(name='NewHouse_2020', con=engine, schema='public', if_exists='append', index=False)
-        # print(f'{city}, 保存成功')
+            data = []
+            strnum = ''.join(tree.xpath('//div[@class="resblock-have-find"]/span[@class="value"]/text()'))
+            if strnum == '':
+                return
+            length = int(strnum)
+            print(length)
+            if length > 2000:
+                for ap in range(1,10):
+                    jgurl = url + 'ap%s/' % ap
+                    jgtree = etree.HTML(requests.get(jgurl, headers=headers).text)
+                    strnumjg = ''.join(jgtree.xpath('//div[@class="resblock-have-find"]/span[@class="value"]/text()'))
+
+                    for i in range(1, int(int(strnumjg)/10)+2):  # 获取每一页的详细信息                         有问题 length 用的是
+                        page_url = url + 'pg%s' % i + 'ap%s/' % ap
+                        self.get_page_info(city, page_url, data=data, page=i)
+            # totalNumber = res['data']['total']
+            # if totalNumber == '0': return
+            # totalPage = int(totalNumber) // 10 + 1
+            else:
+                for i in range(1, int(length/10)+2):  # 获取每一页的详细信息
+                    page_url = url + 'pg%s/' % i
+                    self.get_page_info(city, page_url, data=data, page=i)
+
+            # df = pd.DataFrame(data)
+            # df = Update_NewHouse().update(df)
+            # df.to_sql(name='NewHouse_2020', con=engine, schema='public', if_exists='append', index=False)
+            # print(f'{city}, 保存成功')
 
 
     def run(self, newHouse_map):

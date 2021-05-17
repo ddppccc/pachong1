@@ -34,14 +34,14 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['贝壳']['ESF']
+            retryWrites="false")['贝壳shen']['ESF']
 
 url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['贝壳']['esf_url']
+            retryWrites="false")['贝壳shen']['esf_url']
 
 
 
@@ -73,16 +73,20 @@ class Spider(scrapy.Spider):
         # 有数据  生成区县字典
         regions, cj = get_regions(self.city_name, cities)
         city_name = self.city_name
-        for region_name, base_url in regions.items():
-            for i in range(1,101):
-                url = base_url+"pg"+str(i)+"/"
-                yield scrapy.Request(url=url,
-                                     callback=self.parse,
-                                     meta={
-                                         'item': {'base_url': base_url,
-                                                  'region_name': region_name,
-                                                  'city': city_name}
-                                     })
+        for region_name, base_urlss in regions.items():   #  {区县：[{url:数据条数},...] , ......}
+            for base_urls in base_urlss:             # base_urlss：  [{url:数据条数},...]
+                base_url = list(base_urls.keys())[0]         # url
+                print(base_url)
+                for i in range(1, base_urls[base_url]):       # 遍历有数据的页
+                    url = ''.join(re.findall('(.+ershoufang/.+/)', base_url)) + "pg" + str(i) + ''.join(
+                        re.findall('ershoufang/.+/(.+)', base_url))
+                    yield scrapy.Request(url=url,
+                                         callback=self.parse,
+                                         meta={
+                                             'item': {'base_url': base_url,
+                                                      'region_name': region_name,
+                                                      'city': city_name}
+                                         })
 
 
     def fetch_html(self, url ):
@@ -271,7 +275,7 @@ if __name__ == '__main__':
     # TODO 修改每月抓取时间(可自定义), 位置 config >> make_date
 
     # 生成最新的esf映射表
-    get_esf_code_map()
+    get_esf_code_map()     #
 
     # params = {
     #     'save_dir': "data/esf",  # 保存位置
