@@ -1,375 +1,141 @@
-import base64
+# -*- coding: utf-8 -*-
+# 这是分城市的爬虫的标准件
+# =========爬取贝壳全部城市=========
 import json
-import random
-
-import numpy as np
-from lxml import etree
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-import time
-import requests
+import os
 import re
+import time
+from datetime import datetime, timedelta
+from scrapy.crawler import CrawlerProcess, Settings
+from multiprocessing import Process
 
-from selenium.webdriver.support.wait import WebDriverWait
-
-
-from PIL import Image
-
-from requests.adapters import HTTPAdapter
-
-import pymongo
-from urllib import parse
+from beike_map import get_esf_code_map
 
 
-MONGODB_CONFIG = {
-   "host": "8.135.119.198",
-   "port": "27017",
-   "user": "hladmin",
-   "password": parse.quote("Hlxkd3,dk3*3@"),
-   "db": "dianping",
-   "collections": "dianping_collections",
-}
-
-info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
-            MONGODB_CONFIG['user'],
-            MONGODB_CONFIG['password'],
-            MONGODB_CONFIG['host'],
-            MONGODB_CONFIG['port']),
-            retryWrites="false")['贝壳shen']['ESF']
-
-url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
-            MONGODB_CONFIG['user'],
-            MONGODB_CONFIG['password'],
-            MONGODB_CONFIG['host'],
-            MONGODB_CONFIG['port']),
-            retryWrites="false")['贝壳shen']['esf_url']
+# 检查是否爬取过 [弃用]
+def check_crawled(city_name, save_dir='data', save_name=''):
+    the_month = datetime.now() - timedelta(days=datetime.now().day)
+    os.path.exists(save_dir) or os.makedirs(save_dir)
+    dir_list = os.listdir(save_dir)
+    dir_info = [re.findall('\d\d-\d\d-\d\d', i) for i in dir_list if (city_name in i) and (save_name in i)]
+    dir_info = [{'date': datetime.strptime(info[0], '%y-%m-%d', ),
+                 'file_path': os.path.join(save_dir, file_name)
+                 } for info, file_name in
+                zip(dir_info, dir_list) if len(info) == 1]
+    crawled_city = list(filter(lambda info: info['date'] > the_month, dir_info))
+    return crawled_city  # [{'date': datetime.datetime(2019, 7, 24, 0, 0), 'file_path': './.idea'}]
 
 
-s = requests.Session()
-s.mount('http://', HTTPAdapter(max_retries=3))#设置重试次数为3次
-s.mount('https://', HTTPAdapter(max_retries=3))
+# 开启爬虫任务
+def crawl_task(Spider, settings):
+    print('5秒后开始爬取，本次操作将删除上一次的缓存，若需要请修改终止脚本后clear_buffer参数')
+    time.sleep(5)
+    process = CrawlerProcess(settings)
+    process.crawl(Spider)
+    process.start()
+    process.join()
 
-headers = {
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
-        "Accept-Encoding": "gzip, deflate, br",
-        # 'Host': 'cq.ke.com',
-        "Accept-Language": "zh-CN,zh;q=0.9",
-        "upgrade-insecure-requests": "1",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36",
-        'cookie': "lianjia_uuid=bfa7ceba-65ca-4e1e-b591-2fec6f15129c; crosSdkDT2019DeviceId=-pal2xu-di1vvg-q4phzhoefy25s8p-yfip8uyx7; _ga=GA1.2.1314769215.1585729030; ke_uuid=dcb5976f4b3634b4a8bcab004ed5d775; _smt_uid=5e8452ec.5a19fece; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%2217134e3ece7149-0b39f3df5eee65-6701b35-1327104-17134e3ece837b%22%2C%22%24device_id%22%3A%2217134e3ece7149-0b39f3df5eee65-6701b35-1327104-17134e3ece837b%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E7%9B%B4%E6%8E%A5%E6%B5%81%E9%87%8F%22%2C%22%24latest_referrer%22%3A%22%22%2C%22%24latest_referrer_host%22%3A%22%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%2C%22%24latest_utm_source%22%3A%22baidu%22%2C%22%24latest_utm_medium%22%3A%22pinzhuan%22%2C%22%24latest_utm_campaign%22%3A%22wyshenzhen%22%2C%22%24latest_utm_content%22%3A%22biaotimiaoshu%22%2C%22%24latest_utm_term%22%3A%22biaoti%22%7D%7D; __xsptplus788=788.7.1592811193.1592811569.3%234%7C%7C%7C%7C%7C%23%23m3PY-nFnYwlqfjOVPI_Sk2ie3bc2rPsa%23; select_city=320200; lianjia_ssid=ca885273-46e1-48d4-a1be-a36fa1cffa99; Hm_lvt_9152f8221cb6243a53c83b956842be8a=1594089381; Hm_lpvt_9152f8221cb6243a53c83b956842be8a=1594089399; srcid=eyJ0Ijoie1wiZGF0YVwiOlwiOWQ4ODYyNmZhMmExM2Q0ZmUxMjk1NWE2YTRjY2JmODZkNTdmNDQ1NmNhMDA5OWRmOTM1YjJhOTU0NDFjYzMzYjg3Yjk5YjZmODc3OTRmYmRlY2VmYjFmODQyMGIyOTA5YWE3NDcxMjM0N2FhMDdhMDRjNDUzMDkyNWI1MDk2ZTAxN2RjYTIzYjMyMGZhMTM3NjkyYjYyNjMwOTE1OWZhZDFjMTI4NGMxZTk1MWY1ZTMyMmYxMmEwZTI4MTg5MDJjZjAwOGI2MDNiOWExMWNlNjhkMTkyN2VjYjcwODE2MTc5YmY4OGUxODZiYWQ1MDhjZjkyODM2YjU0YTBkYzI4M2RiNDA4ZWI0MzMyNTFjYWQyNzliNGYwMzA1ZGI0Njc4YTYxZDU5OTQzYTBlOGVhNTA3NWZkY2E3MDE2ODczYjNiOTQ2MzNmZjM3M2FhMmE2Y2JjMjFiYWUxNmU2MzA2ZVwiLFwia2V5X2lkXCI6XCIxXCIsXCJzaWduXCI6XCJjY2E0ZTVlOFwifSIsInIiOiJodHRwczovL3d4LmtlLmNvbS94aWFvcXUvNDEyMDAzNDQwNDAyMDUwMC8iLCJvcyI6IndlYiIsInYiOiIwLjEifQ==",
 
+# 开启爬虫
+def crawl_city_process(city_name, spider_class):
+    # 检查当月数据是否已爬取
+    # if check_crawled(city_name, save_dir=params.get('save_dir', 'data'), save_name=params.get('save_name', '')):
+    #     print('%s当月数据已存在' % city_name)
+    #     return
+    # print('%s当月数据缺失，开始爬取' % city_name)
+
+    # 配置参数
+    default_settings = {
+        "USER_AGENT": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+
+        "DEFAULT_REQUEST_HEADERS": {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "zh-CN,zh;q=0.9",
+            "Cache-Control": "max-age=0",
+            "Connection": "keep-alive",
+            # "Host": "www.ke.com",
+            "Referer": "https://sz.ke.com/",
+        },
+
+        # 设置用户代理
+        'ROBOTSTXT_OBAY': False,
+        "AUTOTHROTTLE_ENABLED": True,
+        "ITEM_PIPELINES": {'pipeline.ItemPipeline': 300},
+        'city_name': city_name,
+        'clear_buffer': False,  # 是否删除上次缓存
+        'save_name': '',  # 保存的数据类名 例如 18-10-09_东莞_安居客租金.xlsx， ‘安居客租金’为保存的数据类名
+        'save_dir': 'data',  # 保存的路径
+        'DOWNLOAD_TIMEOUT': 10,  # 设置下载超时时间
+        'HTTPERROR_ALLOWED_CODES': [302],
+        "LOG_LEVEL": 'INFO',
     }
-def get_proxy():
-    try:
-        return s.get('http://47.106.223.4:50002/get/').json().get('proxy')
-    except:
-        num = 3
-        while num:
-            try:
-                return s.get('http://47.106.223.4:50002/get/').json().get('proxy')
-            except:
-                print('暂无ip，等待20秒')
-                time.sleep(20)
+    # params.get('ITEM_PIPELINES') and params['ITEM_PIPELINES'].update(default_settings['ITEM_PIPELINES'])
+    # default_settings.update(params)
+    # Spider = Spider
+    settings = Settings()
+    settings.update(default_settings)
+    default_settings.update(settings)
 
-                num -= 1
-        print('暂无ip')
-
-def fetch_html(url):
-    '''获取页面代码'''
-    number = 3
-    while number > 0:
-        try:
-            res = requests.get(url, headers=headers, timeout=7)
-            res.encoding = 'utf-8'
-            if '人机认证' in res.text:
-                print('需要人机验证: ', res.url)
-                time.sleep(70)
-                continue
-            if res.status_code == 404:
-                print('返回状态码404, ', url)
-                return ' '
-
-            return res.text
-        except Exception as e:
-            number -= 1
-            print('fetch_html: ', e, url)
-            continue
-    return ''
-
-def get_city():
-    """
-    根据城市名获得行政区
-    :return: {'guangming': '光明'}, CHENFJIAO  [True/False]
-    """
-    url = 'https://www.ke.com/city/'
-    res = fetch_html(url)
-    html = etree.HTML(res)
-    sx = html.xpath("//ul[@class='city_list_ul']/li[@class='city_list_li city_list_li_selected']//ul/li/@data-action")#
-    city = {}
-    for sxz in sx[:592]:
-        citys = html.xpath("//ul[@class='city_list_ul']/li[@class='city_list_li city_list_li_selected']//ul/li[@data-action='%s']/a/text()"%sxz)
-        hrefs = html.xpath("//ul[@class='city_list_ul']/li[@class='city_list_li city_list_li_selected']//ul/li[@data-action='%s']/a[not(contains(@href, 'fang'))]" % sxz)  # 有.fang的没有二手房
-        if hrefs != []:
-            city[citys[0]] = hrefs[0].xpath('./@href')[0][2:-7]
-    # print(city)
-    return city
-    # {'合肥': 'https://hf.ke.com/ershoufang/',...}
-def get_html(url):
-    headers = {
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "zh-CN,zh;q=0.9",
-        "Cache-Control": "max-age=0",
-        "Connection": "keep-alive",
-        # "Host": "www.ke.com",
-        "Referer": "https://sz.ke.com/",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"}
-    # prox = get_proxy()
-    # proxies = {'http': 'http://%s' % prox, 'https': 'https://%s' % prox}
-    # res = sre.get(url, headers=headers, proxies=proxies)
-    res = requests.get(url, headers=headers)
-    res.encoding = 'utf-8'
-    # print(res.text)
-    tree = etree.HTML(res.text)
-    return tree
+    p = Process(target=crawl_task, args=(spider_class, settings))
+    return p
 
 
-def get_qx(url0):
-    """
-    根据城市名获得行政区
-    :param city_name:
-    :return: {'guangming': '光明'}, CHENFJIAO  [True/False]
-    """
-    # url0 = 'https://{}.ke.com/ershoufang/'.format(city_code_map[city_name])
+# ======================================================================================================================
 
 
-    CHENFJIAO = False
-    tree0 = get_html(url0)
-    urls = {}
-    href = tree0.xpath('//div[@data-role="ershoufang"]/div/a')
-    if "成交" in tree0.xpath("string(//div[@class='menuLeft']/ul)"):
-        CHENFJIAO = True
-    for ss in href:
-        it1 = {}
-        qx = ''.join(ss.xpath("./text()"))
-        ur = ''.join(ss.xpath('./@href'))
-        url1 = ''.join(re.findall('(.+)/ershoufang', url0)) + ur
-        tree1 = get_html(url1)
-        strnum = ''.join(tree1.xpath('//div[@class="resultDes clear"]/h2/span/text()'))
-        length0 = int(strnum)
-        numpg0 = int(length0/30) + 2
-        if length0 > 3000:
-            urlList = []
-            for i in range(1, 9):
-                it2 = {}
-                url2 = url1 + 'p' + str(i)
-                tree2 = get_html(url2)
-                length1 = int(''.join(tree2.xpath('//div[@class="resultDes clear"]/h2/span/text()')))
-                if length1 > 3000:
-                    for j in range(1, 4):
-                        it3 = {}
-                        url3 = url1 + 'de' + str(j) + 'p' + str(i)
-                        tree3 = get_html(url3)
-                        length2 = int(''.join(tree3.xpath('//div[@class="resultDes clear"]/h2/span/text()')))
-                        if length2 == length0:
-                            continue
-                        elif length2 == length1:
-                            continue
-
-                        if length2 > 3000:
-                            url4ls = tree3.xpath('//div[@data-role="ershoufang"]/div[2]/a/@href')
-                            for ur4 in url4ls:
-                                it4 = {}
-                                url4 = ''.join(re.findall('(.+)/ershoufang', url0)) + ur4
-                                tree4 = get_html(url4)
-                                length3 = int(''.join(tree4.xpath('//div[@class="resultDes clear"]/h2/span/text()')))
-                                if length3 == length0:
-                                    continue
-                                elif length3 == length1:
-                                    continue
-                                elif length3 == length2:
-                                    continue
-
-                                numpg3 = int(length3 / 30) + 2
-                                it4[url4] = numpg3
-                                urlList.append(it4)
-                                urls[qx] = urlList
-
-                        else:
-                            numpg2 = int(length2 / 30) + 2
-                            it3[url3] = numpg2
-                            urlList.append(it3)
-                            urls[qx] = urlList
-                elif length1 == length0:
-                    continue
-                else:
-                    numpg1 = int(length1 / 30) + 2
-                    it2[url2] = numpg1
-                    urlList.append(it2)
-                    urls[qx] = urlList
-        else:
-            it1[url1] = numpg0
-            urls[qx] = [it1]
-    return urls
+# 城市 + 拼音映射表
+with open("bk_city_map.json", 'r', encoding='utf-8') as fp:
+    cities = json.loads(fp.read())
+    exits_citys = ["东莞", "佛山", "北京", "合肥", "安庆",
+                   "广州", "惠州", "江门", "泉州", "淮南",
+                   "湛江", "漳州", "珠海", "福州", "芜湖",
+                   "重庆", "马鞍山", "厦门", "深圳", "中山",
+                   ]
+    cities_dict = cities.copy()
+    for k in cities_dict.keys():
+        if k in exits_citys:
+            cities.pop(k)
 
 
+# 返回城市列表
+def city_loop(callback, cities=()):
+    # 如果传入字符串则只处理一个城市
+    if type(cities) is str:
+        cities = (cities,)
 
+    # 没有传入则默认遍历所有城市
+    if not cities:
+        cities = globals()['cities']  # globals() 函数会以字典类型返回当前位置的全部全局变量。
 
-def get_data(city,qx,houses):
-
-
-    # with open("city_href.json", 'r', encoding='utf-8') as fp:
-    #     cities = json.loads(fp.read())
-    # for ke in cities.keys():
-    #     print()
-    #     url = 'https://' + cities[ke] + '/ershoufang/'
-    #     res = self.fetch_html(url)
-    #     html = etree.HTML(res)
-    #     sx = html.xpath("//div[@data-role='ershoufang']/div/a/@title")
-    #     for sxz in sx:
-    #         city = ke
-    #         district = html.xpath("//div[@data-role='ershoufang']/div/a[@title='%s']/text()" % sxz)[0]
-    #         dist_url = html.xpath("//div[@data-role='ershoufang']/div/a[@title='%s']/@href" % sxz)[0][12:]
-
-
-    for house in houses:
-        items = {}
-        items['城市'] = city
-        items['区县'] = qx
-        items['标题url'] = house.xpath("./a/@href")[0]
-        if url_data.find_one({'url': items['标题url']}):
-            print('当前url已爬取')
-            continue
-        items['小区'] = house.xpath("./a/@title")[0]
-        houseInfo = "".join(house.xpath("./div/div[2]/div[2]/text()")).replace(" ", "").replace("\n", "")
-
-        # 户型
-        items['户型'] = "".join(re.findall('\d室\d{0,1}厅{0,1}', ''.join(
-            [type_info for type_info in houseInfo.split('|') if '室' in type_info])))
-        if len(items['户型']) == 0:
-            items['户型'] = np.NaN
-
-        # 面积
-        area = "".join(re.findall('(\d+\.?\d+)平米',
-                                  "".join([type_info for type_info in houseInfo.split('|') if '米' in type_info])))
-        try:
-            items['面积'] = float(area)
-        except:
-            items['面积'] = np.NaN
-
-        # 楼层
-        items['楼层'] = "".join(
-            re.findall("(.*\))", "".join([type_info for type_info in houseInfo.split('|') if '层' in type_info])))
-        if len(items['楼层']) == 0:
-            items['楼层'] = np.NaN
-
-        # 建筑年份
-        houseYear = "".join(
-            re.findall('(\d+)年', ''.join([type_info for type_info in houseInfo.split('|') if '建' in type_info])))
-        try:
-            items['建筑年份'] = int(houseYear)
-        except:
-            items['建筑年份'] = np.NaN
-
-        # 朝向
-        items['朝向'] = "".join(
-            ''.join([type_info for type_info in houseInfo.split('|') if '东' in type_info or '西' in type_info \
-                     or '南' in type_info or '北' in type_info]))
-        if len(items['朝向']) == 0:
-            items['朝向'] = np.NaN
-
-        flower = "".join(house.xpath("./div/div[2]/div[3]/text()")).replace(" ", "").replace("\n", "")
-        items['关注人数'] = ''.join(re.findall('(\d+)人', flower))
-        if len(items['关注人数']) == 0:
-            items['关注人数'] = np.NaN
-
-        # 标签
-        items['标签'] = "|".join(house.xpath("./div/div[2]/div[4]/span/text()"))
-        if len(items['标签']) == 0:
-            items['标签'] = np.NaN
-
-        # 总价
-        totalPrice = house.xpath("./div[@class='info clear']/div[@class='address']/div[@class='priceInfo']/div[@class='totalPrice']/span/text()")
-        totalPrice = "".join(re.findall('(\d)', str(totalPrice)))
-        try:
-            items['总价'] = float(totalPrice)
-        except:
-            items['总价'] = np.NaN
-
-        # 单价
-        unitPrace = house.xpath("./div[@class='info clear']/div[@class='address']/div[@class='priceInfo']/div[@class='unitPrice']/span/text()")
-        unitPrace = "".join(re.findall('(\d+\.?\d+)元', str(unitPrace)))
-        try:
-            items['单价'] = float(unitPrace)
-        except:
-            items['单价'] = np.NaN
-
-        items['数据来源'] = '贝壳'
-
-        items['地址'] = house.xpath("./div[@class='info clear']/div[@class='address']/div/div/a/text()")[0]
-        items['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-        info_base.insert_one(items)
-        url_data.insert_one({'url':items['标题url']})
-        print(items)
-
-
-
-
-
-def run():
-    citycod = get_city()
-    for city in citycod:
-        if info_base.find_one({"城市": city}):
-            print("这个城市正在抓或者已经抓过了: %s" % city)
-            continue
-        cityurl = citycod[city]
-        qx = get_qx('http://'+cityurl+'.ke.com/ershoufang/')
-        print(type(qx))
-        for region_name, base_urlss in qx.items():  # {区县：[{url:数据条数},...] , ......}
-            for base_urls in base_urlss:  # base_urlss：  [{url:数据条数},...]
-                base_url = list(base_urls.keys())[0]  # url
-                print(base_url)
-                for i in range(1, base_urls[base_url]):  # 遍历有数据的页
-                    url = ''.join(re.findall('(.+ershoufang/.+/)', base_url)) + "pg" + str(i) + ''.join(
-                        re.findall('ershoufang/.+/(.+)', base_url))
-                    res = fetch_html(url)
-                    response = etree.HTML(res)
-
-                    houses = response.xpath("//ul[@log-mod='list']//li[@class='clear']")
-                    if houses:
-                        print('运行', url)
-                        get_data(city, region_name, houses)
-                    else:
-                        break
-            #             yield scrapy.Request(url=url,
-            #                                  callback=self.parse,
-            #                                  meta={
-            #                                      'item': {'base_url': base_url,
-            #                                               'region_name': region_name,
-            #                                               'city': city_name}
-            #                                  })
-            #
-            #
-            #
-            #
-            # for pg in range(1,100):
-            #     url = href+'pg'+str(pg)+'/'
-            #     res = fetch_html(url)
-            #     response = etree.HTML(res)
-            #
-            #     houses = response.xpath("//ul[@log-mod='list']//li[@class='clear']")
-            #     if houses:
-            #         print('运行',url)
-            #         get_data(city,ke,houses)
-            #     else:
-            #         break
-
+    for city_name in cities:
+        callback(city_name)
 
 
 if __name__ == '__main__':
-    # get_city()
-    # url = 'https://hf.ke.com/ershoufang/'
-    # get_qx('合肥',url)
-    # url = 'https://hf.ke.com/ershoufang/konggangjingjishifanqu/'+'pg3/'
-    # get_data(url)
-    run()
+    city_loop(lambda x: print(x))
+    # pass
+
+    # 调用爬虫process-spider例子
+    # from city_spider import crawl_city_process
+    # from city_spider import cities
+    #
+    # # cities = '沈阳'.split(',')
+    # params = {
+    #     'save_name': '智联',
+    #     'DOWNLOAD_DELAY': .5,
+    #     'COOKIES_ENABLED': True,
+    #     'AUTOTHROTTLE_START_DELAY': .5,
+    #     'DOWNLOADER_MIDDLEWARES': {
+    #         '%s.ErrMiddleware' % (os.path.split(__file__)[-1].rsplit('.')[0]): 300,
+    #     }
+    #
+    # }
+    # for city_name in cities:
+    #     p = crawl_city_process(city_name, JobSpiderSpider2, params)
+    #     p and p.start()
+    #     p and p.join()
+    #
+    # print("程序结束")
+
+

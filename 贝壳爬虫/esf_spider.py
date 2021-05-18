@@ -35,14 +35,14 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['贝壳']['ESF']
+            retryWrites="false")['贝壳shen']['ESF']
 
 url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['贝壳']['esf_url']
+            retryWrites="false")['贝壳shen']['esf_url']
 
 
 s = requests.Session()
@@ -114,18 +114,103 @@ def get_city():
     # print(city)
     return city
     # {'合肥': 'https://hf.ke.com/ershoufang/',...}
+def get_html(url):
+    headers = {
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "zh-CN,zh;q=0.9",
+        "Cache-Control": "max-age=0",
+        "Connection": "keep-alive",
+        # "Host": "www.ke.com",
+        "Referer": "https://sz.ke.com/",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"}
+    # prox = get_proxy()
+    # proxies = {'http': 'http://%s' % prox, 'https': 'https://%s' % prox}
+    # res = sre.get(url, headers=headers, proxies=proxies)
+    res = requests.get(url, headers=headers)
+    res.encoding = 'utf-8'
+    # print(res.text)
+    tree = etree.HTML(res.text)
+    return tree
 
 
-def get_qx(url):
-    res = fetch_html(url)
-    html = etree.HTML(res)
-    alist = html.xpath("//div[@data-role='ershoufang']/div/a")
-    item = {}
-    for a in alist:
-        href = url+a.xpath("./@href")[0][12:]
-        qx = a.xpath("./text()")[0]
-        item[qx] = href
-    return item
+def get_qx(url0):
+    """
+    根据城市名获得行政区
+    :param city_name:
+    :return: {'guangming': '光明'}, CHENFJIAO  [True/False]
+    """
+    # url0 = 'https://{}.ke.com/ershoufang/'.format(city_code_map[city_name])
+
+
+    CHENFJIAO = False
+    tree0 = get_html(url0)
+    urls = {}
+    href = tree0.xpath('//div[@data-role="ershoufang"]/div/a')
+    if "成交" in tree0.xpath("string(//div[@class='menuLeft']/ul)"):
+        CHENFJIAO = True
+    for ss in href:
+        it1 = {}
+        qx = ''.join(ss.xpath("./text()"))
+        ur = ''.join(ss.xpath('./@href'))
+        url1 = ''.join(re.findall('(.+)/ershoufang', url0)) + ur
+        tree1 = get_html(url1)
+        strnum = ''.join(tree1.xpath('//div[@class="resultDes clear"]/h2/span/text()'))
+        length0 = int(strnum)
+        numpg0 = int(length0/30) + 2
+        if length0 > 3000:
+            urlList = []
+            for i in range(1, 9):
+                it2 = {}
+                url2 = url1 + 'p' + str(i)
+                tree2 = get_html(url2)
+                length1 = int(''.join(tree2.xpath('//div[@class="resultDes clear"]/h2/span/text()')))
+                if length1 > 3000:
+                    for j in range(1, 4):
+                        it3 = {}
+                        url3 = url1 + 'de' + str(j) + 'p' + str(i)
+                        tree3 = get_html(url3)
+                        length2 = int(''.join(tree3.xpath('//div[@class="resultDes clear"]/h2/span/text()')))
+                        if length2 == length0:
+                            continue
+                        elif length2 == length1:
+                            continue
+
+                        if length2 > 3000:
+                            url4ls = tree3.xpath('//div[@data-role="ershoufang"]/div[2]/a/@href')
+                            for ur4 in url4ls:
+                                it4 = {}
+                                url4 = ''.join(re.findall('(.+)/ershoufang', url0)) + ur4
+                                tree4 = get_html(url4)
+                                length3 = int(''.join(tree4.xpath('//div[@class="resultDes clear"]/h2/span/text()')))
+                                if length3 == length0:
+                                    continue
+                                elif length3 == length1:
+                                    continue
+                                elif length3 == length2:
+                                    continue
+
+                                numpg3 = int(length3 / 30) + 2
+                                it4[url4] = numpg3
+                                urlList.append(it4)
+                                urls[qx] = urlList
+
+                        else:
+                            numpg2 = int(length2 / 30) + 2
+                            it3[url3] = numpg2
+                            urlList.append(it3)
+                            urls[qx] = urlList
+                elif length1 == length0:
+                    continue
+                else:
+                    numpg1 = int(length1 / 30) + 2
+                    it2[url2] = numpg1
+                    urlList.append(it2)
+                    urls[qx] = urlList
+        else:
+            it1[url1] = numpg0
+            urls[qx] = [it1]
+    return urls
 
 
 
@@ -152,8 +237,8 @@ def get_data(city,qx,houses):
         items['城市'] = city
         items['区县'] = qx
         items['标题url'] = house.xpath("./a/@href")[0]
-        if url_data.find_one({'url':items['标题url']}):
-            print('已爬取')
+        if url_data.find_one({'url': items['标题url']}):
+            print('当前url已爬取')
             continue
         items['小区'] = house.xpath("./a/@title")[0]
         houseInfo = "".join(house.xpath("./div/div[2]/div[2]/text()")).replace(" ", "").replace("\n", "")
@@ -228,24 +313,56 @@ def get_data(city,qx,houses):
         print(items)
 
 
+
+
+
 def run():
     citycod = get_city()
     for city in citycod:
+        if info_base.find_one({"城市": city}):
+            print("这个城市正在抓或者已经抓过了: %s" % city)
+            continue
         cityurl = citycod[city]
-        qx = get_qx(cityurl)
-        for ke in qx:
-            href = qx[ke]
-            for pg in range(1,100):
-                url = href+'pg'+str(pg)+'/'
-                res = fetch_html(url)
-                response = etree.HTML(res)
+        qx = get_qx('http://'+cityurl+'.ke.com/ershoufang/')
+        print(type(qx))
+        for region_name, base_urlss in qx.items():  # {区县：[{url:数据条数},...] , ......}
+            for base_urls in base_urlss:  # base_urlss：  [{url:数据条数},...]
+                base_url = list(base_urls.keys())[0]  # url
+                print(base_url)
+                for i in range(1, base_urls[base_url]):  # 遍历有数据的页
+                    url = ''.join(re.findall('(.+ershoufang/.+/)', base_url)) + "pg" + str(i) + ''.join(
+                        re.findall('ershoufang/.+/(.+)', base_url))
+                    res = fetch_html(url)
+                    response = etree.HTML(res)
 
-                houses = response.xpath("//ul[@log-mod='list']//li[@class='clear']")
-                if houses:
-                    print('运行',url)
-                    get_data(city,ke,houses)
-                else:
-                    break
+                    houses = response.xpath("//ul[@log-mod='list']//li[@class='clear']")
+                    if houses:
+                        print('运行', url)
+                        get_data(city, region_name, houses)
+                    else:
+                        break
+            #             yield scrapy.Request(url=url,
+            #                                  callback=self.parse,
+            #                                  meta={
+            #                                      'item': {'base_url': base_url,
+            #                                               'region_name': region_name,
+            #                                               'city': city_name}
+            #                                  })
+            #
+            #
+            #
+            #
+            # for pg in range(1,100):
+            #     url = href+'pg'+str(pg)+'/'
+            #     res = fetch_html(url)
+            #     response = etree.HTML(res)
+            #
+            #     houses = response.xpath("//ul[@log-mod='list']//li[@class='clear']")
+            #     if houses:
+            #         print('运行',url)
+            #         get_data(city,ke,houses)
+            #     else:
+            #         break
 
 
 
