@@ -349,7 +349,7 @@ def parse(df_map):
 if __name__ == '__main__':
     # df1: (288439, 16)
     # 去除已经解析后: (284652, 4) # 283754  274289
-    f = open('土地数据/地块公示.txt', encoding='gbk', mode='r')
+    f = open('土地数据/地块公示.csv', encoding='gbk', mode='r')
     df_map = pd.read_excel('城市_区县_映射表.xlsx')
     # queue = Queue()
     # run(1, df_map)
