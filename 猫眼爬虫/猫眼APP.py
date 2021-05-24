@@ -9,6 +9,23 @@ from datetime import timedelta
 from concurrent.futures.thread import ThreadPoolExecutor
 from map import city_codes, get_proxy, delete_proxy
 
+import pymongo
+from urllib import parse
+
+MONGODB_CONFIG = {
+   "host": "8.135.119.198",
+   "port": "27017",
+   "user": "hladmin",
+   "password": parse.quote("Hlxkd3,dk3*3@"),
+   "db": "dianping",
+   "collections": "dianping_collections",
+}
+maoyan_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+        MONGODB_CONFIG['user'],
+        MONGODB_CONFIG['password'],
+        MONGODB_CONFIG['host'],
+        MONGODB_CONFIG['port']),
+        retryWrites="false")['猫眼']['info']
 
 class MaoYan:
 
@@ -36,7 +53,7 @@ class MaoYan:
             while retry_count > 0:
                 time.sleep(0.5)
                 try:
-                    url = 'http://pf.maoyan.com/cinema-chain-operator/filter'
+                    url = 'http://piaofang.maoyan.com/cinema-chain-operator/filter'
                     params = {
                         "typeId": "0",
                         "date": date,
@@ -44,8 +61,8 @@ class MaoYan:
                         "cityId": cityId
                     }
                     headers = {
-                        "Host": "pf.maoyan.com",
-                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0",
+                        "Host": "piaofang.maoyan.com",
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
                         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                         "Accept-Language": "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2",
                         "Accept-Encoding": "gzip, deflate",
@@ -83,11 +100,13 @@ class MaoYan:
 
     def get_json_data(self, city, date, cityId, data):
         response = self.get_html_useIp(date, cityId)
+        response.content.decode("utf-8")
         if not response or 'data' not in response.text:
             print('没有数据')
             return
-
+        print(response.text)
         res = response.json()
+        print(res)
         item = {}
         item['城市'] = city
         item['时间'] = date
@@ -95,6 +114,8 @@ class MaoYan:
         item['人次'] = res['data']['all']['viewInfo']
         item['均场人次'] = res['data']['all']['avgShowView']
         item['平均票价'] = res['data']['all']['avgViewBox']
+        maoyan_data.insert_one(item)
+        # maoyan_qucong.insert_one({'城市': city, '时间': date})
         data.append(item)
         print(item)
 
@@ -109,25 +130,30 @@ class MaoYan:
                 dataList = self.get_data_range(start_date)
             except:
                 continue
+            # dataList = ['2021-01-01','2021-01-02']############################################
             for date in dataList:
+                # 根据城市、时间，判断是否爬取过了
+                print({'城市': city, '时间': date})
+                if maoyan_data.count({'城市': city, '时间': date}):
+                    print('当前城市的当前时间已爬取，下一个')
+                    continue
+
                 # get_json_data(city, date, cityId, data)
                 d = pool.submit(self.get_json_data, city, date, cityId, data)
                 p.append(d)
             [i.result() for i in p]
 
-            if not data: continue
-            df1 = pd.DataFrame(data)
-            print(city, df1.shape, '\n')
-            df1 = df1[['人次', '均场人次', '城市', '平均票价', '时间', '票房']]
-            save_filepath = 'data/{}.csv'.format(city)
-            if not os.path.exists(save_filepath):
-                df1.to_csv(save_filepath, mode='a', encoding="utf-8", index=False, header=True)
-            else:
-                df1.to_csv(save_filepath, mode='a', encoding="utf-8", index=False, header=False)
+            # if not data: continue
+            # df1 = pd.DataFrame(data)
+            # print(city, df1.shape, '\n')
+            # df1 = df1[['人次', '均场人次', '城市', '平均票价', '时间', '票房']]
+
+            # save_filepath = 'data/{}.csv'.format(city)
+            # df1.to_csv(save_filepath, mode='a', encoding="utf-8", index=False, header=False)
 
 
 if __name__ == '__main__':
-    pool = ThreadPoolExecutor(20)
+    pool = ThreadPoolExecutor(5)
     MaoYan().run(pool)
     pool.shutdown()
 

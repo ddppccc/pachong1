@@ -8,8 +8,6 @@ import time
 from datetime import datetime, timedelta
 from scrapy.crawler import CrawlerProcess, Settings
 from multiprocessing import Process
-from urllib import parse
-import pymongo
 
 from beike_map import get_esf_code_map
 
@@ -84,30 +82,19 @@ def crawl_city_process(city_name, spider_class):
 
 
 # ======================================================================================================================
-MONGODB_CONFIG = {
-   "host": "8.135.119.198",
-   "port": "27017",
-   "user": "hladmin",
-   "password": parse.quote("Hlxkd3,dk3*3@"),
-   "db": "dianping",
-   "collections": "dianping_collections",
-}
-info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
-            MONGODB_CONFIG['user'],
-            MONGODB_CONFIG['password'],
-            MONGODB_CONFIG['host'],
-            MONGODB_CONFIG['port']),
-            retryWrites="false")['贝壳']['ESF']
+
 
 # 城市 + 拼音映射表
 with open("bk_city_map.json", 'r', encoding='utf-8') as fp:
     cities = json.loads(fp.read())
-    ret = info_base.distinct("城市")
-    ret.append('信阳')
-    #exits_citys = ['东莞', '中山', '佛山', '兰州', '北京', '北海', '南京', '南宁', '南通', '厦门', '合肥', '吉林', '启东', '哈尔滨', '唐山', '如皋', '安庆', '常州', '广州', '廊坊', '张家口', '徐州', '惠州', '无锡', '昆山', '柳州', '桂林', '江门', '江阴', '泉州', '海门', '淮南', '淮安', '清远', '湛江', '漳州', '珠海', '石家庄', '福州', '芜湖', '苏州', '贵阳', '连云港', '遵义', '邯郸', '郑州', '重庆', '镇江', '长春', '防城港', '马鞍山', '深圳']
+    exits_citys = ["东莞", "佛山", "北京", "合肥", "安庆",
+                   "广州", "惠州", "江门", "泉州", "淮南",
+                   "湛江", "漳州", "珠海", "福州", "芜湖",
+                   "重庆", "马鞍山", "厦门", "深圳", "中山",
+                   ]
     cities_dict = cities.copy()
     for k in cities_dict.keys():
-        if k in ret:
+        if k in exits_citys:
             cities.pop(k)
 
 
@@ -150,3 +137,5 @@ if __name__ == '__main__':
     #     p and p.join()
     #
     # print("程序结束")
+
+

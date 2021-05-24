@@ -27,13 +27,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['安居客小区']['info']
+            retryWrites="false")['安居客小区shen']['info']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['安居客小区']['has_spider']
+            retryWrites="false")['安居客小区shen']['has_spider']
 
 
 # city_map = {
@@ -71,99 +71,93 @@ def getCity_Url():
         city_url[city]=url
     return city_url
 
-# def get_html(url):
-#     ip_number = 100
-#     while ip_number > 0:
-#         proxy = get_proxy()
-#         # if not proxy:
-#         #     print("没有ip, 等待2分钟")
-#         #     time.sleep(120)
-#
-#         number = 3
-#         while number > 0:
-#             headers['user-agent'] = get_ua()
-#             try:
-#                 # response = requests.get(url, headers=headers,
-#                 #                         proxies={"https": "https://{}".format(proxy)}, timeout=(2, 5))
-#                 response = requests.get(url, headers=headers, timeout=(2, 5))
-#                 response.encoding = 'utf-8'
-#                 html = etree.HTML(response.text)
-#             except requests.exceptions.ProxyError:
-#                 number = -1
-#                 continue
-#             except requests.exceptions.ConnectionError:
-#                 number = -1
-#                 continue
-#             except Exception as  e:
-#                 print("出错, 正在进行第%s尝试, ip: %s, %s" % (number, proxy, type(e)))
-#                 number -= 1
-#                 continue
-#
-#             # 检查是否出现 58滑动验证
-#             if html.xpath("//div[@class='pop']/p[@class='title']"):
-#                 print("出现滑动验证, 更改ip")
-#                 number = -1
-#                 continue
-#
-#             # 安居客滑动验证, js破解
-#             if html.xpath('//*[@id="captchaForm"]'):
-#                 # print("出现滑动验证, 更改ip")
-#                 # number = -1
-#                 # continue
-#
-#                 try:
-#                     proixy = "https://" + proxy
-#                     message = AJK_Slide_Captcha(proixy).run()
-#                     if message != '校验成功':
-#                         break
-#                 except Exception as e:
-#                     print("错误原因: ", e)
-#                     continue
-#
-#             # ip被封
-#             if "访问过于频繁" in "".join(html.xpath("//h2[@class='item']/text()")):
-#                 print(proxy, "ip被封")
-#                 number = -1
-#                 continue
-#
-#             if response.status_code in [403]:
-#                 print(403, "休息一分钟")
-#                 time.sleep(60)
-#                 continue
-#             return html, response, proxy
-#
-#         # 出错3次, 删除代理池中代理
-#         delete_proxy(proxy)
-#         ip_number -= 1
-#         continue
-#     print("全部出处")
-#     return '', '', ''
 def get_html(url):
-    proxies = {"https": get_proxy()}
-    try:
-        response = requests.get(url, headers=headers,timeout=10)
-        encod = response.apparent_encoding
-        if encod.upper() in ['GB2312', 'WINDOWS-1254']:
-            encod = 'gbk'
-        response.encoding = encod
-        html = etree.HTML(response.text)
-        return html,response,''
-    except Exception as e:
-        print('get_html错误',proxies, e)
-        time.sleep(2)
-        return get_html(url)
+    ip_number = 100
+    while ip_number > 0:
+        proxy = get_proxy()
+        # if not proxy:
+        #     print("没有ip, 等待2分钟")
+        #     time.sleep(120)
+
+        number = 3
+        while number > 0:
+            headers['user-agent'] = get_ua()
+            try:
+                response = requests.get(url, headers=headers,
+                                        proxies={"https": "https://{}".format(proxy)}, timeout=(2, 5))
+                # response = requests.get(url, headers=headers, timeout=(2, 5))
+                response.encoding = 'utf-8'
+                html = etree.HTML(response.text)
+            except requests.exceptions.ProxyError:
+                number = -1
+                continue
+            except requests.exceptions.ConnectionError:
+                number = -1
+                continue
+            except Exception as  e:
+                print("出错, 正在进行第%s尝试, ip: %s, %s" % (number, proxy, type(e)))
+                number -= 1
+                continue
+
+            # 检查是否出现 58滑动验证
+            if html.xpath("//div[@class='pop']/p[@class='title']"):
+                print("出现滑动验证, 更改ip")
+                number = -1
+                continue
+
+            # 安居客滑动验证, js破解
+            if html.xpath('//*[@id="captchaForm"]'):
+                # print("出现滑动验证, 更改ip")
+                # number = -1
+                # continue
+
+                try:
+                    proixy = "https://" + proxy
+                    message = AJK_Slide_Captcha(proixy).run()
+                    if message != '校验成功':
+                        break
+                except Exception as e:
+                    print("错误原因: ", e)
+                    continue
+
+            # ip被封
+            if "访问过于频繁" in "".join(html.xpath("//h2[@class='item']/text()")):
+                print(proxy, "ip被封")
+                number = -1
+                continue
+
+            if response.status_code in [403]:
+                print(403, "休息一分钟")
+                time.sleep(60)
+                continue
+            return html, response, proxy
+
+        # 出错3次, 删除代理池中代理
+        delete_proxy(proxy)
+        ip_number -= 1
+        continue
+    print("全部出处")
+    return '', '', ''
+# def get_html(url):
+#     proxies = {"https": get_proxy()}
+#     try:
+#         response = requests.get(url, headers=headers,timeout=10)
+#         encod = response.apparent_encoding
+#         if encod.upper() in ['GB2312', 'WINDOWS-1254']:
+#             encod = 'gbk'
+#         response.encoding = encod
+#         html = etree.HTML(response.text)
+#         return html,response,''
+#     except Exception as e:
+#         print('get_html错误',proxies, e)
+#         time.sleep(2)
+#         return get_html(url)
 
 
 def get_parseInfo(city,url,area_name):
+    print('当前url',url)
     # has_spider_list = has_spider.find()
-    has_spider_url = []
-    for i in has_spider.find():
-        try:
-            has_spider_url.append(i['url'])
-        except:
-            break
-    if url in has_spider_url:
-        print('数据已抓取')
+    if has_spider.find_one({'url':url}):#################
         return
 
     # 判断是否最后一页
@@ -220,7 +214,7 @@ def get_parseInfo(city,url,area_name):
         item['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         info_base.insert_one(item)
     # 存入数据
-    has_spider.insert_one({'url':url,'city':area_name})
+    has_spider.insert_one({'url':url})
     time.sleep(5)
 
     next_page_url = html.xpath('string(//div[@class="pagination page-bar"]/a[@class="next next-active"]/@href)')
@@ -233,19 +227,64 @@ def get_parseInfo(city,url,area_name):
 
 if __name__ == '__main__':
     city_url=getCity_Url()
-
     for item,url in city_url.items():
         key = item
         print(key,url)
+
+        if info_base.find_one({'city_name':key}):
+            print('当前城市已被爬取或正在爬取：',key)
+            continue
+
         html, response, _ = get_html(url+"/community/")
         area = html.xpath('//ul[@class="region-parents"]/li')[1:-1]
+        aaaaa = response.text
         for area_else in area:
-            url = area_else.xpath('string(./a/@href)')
+            url1 = area_else.xpath('string(./a/@href)')
             area_name = area_else.xpath('string(./a)')
             # has_spider_list = has_spider.find()
             # if url in has_spider_list:
             #     continue
-            get_parseInfo(key,url,area_name)
+
+
+            # 增加判断长度 1250
+            html1, response1, _ = get_html(url1)
+            text = ''.join(html1.xpath('//div[@class="sort-row"]/span/text()'))
+            try:
+                length = int(''.join(re.findall('(\d+)',text)))
+            except:
+                continue
+            if length >= 1250:
+                hlist = html1.xpath('//div[@class="filter-wrap"][1]//ul[@class="line"]/li/a/@href')[1:]
+                for url2 in hlist:
+                    html2, response2, _ = get_html(url2)
+                    text2 = ''.join(html2.xpath('//div[@class="sort-row"]/span/text()'))
+                    try:
+                        length2 = int(''.join(re.findall('(\d+)', text2)))
+                    except:
+                        continue
+                    if length2 >= 1250:
+                        hlist2 = html2.xpath('//div[@class="filter-wrap"][2]//ul[@class="line"]/li/a/@href')[1:]
+                        for url3 in hlist2:
+                            html3, response3, _ = get_html(url3)
+                            text3 = ''.join(html3.xpath('//div[@class="sort-row"]/span/text()'))
+                            try:
+                                length3 = int(''.join(re.findall('(\d+)', text3)))
+                            except:
+                                continue
+                            if length3 >= 1250:
+                                hlist3 = html3.xpath('//div[@class="filter-wrap"][2]//ul[@class="line"]/li/a/@href')[1:]
+                                for url4 in hlist3:
+                                    get_parseInfo(key,url4,area_name)
+                            else:
+                                get_parseInfo(key,url3,area_name)
+                    else:
+                        get_parseInfo(key,url2,area_name)
+            else:
+                get_parseInfo(key,url1,area_name)
+
+
+
+            # get_parseInfo(key,url,area_name)
         # statis_output('{}_{}.csv'.format(key,time.strftime("%Y-%m", time.localtime())),
         #
         #               ['city_name', '标题', '详情url','latitude','longitude', '竣工时间', '地址', '二手房上架数', '在租套数', '价格', '涨跌幅'],

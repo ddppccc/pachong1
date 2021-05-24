@@ -9,16 +9,21 @@ import numpy as np
 from lxml import etree
 
 
+# def get_proxy():
+#     # return requests.get("http://192.168.88.51:5010/get/").json().get('proxy')
+#     return requests.get("http://127.0.0.1:5010/get/").json().get('proxy')
+
 def get_proxy():
-    # return requests.get("http://192.168.88.51:5010/get/").json().get('proxy')
-    return requests.get("http://127.0.0.1:5010/get/").json().get('proxy')
+    return requests.get("http://47.106.223.4:50002/get/").json().get('proxy')
 
 
 def delete_proxy(proxy):
     # html = requests.get("http://192.168.88.51:5010/delete/?proxy={}".format(proxy))
-    html = requests.get("http://127.0.0.1:5010/delete/?proxy={}".format(proxy))
+    # html = requests.get("http://127.0.0.1:5010/delete/?proxy={}".format(proxy))
+    html = requests.get("http://47.106.223.4:50002/delete/?proxy={}".format(proxy))
     return html.text
-
+# def get_proxy():
+#     return requests.get("http://47.106.223.4:50002/get/").json().get('proxy')
 
 # 生成城市映射
 def get_city_map():
@@ -70,8 +75,6 @@ if __name__ == '__main__':
     # 生成时间序列
     data_list = get_data_range()
     print(data_list)
-
-
 
 
 
