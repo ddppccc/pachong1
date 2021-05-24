@@ -16,13 +16,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['碧桂园']['info']
+            retryWrites="false")['房企top100_5月数据']['biguiyuan_cjy']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['碧桂园']['has_spider']
+            retryWrites="false")['房企top100_5月数据']['biguiyuan_has_spider']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -96,9 +96,6 @@ def getInfo(areaList):
         dict['latitude']=area['Lat']
         dict['longitude']=area['Lng']
         dict['数据来源']='碧桂园'
-        # dict['抓取时间']=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-        dict['抓取年份'] = year
-        dict['抓取月份'] = month
         dict['销售情况'] = ''
         dict['装修'] = ''
         dict['容积率'] = ''
@@ -110,12 +107,19 @@ def getInfo(areaList):
         getDetailInfo(dict, area['areaId'])
 def getDetailInfo(dict,areaId):   #获取详细信息
     url='https://xs6.bgy.com.cn/XCXhfy/Handler/FHYPcOfficialHandler.ashx?act=getPropertyDetail&areaId='+areaId
-    res=get_html(url).json()
-    data=res['data'][0]
-    # print(data)
-    dict['区县'] = data['Region']
-    dict['分类'] = data['ProductType']
+    try:
+        res=get_html(url).json()
+        data=res['data'][0]
+        # print(data)
+        dict['区县'] = data['Region']
+        dict['分类'] = data['ProductType']
+    except:
+        dict['区县'] = ''
+        dict['分类'] = ''
     dict['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+    dict['抓取年份'] = year
+    dict['抓取月份'] = month
+    dict['抓取日期'] = day
     print(dict)
     info_base.insert_one(dict)
     has_spider.insert_one({'areaId': areaId})
@@ -124,7 +128,7 @@ def getDetailInfo(dict,areaId):   #获取详细信息
 
 def getallid():
     idlist=[]
-    for page in range(1,92):
+    for page in range(1,93):
         url = 'https://xs6.bgy.com.cn/XCXhfy/Handler/FHYPcOfficialHandler.ashx?act=getPropertyList&pageNum=' + str(page) + '&pageSize=20&sortType=&keyword=&group=&city=&isHome='
         print(url)
         response = get_html(url).json()
@@ -134,7 +138,8 @@ def getallid():
 
 if __name__ == '__main__':
     year = 2021
-    month = 4
+    month = 5
+    day = 23
     sum=[]
     t1 = time.time()
     getallid()
