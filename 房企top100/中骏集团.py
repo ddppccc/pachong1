@@ -24,13 +24,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
     MONGODB_CONFIG['password'],
     MONGODB_CONFIG['host'],
     MONGODB_CONFIG['port']),
-    retryWrites="false")['房企top100']['zhongjunjituan_cjy']
+    retryWrites="false")['房企top100_5月数据']['zhongjunjituan_cjy']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
     MONGODB_CONFIG['user'],
     MONGODB_CONFIG['password'],
     MONGODB_CONFIG['host'],
     MONGODB_CONFIG['port']),
-    retryWrites="false")['房企top100']['zhongjunjituan_has_spider']
+    retryWrites="false")['房企top100_5月数据']['zhongjunjituan_has_spider']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -158,10 +158,11 @@ def getDetailInfo(city,data):
         item['物业费'] = ''
     item['latitude'] = ''
     item['longitude'] = ''
-    item['抓取年份'] = year
-    item['抓取月份'] = month
     item['数据来源'] = '中骏集团'
     item['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+    item['抓取年份'] = year
+    item['抓取月份'] = month
+    item['抓取日期'] = day
     info_base.insert_one(item)
     has_spider.insert_one({'标题url': url})
     print(item)
@@ -204,6 +205,9 @@ def getcity():
 
 
 if __name__ == '__main__':
+    year = 2021
+    month = 5
+    day = 23
     citycode=getcity()
     # print(citycode)
     for city,code in citycode.items():
