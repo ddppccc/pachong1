@@ -237,9 +237,9 @@ def get_data(city,qx,houses):
         items['城市'] = city
         items['区县'] = qx
         items['标题url'] = house.xpath("./a/@href")[0]
-        # if url_data.find_one({'url': items['标题url']}):
-        #     print('当前url已爬取')
-        #     continue
+        if url_data.find_one({'url': items['标题url']}):
+            print('当前url已爬取')
+            continue
         items['小区'] = house.xpath("./a/@title")[0]
         houseInfo = "".join(house.xpath("./div/div[2]/div[2]/text()")).replace(" ", "").replace("\n", "")
 
@@ -308,8 +308,8 @@ def get_data(city,qx,houses):
 
         items['地址'] = house.xpath("./div[@class='info clear']/div[@class='address']/div/div/a/text()")[0]
         items['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-        # info_base.insert_one(items)
-        # url_data.insert_one({'url':items['标题url']})
+        info_base.insert_one(items)
+        url_data.insert_one({'url':items['标题url']})
         print(items)
 
 
@@ -319,9 +319,9 @@ def get_data(city,qx,houses):
 def run():
     citycod = get_city()
     for city in citycod:
-        # if info_base.find_one({"城市": city}):
-        #     print("这个城市正在抓或者已经抓过了: %s" % city)
-        #     continue
+        if info_base.find_one({"城市": city}):
+            print("这个城市正在抓或者已经抓过了: %s" % city)
+            continue
         cityurl = citycod[city]
         qx = get_qx('http://'+cityurl+'.ke.com/ershoufang/')
         print(type(qx))
