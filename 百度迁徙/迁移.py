@@ -1,9 +1,12 @@
 # encoding=utf-8
-import pandas as pd
+import random
+
 import requests
 import re
 import json
 import time
+import os
+import threading
 
 from config import create_assist_date, c_map, dataType
 import pymongo
@@ -22,54 +25,63 @@ qianruCity_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙_迁徙数据']['qianruCity']
+            retryWrites="false")['百度迁徙_迁徙数据_5月数据']['qianruCity']
 qianruCity_has = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙_迁徙数据']['qianruCity_has']
+            retryWrites="false")['百度迁徙_迁徙数据_5月数据']['qianruCity_has']
 
 qianchuCity_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙_迁徙数据']['qianchuCity']
+            retryWrites="false")['百度迁徙_迁徙数据_5月数据']['qianchuCity']
 qianchuCity_has = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙_迁徙数据']['qianchuCity_has']
+            retryWrites="false")['百度迁徙_迁徙数据_5月数据']['qianchuCity_has']
 
 qianruProvince_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙_迁徙数据']['qianruProvince']
+            retryWrites="false")['百度迁徙_迁徙数据_5月数据']['qianruProvince']
 qianruProvince_has = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙_迁徙数据']['qianruProvince_has']
+            retryWrites="false")['百度迁徙_迁徙数据_5月数据']['qianruProvince_has']
 
 qianchuProvince_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙_迁徙数据']['qianchuProvince']
+            retryWrites="false")['百度迁徙_迁徙数据_5月数据']['qianchuProvince']
 qianchuProvince_has = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙_迁徙数据']['qianchuProvince_has']
+            retryWrites="false")['百度迁徙_迁徙数据_5月数据']['qianchuProvince_has']
+hascity = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['百度迁徙_迁徙数据_5月数据']['hascity']
 
-
+def clear():
+    while True:
+        time.sleep(1800)
+        os.system('cls')
 # 迁入到市
 def qy_city(cityCode, date, dtType):
     headers = {
@@ -206,7 +218,15 @@ def run(dateList, start_date, end_date):
     qianchu_city = []
     qianchu_province = []
     for level, cityList in dataType.items():
+        # if level == 'cityLevel':continue
+        # while True:
+        #     city=random.choice(cityList)
+
         for city in cityList:
+
+            if hascity.find_one({'已爬取城市': city}):
+                print('该城市已抓取')
+                continue
             print(city)
             # if city not in ['全国']: continue
             for date in dateList:
@@ -230,6 +250,9 @@ def run(dateList, start_date, end_date):
                         qr["比例(%)"] = qr.pop("value")
                         qr["迁入来源地"] = qr.pop("city_name")
                         qr['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+                        qr['抓取年份']=year
+                        qr['抓取月份']=month
+                        qr['抓取日期']=day
 
                         # print(f'{qr=}')
                         # qianru_city.append(qr)
@@ -249,6 +272,9 @@ def run(dateList, start_date, end_date):
                         qr["比例(%)"] = qr.pop("value")
                         qr["迁入来源地"] = qr.pop("province_name")
                         qr['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+                        qr['抓取年份'] = year
+                        qr['抓取月份'] = month
+                        qr['抓取日期'] = day
                         # print(f'{qr=}')
                         # qianru_province.append(qr)
                         # print(qianruProvince_base.count_documents(qr))
@@ -267,6 +293,9 @@ def run(dateList, start_date, end_date):
                         qc["比例(%)"] = qc.pop("value")
                         qc["迁出目的地"] = qc.pop("city_name")
                         qc['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+                        qc['抓取年份'] = year
+                        qc['抓取月份'] = month
+                        qc['抓取日期'] = day
                         # print(f'{qc=}')
 
                         # qianchu_city.append(qc)
@@ -285,6 +314,9 @@ def run(dateList, start_date, end_date):
                         qc["比例(%)"] = qc.pop("value")
                         qc["迁出目 的地"] = qc.pop("province_name")
                         qc['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+                        qc['抓取年份'] = year
+                        qc['抓取月份'] = month
+                        qc['抓取日期'] = day
                         # print(f'{q=}')
 
                         # qianchu_province.append(q)
@@ -292,7 +324,8 @@ def run(dateList, start_date, end_date):
                         qianchuProvince_base.insert_one(qc)
                         print(qc)
                         # print(qianchuProvince_base.count_documents(qc))
-
+            if not hascity.find_one({'已爬取城市': city}):
+                hascity.insert_one({'已爬取城市': city})
 
     # qianru_city_df = pd.DataFrame(data=qianru_city)
     # qianru_province_df = pd.DataFrame(data=qianru_province)
@@ -311,8 +344,14 @@ def run(dateList, start_date, end_date):
 
 if __name__ == '__main__':
     # TODO 时间
-    start_date = '2021-01-01'
-    end_date = '2021-04-19'
+    t1 = threading.Thread(target=clear)
+    t1.setDaemon(True)
+    t1.start()
+    start_date = '2021-04-20'
+    end_date = '2021-05-23'
+    year=2021
+    month=5
+    day=23
     print(start_date, end_date)
     dateList = create_assist_date(start_date, end_date)
     run(dateList, start_date, end_date)
