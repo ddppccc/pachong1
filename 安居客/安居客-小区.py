@@ -45,7 +45,7 @@ headers = {
     "sec-fetch-mode": "navigate",
     "sec-fetch-user": "?1",
     'Connection': 'close',
-    "Host": "www.anjuke.com",
+    # "Host": "www.anjuke.com",
     "upgrade-insecure-requests": "1",
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36"
 }
@@ -242,13 +242,13 @@ if __name__ == '__main__':
     city_url = getCity_Url()
     for key, url in city_url.items():
         print(key, url)
-        # if has_spider.count({key: '正在爬取21111'}):
-        #     print('正在爬取或已爬取')
-        #     continue
-        # elif has_spider.count({key: '已爬取'}):
-        #     print('正在爬取或已爬取')
-        #     continue
-        # has_spider.insert_one({key: '正在爬取21111'})
+        if has_spider.count({key: '正在爬取21111'}):
+            print('正在爬取或已爬取')
+            continue
+        elif has_spider.count({key: '已爬取'}):
+            print('正在爬取或已爬取')
+            continue
+        has_spider.insert_one({key: '正在爬取21111'})
 
         html, responseaaa, _ = get_html(url + "/community")
         if html == '':
@@ -257,6 +257,7 @@ if __name__ == '__main__':
         if area == []:
             continue
         aaaaa = responseaaa.text
+        urlaaa = responseaaa.url
         for area_else in area:
             l = []
             url1 = area_else.xpath('string(./a/@href)')
