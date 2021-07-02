@@ -468,6 +468,18 @@ def get_regions(city_name, GetType):
                    '周边' not in value and '全部' not in value}
 
         return regions
+    elif GetType == '租房':
+        url = 'https://{}.zu.fang.com/'.format(city_map[city_name])
+        if city_name == '北京':
+            url = 'https://zu.fang.com/'
+        print('\n将在 %s 爬取行政区' % url)
+        html = get_html(url, headers=headers)
+
+        regions_xpath = '//dl[@id="rentid_D04_01"]//a'
+        regions = dict(zip(html.xpath(regions_xpath + '/@href'), html.xpath(regions_xpath + '/text()')))
+        # regions = {key.rsplit('/', 2)[-2]: value for key, value in regions.items() if
+        #            '周边' not in value and '全部' not in value}
+        return regions
 
     else:  # 小区
         url = 'https://{}.esf.fang.com/housing/'.format(city_map[city_name])
@@ -518,7 +530,37 @@ def make_url(city_name, url_fmt, GetType, city_code='suoxie'):
         return regions
     else:
         return {}
+def zfmake_url(city_name, url_fmt, GetType, city_code='suoxie'):
+    # 获取城市中文名称
+    # filter()
+    # 函数用于过滤序列，过滤掉不符合条件的元素，返回由符合条件元素组成的新列表。
+    # 该接收两个参数，第一个为函数，第二个为序列，序列的每个元素作为参数传递给函数进行判，然后将值为True的返回到新列表中
+    city_name = list(filter(lambda x: city_name in x, city_map))[0]
 
+    # 获取城市名称拼音
+    code = city_map.get(city_name)
+
+    print(code, code)
+    if city_name == '绍兴' and GetType == '租房':
+        code = 'shaoxing'
+    if code:
+        # 获取城市的行政区划分列表
+        regions = {url_fmt.format(code, key): value for key, value in get_regions(city_name, GetType).items()}
+
+        print(city_name, code, '\n提取到的分区: ', regions)
+        return regions
+    elif city_name == '北京':
+        regions = {'https://{}zu.fang.com/{}/'.format(code, key): value for key, value in
+                   get_regions(city_name, GetType).items()}
+        if GetType != '租房':
+            regions = {'https://{}zu.fang.com/housing/{}/'.format(code, key): value for key, value in
+                       get_regions(city_name, GetType).items()}
+
+        print(city_name, code, '\n提取到的分区: ', regions)
+
+        return regions
+    else:
+        return {}
 city_map={
   "海南省": "hn",
   "阿坝州": "abazhou",

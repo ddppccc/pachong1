@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 import time
 import requests
 import re
-
+###
 from selenium.webdriver.support.wait import WebDriverWait
 
 
@@ -52,7 +52,7 @@ s.mount('https://', HTTPAdapter(max_retries=3))
 headers = {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
         "Accept-Encoding": "gzip, deflate, br",
-        # 'Host': 'cq.ke.com',
+        # 'Host': 'www.ke.com',
         "Accept-Language": "zh-CN,zh;q=0.9",
         "upgrade-insecure-requests": "1",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36",
@@ -156,7 +156,10 @@ def get_qx(url0):
         url1 = ''.join(re.findall('(.+)/ershoufang', url0)) + ur
         tree1 = get_html(url1)
         strnum = ''.join(tree1.xpath('//div[@class="resultDes clear"]/h2/span/text()'))
-        length0 = int(strnum)
+        try:
+            length0 = int(strnum)
+        except:
+            length0 = 0
         numpg0 = int(length0/30) + 2
         if length0 > 3000:
             urlList = []
@@ -164,13 +167,19 @@ def get_qx(url0):
                 it2 = {}
                 url2 = url1 + 'p' + str(i)
                 tree2 = get_html(url2)
-                length1 = int(''.join(tree2.xpath('//div[@class="resultDes clear"]/h2/span/text()')))
+                try:
+                    length1 = int(''.join(tree2.xpath('//div[@class="resultDes clear"]/h2/span/text()')))
+                except:
+                    length1 = 0
                 if length1 > 3000:
                     for j in range(1, 4):
                         it3 = {}
                         url3 = url1 + 'de' + str(j) + 'p' + str(i)
                         tree3 = get_html(url3)
-                        length2 = int(''.join(tree3.xpath('//div[@class="resultDes clear"]/h2/span/text()')))
+                        try:
+                            length2 = int(''.join(tree3.xpath('//div[@class="resultDes clear"]/h2/span/text()')))
+                        except:
+                            length2 = 0
                         if length2 == length0:
                             continue
                         elif length2 == length1:
@@ -182,7 +191,10 @@ def get_qx(url0):
                                 it4 = {}
                                 url4 = ''.join(re.findall('(.+)/ershoufang', url0)) + ur4
                                 tree4 = get_html(url4)
-                                length3 = int(''.join(tree4.xpath('//div[@class="resultDes clear"]/h2/span/text()')))
+                                try:
+                                    length3 = int(''.join(tree4.xpath('//div[@class="resultDes clear"]/h2/span/text()')))
+                                except:
+                                    length3 = 0
                                 if length3 == length0:
                                     continue
                                 elif length3 == length1:
@@ -237,9 +249,9 @@ def get_data(city,qx,houses):
         items['城市'] = city
         items['区县'] = qx
         items['标题url'] = house.xpath("./a/@href")[0]
-        if url_data.find_one({'url': items['标题url']}):
-            print('当前url已爬取')
-            continue
+        # if url_data.find_one({'url': items['标题url']}):
+        #     print('当前url已爬取')
+        #     continue
         items['小区'] = house.xpath("./a/@title")[0]
         houseInfo = "".join(house.xpath("./div/div[2]/div[2]/text()")).replace(" ", "").replace("\n", "")
 
@@ -309,7 +321,7 @@ def get_data(city,qx,houses):
         items['地址'] = house.xpath("./div[@class='info clear']/div[@class='address']/div/div/a/text()")[0]
         items['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         info_base.insert_one(items)
-        url_data.insert_one({'url':items['标题url']})
+        # url_data.insert_one({'url':items['标题url']})
         print(items)
 
 
@@ -324,7 +336,6 @@ def run():
             continue
         cityurl = citycod[city]
         qx = get_qx('http://'+cityurl+'.ke.com/ershoufang/')
-        print(type(qx))
         for region_name, base_urlss in qx.items():  # {区县：[{url:数据条数},...] , ......}
             for base_urls in base_urlss:  # base_urlss：  [{url:数据条数},...]
                 base_url = list(base_urls.keys())[0]  # url
@@ -338,7 +349,11 @@ def run():
                     houses = response.xpath("//ul[@log-mod='list']//li[@class='clear']")
                     if houses:
                         print('运行', url)
+                        if url_data.find_one({'url': url}):
+                            print('当前url已爬取')
+                            continue
                         get_data(city, region_name, houses)
+                        url_data.insert_one({'url': url})
                     else:
                         break
             #             yield scrapy.Request(url=url,
