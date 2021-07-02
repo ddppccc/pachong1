@@ -29,13 +29,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['土地市场网招拍挂_土地公示详情']['info']
+            retryWrites="false")['土地市场网招拍挂']['地块公示_数据_202107']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['土地市场网招拍挂_土地公示详情']['has_spider']
+            retryWrites="false")['土地市场网招拍挂']['地块公示_去重_202107']
 
 
 # base64  转图片
@@ -268,6 +268,7 @@ def parse(df_map):
             item['土地使用权限'] = format_str(table.xpath(
                 ".//td[contains(text(), '土地使用条件：')]/following-sibling::td[1]/text()").get() or '')
             item['备注'] = format_str(table.xpath( ".//td[contains(text(), '备')]/following-sibling::td[1]/text()").get() or '')
+            item['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
             print(item)
             info_base.insert_one(item)
         has_spider.insert_one({'标题url': info_url})

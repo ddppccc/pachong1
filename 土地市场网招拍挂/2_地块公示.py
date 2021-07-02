@@ -237,13 +237,13 @@ def parse_part_page(bs, time_part):
 
 
 def main():
-    startdate, enddate = '2021-1-1', '2021-5-19'
+    startdate, enddate = '2021-6-7', '2021-7-1'
     date_list = get_time_range_list(startdate, enddate)
     print(date_list)
 
     # op = webdriver.ChromeOptions()
     # op.add_argument('-headless')
-    bs = webdriver.Chrome()
+    bs = webdriver.Firefox()
     bs.get(url)
     if '验证' in bs.page_source:
         print('等待验证')
