@@ -151,7 +151,12 @@ def get_(url, proxieslist):
 #             # print('详情error!! ', e)
 #             continue
 #         """
-
+def get_pg(city, label_id, label, lon, lat, proxieslist):
+    for pg in range(1,200):
+        print(city, '页数: ', pg, label, label_id,)  # 获取到数据
+        proxieslist = get_html(pg, label_id, label, lon, lat, proxieslist)
+        if proxieslist == '最后一页':
+            return
 def get_html(page, label_id, label, lon, lat, proxieslist):
     s = 0
     url = 'https://www.xiaohongshu.com/web_api/sns/v1/page/poi/5a4b1086800086366cca864e/list?page={page}&page_size=20&req_type=nearby_filters&orig_filter_id={label_id}&latitude={lat}&longitude={lon}&search_id=b3187ee1-bc9f-4cae-a70d-f08aec08550f&sort_by=smart&category_id=&region_id='.format( page=page, label_id=label_id, lat=lat, lon=lon )
@@ -174,7 +179,7 @@ def get_html(page, label_id, label, lon, lat, proxieslist):
         }
         if count > 1:
             print('结束')
-            return proxieslist
+            return '最后一页'
         try:
             # print("proxy: ",proxy)
 
@@ -187,7 +192,7 @@ def get_html(page, label_id, label, lon, lat, proxieslist):
             resJson = res.json()
             if not resJson['data']:
                 count += 1
-                proxieslist = []
+                proxieslist = 0
                 print('没有data')
                 s += 1
                 continue
@@ -258,7 +263,7 @@ def get_info(url, item, proxieslist):
 
 
 def run(city, lon, lat, proxieslist):
-    p = []
+    lis = []
     label_dict = {
         "拍照地": "local.photo",
         "餐厅": "local.restaurant",
@@ -272,14 +277,9 @@ def run(city, lon, lat, proxieslist):
         "酒店": "local.hotel"
     }
     for label, label_id in label_dict.items():
-        for page in range(1, 200):
-            # if page != 100:continue
-
-            print(city, '页数: ', page, label, label_id,)  # 获取到数据
-            dd = pool.submit(get_html, page, label_id, label, lon, lat, proxieslist)
-            # print(item)
-            p.append(dd)
-    proxieslist = [obj.result() for obj in p][-1]
+        dd = pool.submit(get_pg, city, label_id, label, lon, lat, proxieslist)
+        lis.append(dd)
+    proxieslist = lis[-1].result()
     return proxieslist
 
 
