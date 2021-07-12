@@ -26,13 +26,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['小红书']['info']
+            retryWrites="false")['小红书']['数据_202107']
 url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['小红书']['已爬取url']
+            retryWrites="false")['小红书']['url_202107']
 
 def get_proxy():
     return requests.get("http://47.106.223.4:50002/get/").json().get('proxy')
@@ -71,123 +71,149 @@ def get_ua():
     user_agent = random.choice(user_agents)  # random.choice(),从列表中随机抽取一个对象
     return user_agent
 
-def get_(url):
-    # """
-    ip_number = 10
-    while ip_number > 0:
-        proxy = get_proxy()
-        if not proxy:
-            print("没有ip, 等待2分钟")
-            time.sleep(120)
 
-        number = 2
-        while number > 0:
+def get_(url, proxieslist):
+    s = 0
+    while True:
+        try:
             headers = {
                 'User-Agent': get_ua()
             }
-            try:
-                res = requests.get(url, headers=headers,proxies={
-                                           "https": "https://{}".format(proxy),
-                                           "http": "http://{}".format(proxy)
-                                        }, verify=False, timeout=(2, 5))
-                if '正在加载' in res.text:
-                    print('详情信息: 出现验证', )
-                    break
-                return res
-            except Exception as e:
-                number -= 1
-                # print('error!! ', e)
-                continue
-        delete_proxy(proxy)
-        ip_number -= 1
-        continue
-    return ''
-    # """
-    """
-    while True:
-        headers = {
-            'Host': 'www.xiaohongshu.com',
-            'User-Agent': get_ua()
-        }
-        try:
-            res = requests.get(url, headers=headers, verify=False, timeout=(2, 5))
-            if '正在加载' in res.text:
+            if len(proxieslist) > 0:
+                proxies = proxieslist
+            else:
+                proxy = get_proxy()
+                proxies = {"https": proxy ,"http": proxy}
+            response = requests.get(url, headers=headers,proxies=proxies, verify=False, timeout=(2, 5))
+            encod = response.apparent_encoding
+            if encod.upper() in ['GB2312', 'WINDOWS-1254']:
+                encod = 'gbk'
+            response.encoding = encod
+            if '正在加载' in response.text:
                 print('详情信息: 出现验证', )
-                input('详情出现验证码: ')
+                proxieslist = []
                 continue
-            return res
+            proxieslist = proxies
+            print(s, proxies, '获取成功')
+            return response, proxieslist
         except Exception as e:
-            # print('详情error!! ', e)
+            s += 1
+            proxieslist = []
+
+            # print('get_html错误', e)
             continue
-        """
+# def get_(url):
+#     # """
+#     ip_number = 10
+#     while ip_number > 0:
+#         proxy = get_proxy()
+#         if not proxy:
+#             print("没有ip, 等待2分钟")
+#             time.sleep(120)
+#
+#         number = 2
+#         while number > 0:
+#             headers = {
+#                 'User-Agent': get_ua()
+#             }
+#             try:
+#                 res = requests.get(url, headers=headers,proxies={
+#                                            "https": "https://{}".format(proxy),
+#                                            "http": "http://{}".format(proxy)
+#                                         }, verify=False, timeout=(2, 5))
+#                 if '正在加载' in res.text:
+#                     print('详情信息: 出现验证', )
+#                     break
+#                 return res
+#             except Exception as e:
+#                 number -= 1
+#                 # print('error!! ', e)
+#                 continue
+#         delete_proxy(proxy)
+#         ip_number -= 1
+#         continue
+#     return ''
+#     # """
+#     """
+#     while True:
+#         headers = {
+#             'Host': 'www.xiaohongshu.com',
+#             'User-Agent': get_ua()
+#         }
+#         try:
+#             res = requests.get(url, headers=headers, verify=False, timeout=(2, 5))
+#             if '正在加载' in res.text:
+#                 print('详情信息: 出现验证', )
+#                 input('详情出现验证码: ')
+#                 continue
+#             return res
+#         except Exception as e:
+#             # print('详情error!! ', e)
+#             continue
+#         """
 
-def get_html(page, label_id, data_all, label, lon, lat):
-
+def get_html(page, label_id, label, lon, lat, proxieslist):
+    s = 0
     url = 'https://www.xiaohongshu.com/web_api/sns/v1/page/poi/5a4b1086800086366cca864e/list?page={page}&page_size=20&req_type=nearby_filters&orig_filter_id={label_id}&latitude={lat}&longitude={lon}&search_id=b3187ee1-bc9f-4cae-a70d-f08aec08550f&sort_by=smart&category_id=&region_id='.format( page=page, label_id=label_id, lat=lat, lon=lon )
     print(url)
 
     # 根据url查重
     if url_data.find_one({'已爬取的url': url}):
         print('已爬取')
-        return 0
+        return proxieslist
 
-
+    count = 0
     ip_number = 10
     while ip_number > 0:
         headers = {
             'Referer': 'https://www.xiaohongshu.com/page/cities/5a4b1086800086366cca864e/nearby?naviHidden=yes',
+            "Accept-Language": "zh-CN,zh;q=0.9",
+            "upgrade-insecure-requests": "1",
+            "Accept-Encoding": "gzip, deflate, br",
             'User-Agent': get_ua()
         }
-        proxy = get_proxy()
-        if not proxy:
-            print("没有ip, 等待2分钟")
-            time.sleep(120)
+        if count > 1:
+            print('结束')
+            return proxieslist
+        try:
+            # print("proxy: ",proxy)
 
-        number = 2
-        count = 0
-        while number > 0:
-            if count > 1:
-                print('结束')
-                return 0
-            try:
-                # print("proxy: ",proxy)
-
-
-                res = requests.get(url, headers=headers, verify=False, timeout=(2, 5), proxies={
-                                           "https": "https://{}".format(proxy),
-                                           "http": "http://{}".format(proxy)
-                                        })
-                url_data.insert_one({'已爬取的url':url})
-
-                if 'data' not in res.text:
-                    print('if data')
-                    # print('出现滑动验证', res.text, proxy)
-                    break
-                resJson = res.json()
-
-                if not resJson['data']:
-                    count += 1
-                    print('没有data')
-                    continue
-                parse(resJson, data_all, label)
-                return
-            except Exception as e:
-                number -= 1
-                print('error!!!', e)
+            if len(proxieslist) > 0:
+                proxies = proxieslist
+            else:
+                proxy = get_proxy()
+                proxies = {"https": proxy, "http": proxy}
+            res = requests.get(url, headers=headers, proxies=proxies, verify=False, timeout=(2, 5))
+            yztext = res.text
+            if 'data' not in yztext:
+                s += 1
+                ip_number -= 1
+                print('出现滑动验证', ip_number, res.text, proxies)
                 continue
-        delete_proxy(proxy)
-        ip_number -= 1
-        continue
-    return 1
+            resJson = res.json()
+
+            if not resJson['data']:
+                count += 1
+                print('没有data')
+                s += 1
+                continue
+            print(s, proxieslist)
+            proxieslist = parse(resJson, label, proxieslist)
+            url_data.insert_one({'已爬取的url':url})
+            return proxieslist
+        except Exception as e:
+            # print('error!!!', e)
+            proxieslist = []
+            s += 1
+            continue
+    return proxieslist
 
 
-def parse(response, data_all, label):
+def parse(response, label, proxieslist):
     data_list = response['data']
     if not data_list:
         print('没有数据')
-        return
-
-    p = []
+        return proxieslist
     for data in data_list:
         item = {}
         item['_id'] = data['id']
@@ -207,15 +233,12 @@ def parse(response, data_all, label):
         # item.update(d)
         # print(item)
         # data_all.append(item)
-
-        dd = pool.submit(get_info, item['详情链接'], item, data_all)
-        #print(item)
-        p.append(dd)
-    [obj.result() for obj in p]
+        proxieslist = get_info(item['详情链接'], item, proxieslist)
+    return proxieslist
     # return data_all
 
-def get_info(url, item, data_all):
-    res = get_(url)
+def get_info(url, item, proxieslist):
+    res, proxieslist = get_(url, proxieslist)
     address = re.findall('"address":"(.*)","coordinate"', res.text)
     latitude = re.findall('"latitude":(.*),"longitude', res.text)
     longitude = re.findall('longitude":(.*)},"telephone', res.text)
@@ -230,10 +253,11 @@ def get_info(url, item, data_all):
     print(item)
     #保存数据
     info_base.insert_one(item)
-    data_all.append(item)
+    return proxieslist
 
 
-def run(city, lon, lat):
+def run(city, lon, lat, proxieslist):
+    p = []
     label_dict = {
         "拍照地": "local.photo",
         "餐厅": "local.restaurant",
@@ -246,28 +270,16 @@ def run(city, lon, lat):
         "变美": "local.beauty",
         "酒店": "local.hotel"
     }
-    path = 'data/{}.csv'.format(city)
-    if os.path.exists(path):
-        f = open(path, mode='r', encoding='utf-8')
-        df1 = pd.read_csv(f)
-        f.close()
-        try:
-            labels = set(df1['label'].tolist())
-        except:
-            labels = ''
-    else:
-        labels = ''
-    print('labels: ', labels)
     for label, label_id in label_dict.items():
-        if label in labels: print(label, '已经存在'); continue
-        data_all = []
         for page in range(1, 200):
             # if page != 100:continue
 
-            print(city, '页数: ', page, label, label_id,)
-            t = get_html(page, label_id, data_all, label=label, lon=lon, lat=lat)   # 获取到数据
-            if t == 0:
-                break
+            print(city, '页数: ', page, label, label_id,)  # 获取到数据
+            dd = pool.submit(get_html, page, label_id, label, lon, lat, proxieslist)
+            # print(item)
+            p.append(dd)
+    proxieslist = [obj.result() for obj in p][-1]
+    return proxieslist
 
 
 
@@ -275,7 +287,9 @@ def run(city, lon, lat):
 
 
 if __name__ == '__main__':
-    pool = ThreadPoolExecutor(10)
+    # url_data.delete_many({})
+    # info_base.delete_many({})
+    pool = ThreadPoolExecutor(20)
     a = '''121.487899486 31.24916171 上海-上海市
 100.092612914 23.8878061038 云南省-临沧市
 100.229628399 26.8753510895 云南省-丽江市
@@ -628,6 +642,7 @@ if __name__ == '__main__':
 127.500830295 50.2506900907 黑龙江省-黑河市
 123.987288942 47.3476998134 黑龙江省-齐齐哈尔市'''
     # 123.987288942 47.3476998134 黑龙江省-齐齐哈尔市
+    proxieslist = []
     for i in a.split('\n'):
         print(i)
         city = i.split(' ')[2].split('-')[1].strip()
@@ -645,6 +660,13 @@ if __name__ == '__main__':
             '安康市','延安市','铜川市','海北藏族自治州','果洛藏族自治州','海南藏族自治州','玉树藏族自治州',
             '黄南藏族自治州','九龙','新界','香港岛','伊春市','七台河市','大兴安岭地区','绥化市','鸡西市'
 ''        ]: continue
-
-        run(city, lon, lat)
+        if url_data.count({city: '已爬取'}):
+            print('已爬取')
+            continue
+        elif url_data.count({city: '正在爬取'}):
+            print('正在爬取')
+            continue
+        url_data.insert_one({city: '正在爬取'})
+        proxieslist = run(city, lon, lat, proxieslist)
+        url_data.insert_one({city: '已爬取'})
     pool.shutdown()
