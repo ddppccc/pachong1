@@ -242,13 +242,13 @@ if __name__ == '__main__':
     city_url = getCity_Url()
     for key, url in city_url.items():
         print(key, url)
-        if has_spider.count({key: '正在爬取21111'}):
+        if has_spider.count({key: '正在爬取21111w'}):
             print('正在爬取或已爬取')
             continue
         elif has_spider.count({key: '已爬取'}):
             print('正在爬取或已爬取')
             continue
-        has_spider.insert_one({key: '正在爬取21111'})
+        has_spider.insert_one({key: '正在爬取21111w'})
 
         html, responseaaa, _ = get_html(url + "/community")
         if html == '':
