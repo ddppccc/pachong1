@@ -25,13 +25,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
     MONGODB_CONFIG['password'],
     MONGODB_CONFIG['host'],
     MONGODB_CONFIG['port']),
-    retryWrites="false")['房天下租房shen']['租房_数据_202105']
+    retryWrites="false")['房天下租房shen']['租房_数据_202107']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
     MONGODB_CONFIG['user'],
     MONGODB_CONFIG['password'],
     MONGODB_CONFIG['host'],
     MONGODB_CONFIG['port']),
-    retryWrites="false")['房天下租房shen']['租房_去重_202105']
+    retryWrites="false")['房天下租房shen']['租房_去重_202107']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -79,18 +79,35 @@ def get_proxy():
         print('暂无ip')
 
 
-def get_html(url):
-    proxies = {"https": get_proxy()}
-    try:
-        response = requests.get(url, headers=headers, proxies=proxies, timeout=10)
-        encod = response.apparent_encoding
-        if encod.upper() in ['GB2312', 'WINDOWS-1254']:
-            encod = 'gbk'
-        response.encoding = encod
-        return response
-    except Exception as e:
-        print('get_html错误', proxies, e)
-        return get_html(url)
+def get_html(url, proxieslist):
+    s = 0
+    while True:
+        try:
+            if len(proxieslist) > 0:
+                proxies = proxieslist
+            else:
+                proxy = get_proxy()
+                proxies = {"https": proxy}
+            response = requests.get(url, headers=headers, proxies=proxies, timeout=10)
+            encod = response.apparent_encoding
+            if encod.upper() in ['GB2312', 'WINDOWS-1254']:
+                encod = 'gbk'
+            response.encoding = encod
+            if '人机认证' in response.text:
+                print('该IP需要人机验证: ', proxieslist)
+                proxieslist = []
+                continue
+            # 可以增加一个判断是否成功的代码，如果页面不是所需页面，proxieslist赋值为空
+            proxieslist = proxies
+            print(s, proxies, '获取成功')
+            return response, proxieslist
+        except Exception as e:
+            s += 1
+            proxieslist = []
+
+            # print('get_html错误', e)
+            continue
+    return
 
 
 class Esf_FTX:
@@ -122,7 +139,7 @@ class Esf_FTX:
                 number -= 1
                 continue
 
-    def get_data(self, baseUrl, city, dist):
+    def get_data(self, baseUrl, city, dist, proxieslist):
         print('当前url:',baseUrl)
         """
         解析每一个页面
@@ -138,7 +155,7 @@ class Esf_FTX:
 
 
 
-        tree = self.get_tree(baseUrl)
+        tree, proxieslist = self.get_tree(baseUrl, proxieslist)
         if tree == '':
             return
         house_box = tree.xpath('//dd[@class="info rel"]')
@@ -180,17 +197,18 @@ class Esf_FTX:
             item_dict['数据来源'] = '房天下'
             item_dict['抓取年份'] = Year
             item_dict['抓取月份'] = Month
-            item_dict['抓取时间'] = '2021-05-28'
+            item_dict['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 
             print(item_dict)
 
             info_base.insert_one(item_dict)
         has_spider.insert_one({'url': baseUrl})
+        return proxieslist
 
-    def get_tree(self,dist_url):
+    def get_tree(self,dist_url, proxieslist):
         number_tz = 0
         while True:
-            res = get_html(dist_url)
+            res, proxieslist = get_html(dist_url, proxieslist)
             if res:
                 tree = etree.HTML(res.text)
             else:
@@ -202,10 +220,10 @@ class Esf_FTX:
                 if number_tz > 3:
                     break
                 continue
-            return tree
-        return ''
+            return tree, proxieslist
+        return '', proxieslist
 
-    def get_page(self, city, dist_dict, GetType, exists_region):
+    def get_page(self, city, dist_dict, proxieslist):
         """
         获取每个区下的页面
         """
@@ -229,42 +247,54 @@ class Esf_FTX:
             #             break
             #         continue
 
-            tree = self.get_tree(dist_url)
+            tree, proxieslist = self.get_tree(dist_url, proxieslist)
             if tree == '':
                 continue
 
             # page_number = tree.xpath("//div[@class='page_al']/p[last()]/text()") or \
             #               tree.xpath("//div[@class='page_al']/span[contains(text(), '共')]/text()")
             numbertext = ''.join(tree.xpath('//div[@class="fanye"]/span/text()'))
-            number = int(''.join(re.findall('(\d+)',numbertext)))
+            try:
+                number = int(''.join(re.findall('(\d+)',numbertext)))
+            except:
+                continue
             # 数据量过多时：
             if number == 100:
                 dist_url1_list = tree.xpath('//dl[@id="rentid_D04_02"]/dd/a/@href')[1:]
                 for url1 in dist_url1_list:
                     dist_url1 = starturl + url1
-                    tree1 = self.get_tree(dist_url1)
+                    tree1, proxieslist = self.get_tree(dist_url1, proxieslist)
                     if tree1 == '':
                         continue
                     numbertext1 = ''.join(tree1.xpath('//div[@class="fanye"]/span/text()'))
-                    number1 = int(''.join(re.findall('(\d+)', numbertext1)))
+                    try:
+                        number1 = int(''.join(re.findall('(\d+)', numbertext1)))
+                    except:
+                        continue
                     if number1 == 100:
                         dist_url2_list = tree1.xpath('//dl[@id="rentid_D04_03"]/dd/a/@href')[1:]
                         for url2 in dist_url2_list:
                             dist_url2 = starturl + url2
-                            tree2 = self.get_tree(dist_url2)
+                            tree2, proxieslist = self.get_tree(dist_url2, proxieslist)
                             if tree2 == '':
                                 continue
                             numbertext2 = ''.join(tree2.xpath('//div[@class="fanye"]/span/text()'))
-                            number2 = int(''.join(re.findall('(\d+)', numbertext2)))
+                            try:
+                                number2 = int(''.join(re.findall('(\d+)', numbertext2)))
+                            except:
+                                continue
                             if number2 == 100:
                                 dist_url3_list = tree2.xpath('//div[@id="rentid_D04_08"]/a/@href')[1:]
                                 for url3 in dist_url3_list:
                                     dist_url3 = starturl + url3
-                                    tree3 = self.get_tree(dist_url3)
+                                    tree3, proxieslist = self.get_tree(dist_url3, proxieslist)
                                     if tree3 == '':
                                         continue
                                     numbertext3 = ''.join(tree3.xpath('//div[@class="fanye"]/span/text()'))
-                                    number3 = int(''.join(re.findall('(\d+)', numbertext3)))
+                                    try:
+                                        number3 = int(''.join(re.findall('(\d+)', numbertext3)))
+                                    except:
+                                        continue
                                     if '没有找到相符的房源' in ''.join(tree3.xpath('//p[@class="not_find_note"]/span/text()')):
                                         continue
                                     else:
@@ -294,24 +324,26 @@ class Esf_FTX:
                 for i in range(1, page_number + 1):
                     url = page_url[:-1] + f'-i3{i}/'
 
-                    done = self.pool.submit(self.get_data, url, city, dist)
+                    done = self.pool.submit(self.get_data, url, city, dist, proxieslist)
                     l.append(done)
-                [obj.result() for obj in l]
-
+                proxieslist = [obj.result() for obj in l][-1]
+        return proxieslist
             # break
 
     def run(self, city_map):
 
         print(len(city_map))
-
+        proxieslist = []
         for city, city_code in city_map.items():
 
             # for city, city_code in city_map.items():
-            if has_spider.count({city: '正在爬取'}):
+            if has_spider.count({city: '正在爬取ww2'}):
+                print('正在爬取：', city)
                 continue
             elif has_spider.count({city: '已爬取'}):
+                print('已爬取：', city)
                 continue
-            has_spider.insert_one({city:'正在爬取'})
+            has_spider.insert_one({city:'正在爬取ww2'})
 
             exists_region = []
 
@@ -334,7 +366,7 @@ class Esf_FTX:
             start = time.time()
             dist = self.get_dist(city, GetType="租房")
             # print(dist)
-            self.get_page(city, dist, GetType="租房", exists_region=exists_region)
+            proxieslist = self.get_page(city, dist, proxieslist)
             print("抓取%s 总用时: %s" % (city, time.time() - start))
             has_spider.insert_one({city: '已爬取'})
 
@@ -349,7 +381,7 @@ if __name__ == '__main__':
     # TODO 请删除 log>lose_dist 中的缓存记录
     # TODO 修改 Month为当前要抓取的月份
     Year = 2021
-    Month = 5
+    Month = 7
     # city_map=getCity_Code()
     Pool = ThreadPoolExecutor(20)
     Esf_FTX(year=Year, month=Month, pool=Pool).run(city_map)
