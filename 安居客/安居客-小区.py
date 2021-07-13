@@ -64,82 +64,47 @@ def getCity_Url():
     return city_url
 
 
-def get_html(url):
-    ip_number = 100
-    while ip_number > 0:
-        proxy = get_proxy()
-        if not proxy:
-            print("没有ip, 等待30秒钟")
-            time.sleep(30)
-            continue
-        print('循环：', ip_number)
-
-        number = 10
-        while number > 0:
-            headers['user-agent'] = get_ua()
-            # headers[':authority'] = ''.join(re.findall('https://(.+\.com)',url))
-            # headers[':path'] = ''.join(re.findall('com(/.*)',url)).replace('//','/')[:-1]
-            try:
-                response = requests.get(url, headers=headers, proxies={"https": proxy,"http": proxy}, timeout=(5, 10))
-                # response = requests.get(url, headers=headers, timeout=(2, 5))
-                response.encoding = 'utf-8'
-                html = etree.HTML(response.text)
-            except requests.exceptions.ProxyError as PE:
-                print('pppp',PE)
-                number = -1
+def get_html(url, proxieslist):
+    s = 0
+    while True:
+        try:
+            if len(proxieslist) > 0:
+                proxies = proxieslist
+            else:
+                proxy = get_proxy()
+                proxies = {"https": proxy}
+            response = requests.get(url, headers=headers, proxies=proxies, timeout=(5, 10))
+            encod = response.apparent_encoding
+            if encod.upper() in ['GB2312', 'WINDOWS-1254']:
+                encod = 'gbk'
+            response.encoding = encod
+            if '人机认证' in response.text:
+                print('该IP需要人机验证: ', proxieslist)
+                proxieslist = []
                 continue
-            except requests.exceptions.ConnectionError as CE:
-                print('cccc',CE)
-                number = -1
-                continue
-            except Exception as  e:
-                print("出错, 正在进行第%s尝试, ip: %s, %s" % (number, proxy, type(e)))
-                number -= 1
-                continue
+            html = etree.HTML(response.text)
             if '访问验证-安居客' in ''.join(html.xpath('//head/title/text()')):
                 print("ip被封，更换IP")
-                number = -1
+                proxieslist = []
                 continue
-            # 检查是否出现 58滑动验证
-            if html.xpath("//div[@class='pop']/p[@class='title']"):
-                print("出现滑动验证, 更改ip")
-                number = -1
-                continue
-
-            # 安居客滑动验证, js破解
-            if html.xpath('//*[@id="captchaForm"]'):
-                try:
-                    proixy = "https://" + proxy
-                    message = AJK_Slide_Captcha(proixy).run()
-                    if message != '校验成功':
-                        print('js破解成功')
-                        break
-                except Exception as e:
-                    print("js破解失败", e)
-                    number = -1
-                    continue
-                # print("出现滑动验证, 更改ip")
-                # number = -1
-                # continue
-
-            # ip被封
             if "访问过于频繁" in "".join(html.xpath("//h2[@class='item']/text()")):
-                print(proxy, "ip被封")
-                number = -1
+                print(proxieslist, "ip被封")
+                proxieslist = []
                 continue
 
             if response.status_code in [403]:
-                print(403, "休息一分钟")
-                time.sleep(60)
                 continue
-            return html, response, proxy
+            proxieslist = proxies
+            print(s, proxieslist, '获取成功')
+            return html, proxieslist
+        except Exception as e:
+            s += 1
+            proxieslist = []
 
-        # 出错3次, 删除代理池中代理
-        delete_proxy(proxy)
-        ip_number -= 1
-        continue
-    print("全部出处")
-    return '', '', ''
+            # print('get_html错误', e)
+            continue
+
+
 
 
 # def get_html(url):
@@ -161,29 +126,29 @@ def get_html(url):
 #     return
 
 
-def get_parseInfo(city, url, area_name):
+def get_parseInfo(city, url, area_name, proxieslist):
     if has_spider.count({'url': url}):
         print('当前url已爬取', url)
-        return
+        return proxieslist
     print('当前url', url)
     count = 0
     while 1:
         count += 1
-        html, response, _ = get_html(url)
+        html, proxieslist = get_html(url, proxieslist)
         if html == '':
             continue
         total_num = html.xpath('string(//span[@class="total-info"])')
         if total_num:
             break
         elif count == 10:
-            return
+            return proxieslist
         else:
             time.sleep(2)
             continue
 
     house_div = html.xpath("//a[@class='li-row']")
     if len(house_div) == 0:
-        return
+        return proxieslist
     for house in house_div:
         item = {}
         item['city_name'] = city
@@ -231,40 +196,39 @@ def get_parseInfo(city, url, area_name):
 
     next_page_url = ''.join(html.xpath('//div[@class="pagination page-bar"]/a[@class="next next-active"]/@href'))
     if next_page_url:
-        get_parseInfo(city, next_page_url, area_name)
+        proxieslist = get_parseInfo(city, next_page_url, area_name, proxieslist)
     else:
         print('最后一页')
-        return
+        return proxieslist
 
 
 if __name__ == '__main__':
+    proxieslist = []
     pool = ThreadPoolExecutor(15)
     city_url = getCity_Url()
     for key, url in city_url.items():
         print(key, url)
-        if has_spider.count({key: '正在爬取21111w'}):
+        if has_spider.count({key: '正在爬取21111ww'}):
             print('正在爬取或已爬取')
             continue
         elif has_spider.count({key: '已爬取'}):
             print('正在爬取或已爬取')
             continue
-        has_spider.insert_one({key: '正在爬取21111w'})
+        has_spider.insert_one({key: '正在爬取21111ww'})
 
-        html, responseaaa, _ = get_html(url + "/community")
+        html, proxieslist = get_html(url + "/community", proxieslist)
         if html == '':
             continue
         area = html.xpath('//ul[@class="region-parents"]/li')[1:]
         if area == []:
             continue
-        aaaaa = responseaaa.text
-        urlaaa = responseaaa.url
         for area_else in area:
             l = []
             url1 = area_else.xpath('string(./a/@href)')
             area_name = area_else.xpath('string(./a)')
 
             # 增加判断长度 1250
-            html1, response1, _ = get_html(url1)
+            html1, proxieslist = get_html(url1, proxieslist)
             if html1 == '':
                 continue
             text = ''.join(html1.xpath('//div[@class="sort-row"]/span/text()'))
@@ -272,11 +236,10 @@ if __name__ == '__main__':
                 length = int(''.join(re.findall('(\d+)', text)))
             except:
                 length = 0
-                print(response1.text)
             if length >= 1250:
                 hlist = html1.xpath('//div[@class="filter-wrap"][1]//ul[@class="line"]/li/a/@href')[1:]
                 for url2 in hlist:
-                    html2, response2, _ = get_html(url2)
+                    html2, proxieslist = get_html(url2, proxieslist)
                     if html2 == '':
                         continue
                     text2 = ''.join(html2.xpath('//div[@class="sort-row"]/span/text()'))
@@ -284,11 +247,10 @@ if __name__ == '__main__':
                         length2 = int(''.join(re.findall('(\d+)', text2)))
                     except:
                         length2 = 0
-                        print(response2.text)
                     if length2 >= 1250:
                         hlist2 = html2.xpath('//div[@class="filter-wrap"][2]//ul[@class="line"]/li/a/@href')[1:]
                         for url3 in hlist2:
-                            html3, response3, _ = get_html(url3)
+                            html3, proxieslist = get_html(url3, proxieslist)
                             if html3 == '':
                                 continue
                             text3 = ''.join(html3.xpath('//div[@class="sort-row"]/span/text()'))
@@ -296,23 +258,22 @@ if __name__ == '__main__':
                                 length3 = int(''.join(re.findall('(\d+)', text3)))
                             except:
                                 length3 = 0
-                                print(response3.text)
                             if length3 >= 1250:
                                 hlist3 = html3.xpath('//div[@class="filter-wrap filter-region"]//div[@class="region-childs"]/li/a/@href')[1:]
                                 for url4 in hlist3:
-                                    done = pool.submit(get_parseInfo, key, url4, area_name)
+                                    done = pool.submit(get_parseInfo, key, url4, area_name, proxieslist)
                                     l.append(done)
                             else:
-                                done = pool.submit(get_parseInfo, key, url3, area_name)
+                                done = pool.submit(get_parseInfo, key, url3, area_name, proxieslist)
                                 l.append(done)
                     else:
-                        done = pool.submit(get_parseInfo, key, url2, area_name)
+                        done = pool.submit(get_parseInfo, key, url2, area_name, proxieslist)
                         l.append(done)
             else:
-                done = pool.submit(get_parseInfo, key, url1, area_name)
+                done = pool.submit(get_parseInfo, key, url1, area_name, proxieslist)
                 l.append(done)
             print(len(l))
-            [obj.result() for obj in l]
+            proxieslist = [obj.result() for obj in l][-1]
         has_spider.insert_one({key: '已爬取'})
     print('爬取完成')
     input()
