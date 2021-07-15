@@ -16,13 +16,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['房企top100_5月数据']['biguiyuan_cjy']
+            retryWrites="false")['房企top100']['碧桂园_数据_202106']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['房企top100_5月数据']['biguiyuan_has_spider']
+            retryWrites="false")['房企top100']['碧桂园_去重_202106']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -128,7 +128,7 @@ def getDetailInfo(dict,areaId):   #获取详细信息
 
 def getallid():
     idlist=[]
-    for page in range(1,93):
+    for page in range(1,95):
         url = 'https://xs6.bgy.com.cn/XCXhfy/Handler/FHYPcOfficialHandler.ashx?act=getPropertyList&pageNum=' + str(page) + '&pageSize=20&sortType=&keyword=&group=&city=&isHome='
         print(url)
         response = get_html(url).json()
@@ -138,8 +138,8 @@ def getallid():
 
 if __name__ == '__main__':
     year = 2021
-    month = 5
-    day = 23
+    month = 6
+    day = 9
     sum=[]
     t1 = time.time()
     getallid()

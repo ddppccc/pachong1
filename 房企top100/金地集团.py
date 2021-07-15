@@ -21,13 +21,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['房企top100_5月数据']['jindijituan_cjy']
+            retryWrites="false")['房企top100']['金地集团_数据_202106']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['房企top100_5月数据']['jindijituan_has_spider']
+            retryWrites="false")['房企top100']['金地集团_去重_202106']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -172,8 +172,8 @@ def getDetailInfo(data):
     print(item)
 if __name__ == '__main__':
     year = 2021
-    month = 5
-    day = 23
+    month = 6
+    day = 9
     citydict=getCityList()
     print(citydict)
     for city,urlcode in citydict.items():
