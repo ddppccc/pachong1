@@ -25,13 +25,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['安居客租房']['info']
+            retryWrites="false")['安居客租房']['数据_202107']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['安居客租房']['has_spider']
+            retryWrites="false")['安居客租房']['url_202107']
 
 
 
@@ -136,45 +136,72 @@ def getCity_Url():
 #         continue
 #     print("全部出处")
 #     return '', '', ''
-def get_html(url):
-    proxies = {"https": get_proxy()}
-    try:
-        response = requests.get(url, headers=headers, timeout=10)
-        encod = response.apparent_encoding
-        if encod.upper() in ['GB2312', 'WINDOWS-1254']:
-            encod = 'gbk'
-        response.encoding = encod
-        html = etree.HTML(response.text)
-        return html,response,''
-    except Exception as e:
-        print('get_html错误',proxies, e)
-        time.sleep(2)
-        return get_html(url)
+def get_html(url, proxieslist):
+    s = 0
+    while True:
+        try:
+            if len(proxieslist) > 0:
+                proxies = proxieslist
+            else:
+                proxy = get_proxy()
+                proxies = {"https": proxy}
+            response = requests.get(url, headers=headers, proxies=proxies, timeout=(5, 10))
+            encod = response.apparent_encoding
+            if encod.upper() in ['GB2312', 'WINDOWS-1254']:
+                encod = 'gbk'
+            response.encoding = encod
+            if '人机认证' in response.text:
+                proxieslist = []
+                continue
+            html = etree.HTML(response.text)
+            if '登录' in ''.join(html.xpath('//head/title/text()')):
+                proxieslist = []
+                continue
+            if '访问验证-安居客' in ''.join(html.xpath('//head/title/text()')):
+                proxieslist = []
+                continue
+            if "访问过于频繁" in "".join(html.xpath("//h2[@class='item']/text()")):
+                proxieslist = []
+                continue
+            if '点击去完成' in "".join(html.xpath('//div[@class="verify-button"]//text()')):
+                proxieslist = []
+                continue
 
-def get_parseInfo(city,url):
+            if response.status_code in [403]:
+                continue
+            proxieslist = proxies
+            print(s, proxieslist, '获取成功')
+            return html, response, proxieslist
+        except Exception as e:
+            s += 1
+            proxieslist = []
+
+            # print('get_html错误', e)
+            continue
+
+def get_parseInfo(city, url, proxieslist):
     while 1:
         try:
-            html, response, _ = get_html(url)
+            html, response, proxieslist = get_html(url, proxieslist)
             font = get_font(response.text)
             break
         except:
-            return
+            return proxieslist
 
     has_spider_urlList = []
-    for has_spider_url in has_spider.find():
-        has_spider_urlList.append(has_spider_url['标题'])
-    if url in has_spider_urlList:
+    if has_spider.count({'标题':url}):
+        print('该页数据已爬取，下一页')
         next_page_url = html.xpath('string(//div[@class="multi-page"]/a[@class="aNxt"]/@href)')
         if next_page_url:
-            # print('该页数据已爬取，下一页')
-            get_parseInfo(city, next_page_url)
+            proxieslist = get_parseInfo(city, next_page_url, proxieslist)
+            return proxieslist
         else:
             print('get_parseInfo最后一页',url)
-            return
+            return proxieslist
     else:
         house_div = html.xpath("//div[@class='zu-itemmod']")
         if len(house_div) == 0:
-            return
+            return proxieslist
         for house in house_div:
             item = {}
             item['城市'] = city
@@ -214,27 +241,33 @@ def get_parseInfo(city,url):
 
         next_page_url = html.xpath('string(//div[@class="multi-page"]/a[@class="aNxt"]/@href)')
         if next_page_url:
-            get_parseInfo(city,next_page_url)
+            proxieslist = get_parseInfo(city,next_page_url, proxieslist)
+            return proxieslist
         else:
             print('最后一页')
-            return
-def get_zu_url(index_url):
-    html, response, _ = get_html(index_url)
+            return proxieslist
+def get_zu_url(index_url, proxieslist):
+    html, response, proxieslist = get_html(index_url, proxieslist)
     try:
         new_url = html.xpath('//div[@id="glbNavigation"]/div/ul[@class="L_tabsnew"]/li[4]/a/@href')
-        return new_url[0]
+        return new_url[0], proxieslist
     except:
-        return ""
+        return "", proxieslist
 
 
 if __name__ == '__main__':
     city_url = getCity_Url()
+    proxieslist = []
 
-
-    while True:
-        data = random.sample(city_url.items(), 1)
-        key, url = data[0][0], data[0][1]
-
+    for key in city_url:
+        url = city_url[key]
+        if has_spider.count({key: '已爬取'}):
+            print('已爬取', key)
+            continue
+        elif has_spider.count({key: '正在爬取21111www'}):
+            print('正在爬取', key)
+            continue
+        has_spider.insert_one({key: '正在爬取21111www'})
     # for item,url in city_url.items():
     #     key = item
 
@@ -242,7 +275,7 @@ if __name__ == '__main__':
         # if item not in unuse_city:
         #     continue
         # url = city_url[item]
-        new_url = get_zu_url(url)
+        new_url, proxieslist = get_zu_url(url, proxieslist)
         # print(new_url)
         # print(key,url)
         if new_url == "https://haiwai.anjuke.com" or (not new_url):
@@ -250,7 +283,7 @@ if __name__ == '__main__':
         print(new_url)
         if key in ['阿里','阿勒泰','茌平']:
             continue
-        get_parseInfo(key, new_url)
+        proxieslist = get_parseInfo(key, new_url, proxieslist)
     print("已完成...")
     # statis_output('安居客_五城_{}_租房.csv'.format(time.strftime("%Y-%m-%d", time.localtime())),
     #
