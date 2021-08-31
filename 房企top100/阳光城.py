@@ -23,13 +23,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
     MONGODB_CONFIG['password'],
     MONGODB_CONFIG['host'],
     MONGODB_CONFIG['port']),
-    retryWrites="false")['房企top100']['阳光城_数据_202106']
+    retryWrites="false")['房企top100']['阳光城_数据_202107']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
     MONGODB_CONFIG['user'],
     MONGODB_CONFIG['password'],
     MONGODB_CONFIG['host'],
     MONGODB_CONFIG['port']),
-    retryWrites="false")['房企top100']['阳光城_去重_202106']
+    retryWrites="false")['房企top100']['阳光城_去重_202107']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -37,26 +37,22 @@ headers = {
     "upgrade-insecure-requests": "1",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 }
-year = 2021
-month = 4
-
 
 def get_proxy():
     try:
-        return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
-        # return '111.202.83.35:80'
+            return requests.get('http://demo.spiderpy.cn/get/').json().get('proxy')
+            # return '111.202.83.35:80'
     except:
         num = 3
         while num:
             try:
-                return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+                return requests.get('http://demo.spiderpy.cn/get/').json().get('proxy')
             except:
                 print('暂无ip，等待20秒')
                 time.sleep(20)
 
                 num -= 1
         print('暂无ip')
-
 
 def get_html(url):
 
@@ -181,8 +177,8 @@ def getlist(code):
     return res.json()['data']
 if __name__ == '__main__':
     year = 2021
-    month = 6
-    day = 9
+    month = 7
+    day = 15
     citycode=getcitylist()
     for k,v in citycode.items():
         datalist=getlist(v)

@@ -21,13 +21,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['房企top100']['金地集团_数据_202106']
+            retryWrites="false")['房企top100']['金地集团_数据_202107']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['房企top100']['金地集团_去重_202106']
+            retryWrites="false")['房企top100']['金地集团_去重_202107']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -36,17 +36,16 @@ headers = {
     "upgrade-insecure-requests": "1",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 }
-year=2021
-month=4
+
 def get_proxy():
     try:
-            return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+            return requests.get('http://demo.spiderpy.cn/get/').json().get('proxy')
             # return '111.202.83.35:80'
     except:
         num = 3
         while num:
             try:
-                return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+                return requests.get('http://demo.spiderpy.cn/get/').json().get('proxy')
             except:
                 print('暂无ip，等待20秒')
                 time.sleep(20)
@@ -57,6 +56,8 @@ def get_html(url):
     try:
         proxies = {"https": get_proxy()}
         response = requests.get(url, headers=headers,verify=False,timeout=(10, 10))
+        # response = requests.get(url, headers=headers,verify=False,proxies = {"https": get_proxy()},timeout=(10, 10))
+
         # encod = response.apparent_encoding
         # if encod.upper() in ['GB2312', 'WINDOWS-1254']:
         #     encod = 'gbk'
@@ -68,7 +69,8 @@ def get_html(url):
         return get_html(url)
 def getCityList():
     url='https://online.gemdale.com/list'
-    res=requests.get(url,headers=headers,proxies = {"https": get_proxy()},verify=False,timeout=10)
+    # res=requests.get(url,headers=headers,proxies = {"https": get_proxy()},verify=False,timeout=10)
+    res=requests.get(url,headers=headers,verify=False,timeout=10)
     res.encoding='utf8'
     # print(res.text)
     html=etree.HTML(res.text)[0]
@@ -172,8 +174,8 @@ def getDetailInfo(data):
     print(item)
 if __name__ == '__main__':
     year = 2021
-    month = 6
-    day = 9
+    month = 7
+    day = 15
     citydict=getCityList()
     print(citydict)
     for city,urlcode in citydict.items():
