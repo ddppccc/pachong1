@@ -97,6 +97,15 @@ def get_html(url, proxieslist):
                 print('该IP需要人机验证: ', proxieslist)
                 proxieslist = []
                 continue
+            tree = etree.HTML(response.text)
+            if '访问验证' in ''.join(tree.xpath('//title/text()')):
+                print('出现访问验证')
+                proxieslist = []
+                continue
+            if '跳转' in tree.xpath("//title/text()")[0]:
+                print(tree.xpath("//title/text()")[0], "出现跳转页面")
+                proxieslist = []
+                continue
             # 可以增加一个判断是否成功的代码，如果页面不是所需页面，proxieslist赋值为空
             proxieslist = proxies
             print(s, proxies, '获取成功')
@@ -206,22 +215,67 @@ class Esf_FTX:
         return proxieslist
 
     def get_tree(self,dist_url, proxieslist):
-        number_tz = 0
+        s = 0
         while True:
-            res, proxieslist = get_html(dist_url, proxieslist)
-            if res:
-                tree = etree.HTML(res.text)
-            else:
-                break
-            # 没有请求到正确的页面
-            number_tz += 1
-            if '跳转' in tree.xpath("//title/text()")[0]:
-                print(tree.xpath("//title/text()")[0], "出现跳转页面")
-                if number_tz > 3:
-                    break
+            try:
+                if len(proxieslist) > 0:
+                    proxies = proxieslist
+                else:
+                    proxy = get_proxy()
+                    proxies = {"https": proxy}
+                response = requests.get(dist_url, headers=headers, proxies=proxies, timeout=10)
+                encod = response.apparent_encoding
+                if encod.upper() in ['GB2312', 'WINDOWS-1254']:
+                    encod = 'gbk'
+                response.encoding = encod
+                if '人机认证' in response.text:
+                    print('该IP需要人机验证: ', proxieslist)
+                    proxieslist = []
+                    continue
+                tree = etree.HTML(response.text)
+                if '访问验证' in ''.join(tree.xpath('//title/text()')):
+                    print('出现访问验证')
+                    proxieslist = []
+                    continue
+                if '跳转' in tree.xpath("//title/text()")[0]:
+                    print(tree.xpath("//title/text()")[0], "出现跳转页面")
+                    proxieslist = []
+                    continue
+                # 可以增加一个判断是否成功的代码，如果页面不是所需页面，proxieslist赋值为空
+                if '租房信息' in ''.join(tree.xpath('//title/text()')):
+                    proxieslist = proxies
+                    print(s, proxies, '获取成功')
+                    return tree, proxieslist
+            except Exception as e:
+                s += 1
+                proxieslist = []
+
+                # print('get_html错误', e)
                 continue
-            return tree, proxieslist
-        return '', proxieslist
+        return
+
+    # def get_tree(self, dist_url, proxieslist):
+    #     number_tz = 0
+    #     while True:
+    #         res, proxieslist = get_html(dist_url, proxieslist)
+    #         if res:
+    #             tree = etree.HTML(res.text)
+    #         else:
+    #             continue
+    #         if '访问验证' in ''.join(tree.xpath('//title/text()')):
+    #             print('出现访问验证')
+    #             proxieslist = []
+    #             continue
+    #         # 没有请求到正确的页面
+    #         number_tz += 1
+    #         if '跳转' in tree.xpath("//title/text()")[0]:
+    #             print(tree.xpath("//title/text()")[0], "出现跳转页面")
+    #             proxieslist = []
+    #             if number_tz > 3:
+    #                 break
+    #             continue
+    #         return tree, proxieslist
+    #     return '', proxieslist
 
     def get_page(self, city, dist_dict, proxieslist):
         """
@@ -337,13 +391,13 @@ class Esf_FTX:
         for city, city_code in city_map.items():
 
             # for city, city_code in city_map.items():
-            if has_spider.count({city: '正在爬取ww2'}):
-                print('正在爬取：', city)
-                continue
-            elif has_spider.count({city: '已爬取'}):
+            if has_spider.count({city: '已爬取3'}):
                 print('已爬取：', city)
                 continue
-            has_spider.insert_one({city:'正在爬取ww2'})
+            elif has_spider.count({city: '正在爬取ww22qq'}):
+                print('正在爬取：', city)
+                continue
+            has_spider.insert_one({city:'正在爬取ww22qq'})
 
             exists_region = []
 
@@ -368,7 +422,7 @@ class Esf_FTX:
             # print(dist)
             proxieslist = self.get_page(city, dist, proxieslist)
             print("抓取%s 总用时: %s" % (city, time.time() - start))
-            has_spider.insert_one({city: '已爬取'})
+            has_spider.insert_one({city: '已爬取3'})
 
 
 
