@@ -24,13 +24,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
     MONGODB_CONFIG['password'],
     MONGODB_CONFIG['host'],
     MONGODB_CONFIG['port']),
-    retryWrites="false")['房企top100']['祥生集团_数据_202107']
+    retryWrites="false")['房企top100']['祥生集团_数据_202108']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
     MONGODB_CONFIG['user'],
     MONGODB_CONFIG['password'],
     MONGODB_CONFIG['host'],
     MONGODB_CONFIG['port']),
-    retryWrites="false")['房企top100']['祥生集团_去重_202107']
+    retryWrites="false")['房企top100']['祥生集团_去重_202108']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -193,8 +193,8 @@ def getprovince():
     return province
 if __name__ == '__main__':
     year = 2021
-    month = 7
-    day = 15
+    month = 8
+    day = 31
     province=getprovince()
     for i in province:
         citycode=getcity(i)
