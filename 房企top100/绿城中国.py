@@ -19,13 +19,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['房企top100']['绿城中国_数据_202108']
+            retryWrites="false")['房企top100']['绿城中国_数据_202109']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['房企top100']['绿城中国_去重_202108']
+            retryWrites="false")['房企top100']['绿城中国_去重_202109']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -95,7 +95,10 @@ def getInfo(id,data):
     infodata=res.json()['data']['data']
     # print(infodata)
     item['城市'] = data['cityName']
-    item['区县'] = data['areaname']
+    try:
+        item['区县'] = data['areaname']
+    except:
+        item['区县'] = ''
     item['标题'] =data['estateName']
     item['标题url'] = url
     item['销售情况'] = ''
@@ -104,7 +107,10 @@ def getInfo(id,data):
         item['装修'] = infodata['decorationtype']
     except:
         item['装修'] = ''
-    item['户型'] =data['admProjectHousePicDTOList']
+    try:
+        item['户型'] =data['admProjectHousePicDTOList']
+    except:
+        item['户型'] = ''
     item['单价'] = data['price']
     item['总价'] = data['totalprice']
     item['建面'] = ''
@@ -128,8 +134,8 @@ def getInfo(id,data):
     except:
         item['最新开盘'] =''
     item['物业费'] = ''
-    item['latitude'] = data['addressy']
-    item['longitude'] = data['addressx']
+    item['latitude'] = infodata['addressy']
+    item['longitude'] = infodata['addressx']
     item['抓取年份'] = year
     item['抓取月份'] = month
     item['数据来源'] = '绿城中国'
@@ -149,7 +155,7 @@ def main():
 
 if __name__ == '__main__':
     year = 2021
-    month = 8
-    day = 31
+    month = 9
+    day = 27
     main()
     

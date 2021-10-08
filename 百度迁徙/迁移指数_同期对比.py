@@ -22,13 +22,13 @@ qianruCity_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁入指数同期对比_数据_202107']
+            retryWrites="false")['百度迁徙']['迁入指数同期对比_数据_202109']
 qianchuCity_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁出指数同期对比_数据_202107']
+            retryWrites="false")['百度迁徙']['迁出指数同期对比_数据_202109']
 
 
 # 迁入到市
@@ -142,11 +142,11 @@ def run(start_date, end_date):
 
 if __name__ == '__main__':
     # TODO 时间
-    start_date = '2021-06-07'
-    end_date = '2021-07-01'
+    start_date = '2021-08-02'
+    end_date = '2021-09-03'
     year = 2021
-    month = 7
-    day = 1
+    month = 9
+    day = 3
     print(start_date, end_date)
     dateList = create_assist_date(start_date, end_date)
     run(start_date, end_date)

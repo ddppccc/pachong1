@@ -1150,7 +1150,14 @@ MONGODB_CONFIG = {
 }
 
 #高德key  禾略、禾略纳什、煊乔、广信、腾焱、观炎
-gaode_key = ["4fabbb7c9a939ee3942c67715f9a8f33","ac2d0d6951b7662e1b98aabb51b4aeb6","705d303822d6685c2b05915464483a9c","9411ece7ba7c9ff934a093219215b47d","de3514f87e2d145179e4adbd0cb01b1d","f7e4985b165ebcb8d9976d0af95de9ff"]
+gaode_key = [
+    # "4fabbb7c9a939ee3942c67715f9a8f33",
+    "ac2d0d6951b7662e1b98aabb51b4aeb6",
+    "705d303822d6685c2b05915464483a9c",
+    "9411ece7ba7c9ff934a093219215b47d",
+    "de3514f87e2d145179e4adbd0cb01b1d",
+    "f7e4985b165ebcb8d9976d0af95de9ff"
+]
 
 gaode = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],

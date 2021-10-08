@@ -29,13 +29,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['土地市场网招拍挂']['地块公示_数据_202107']
+            retryWrites="false")['土地市场网招拍挂']['地块公示_数据_202109']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['土地市场网招拍挂']['地块公示_去重_202107']
+            retryWrites="false")['土地市场网招拍挂']['地块公示_去重_202109']
 
 
 # base64  转图片
@@ -158,9 +158,12 @@ def get_font_woff(url):
 def getInfo():
     list = f.readline()
     l = list.split(',')
-    info_url = l[-1].strip()
-    date = l[2]
-    region=l[0]
+    # info_url = l[-1].strip()
+    info_url ='https://www.landchina.com/landSupplyDetail?id=50aa2631-c4d9-48e6-9999-e61a7a8d3cd0&type=%E5%9C%B0%E5%9D%97%E5%85%AC%E7%A4%BA&path=0'
+    # date = l[2]
+    date = '2020/12/31'
+    # region=l[0]
+    region='张北县'
     return info_url,region,date
 
 
@@ -190,24 +193,24 @@ def parse(df_map):
         res.encoding = 'gbk'
 
 
-        # print('开始获取字体加密文件')
-        # 获取字体加密文件
-        try:
-            font_url = re.findall("url\('\.\./\.\./\.\./(.*)'\) format\('woff'\),", res.text)[0]
-            # print('加密文件url',font_url)
-        except:
-            # queue.task_done()
-            print(res.text)
-            print('#############')
-            continue
-
-        # print('开始获取font')
-        Font = get_font_woff(font_url)
-        if not Font:
-            print('没有FONT')
-            # queue.task_done()
-            continue
-        # print('FONT',Font)
+        # # print('开始获取字体加密文件')
+        # # 获取字体加密文件
+        # try:
+        #     font_url = re.findall("url\('\.\./\.\./\.\./(.*)'\) format\('woff'\),", res.text)[0]
+        #     # print('加密文件url',font_url)
+        # except:
+        #     # queue.task_done()
+        #     print(res.text)
+        #     print('#############')
+        #     continue
+        #
+        # # print('开始获取font')
+        # Font = get_font_woff(font_url)
+        # if not Font:
+        #     print('没有FONT')
+        #     # queue.task_done()
+        #     continue
+        # # print('FONT',Font)
 
         response = Selector(text=res.text)
         table = response.xpath('//*[@id="tdContent"]').extract_first()

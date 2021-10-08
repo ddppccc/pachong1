@@ -14,7 +14,7 @@ import sys
 import threading
 from concurrent.futures import ThreadPoolExecutor
 
-url = 'https://www.landchina.com/default.aspx?tabid=262'
+url = 'https://www.landchina.com/publicDeal'
 
 def base64_img(base):
     name = str(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
@@ -236,8 +236,8 @@ def parse_part_page(bs, time_part):
     f.close()
 
 
-def main():
-    startdate, enddate = '2021-6-7', '2021-7-1'
+def main(startdate, enddate):
+
     date_list = get_time_range_list(startdate, enddate)
     print(date_list)
 
@@ -290,4 +290,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    startdate, enddate = '2021-8-3', '2021-9-23'
+    main(startdate, enddate)
