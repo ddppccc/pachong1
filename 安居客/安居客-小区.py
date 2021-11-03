@@ -6,8 +6,6 @@ import pymongo
 
 from lxml import etree
 from config import get_proxy, get_ua, delete_proxy, statis_output
-from capter_verify.captcha_run import AJK_Slide_Captcha
-# from zujin_descde import decode_zujin,get_font
 from urllib import parse
 from concurrent.futures import ThreadPoolExecutor
 
@@ -26,7 +24,7 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
     MONGODB_CONFIG['password'],
     MONGODB_CONFIG['host'],
     MONGODB_CONFIG['port']),
-    retryWrites="false")['安居客小区shen']['数据_202106']
+    retryWrites="false")['安居客小区shen']['数据_202111']
 # info_base = pymongo.MongoClient('127.0.0.1',27017)['sy']['安居客小区']
 # has_spider = pymongo.MongoClient('127.0.0.1',27017)['sy']['安居客小区url']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
@@ -34,7 +32,7 @@ has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
     MONGODB_CONFIG['password'],
     MONGODB_CONFIG['host'],
     MONGODB_CONFIG['port']),
-    retryWrites="false")['安居客小区shen']['url_202106']
+    retryWrites="false")['安居客小区shen']['url_202111']
 
 headers = {
     "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
@@ -78,15 +76,24 @@ def get_html(url, proxieslist):
             if encod.upper() in ['GB2312', 'WINDOWS-1254']:
                 encod = 'gbk'
             response.encoding = encod
-            if '访问验证-安居客' in ''.join(html.xpath('//head/title/text()')):
-                try:
-                    message = AJK_Slide_Captcha(proxies).run()
-                    if message == '校验成功':
-                        proxieslist = proxies
-                        continue
-                except Exception as e:
-                    continue
+            if '人机认证' in response.text:
                 proxieslist = []
+                continue
+            html = etree.HTML(response.text)
+            if '登录' in ''.join(html.xpath('//head/title/text()')):
+                proxieslist = []
+                continue
+            if '访问验证-安居客' in ''.join(html.xpath('//head/title/text()')):
+                proxieslist = []
+                continue
+            if "访问过于频繁" in "".join(html.xpath("//h2[@class='item']/text()")):
+                proxieslist = []
+                continue
+            if '点击去完成' in "".join(html.xpath('//div[@class="verify-button"]//text()')):
+                proxieslist = []
+                continue
+
+            if response.status_code in [403]:
                 continue
             if '小区大全' in ''.join(html.xpath('//head/title/text()')):
                 proxieslist = proxies
@@ -191,26 +198,24 @@ def get_parseInfo(city, url, area_name, proxieslist):
     next_page_url = ''.join(html.xpath('//div[@class="pagination page-bar"]/a[@class="next next-active"]/@href'))
     if next_page_url:
         proxieslist = get_parseInfo(city, next_page_url, area_name, proxieslist)
-        return proxieslist
     else:
         print('最后一页')
         return proxieslist
 
+
 if __name__ == '__main__':
     proxieslist = []
-    # while True:
-    #     get_html('https://www.anjuke.com/sy-city.html', proxieslist)
     pool = ThreadPoolExecutor(15)
     city_url = getCity_Url()
     for key, url in city_url.items():
         print(key, url)
-        # if has_spider.count({key: '正在爬取21111ww'}):
-        #     print('正在爬取或已爬取')
-        #     continue
-        # elif has_spider.count({key: '已爬取'}):
-        #     print('正在爬取或已爬取')
-        #     continue
-        # has_spider.insert_one({key: '正在爬取21111ww'})
+        if has_spider.count({key: '正在爬取'}):
+            print('正在爬取或已爬取')
+            continue
+        elif has_spider.count({key: '已爬取'}):
+            print('正在爬取或已爬取')
+            continue
+        has_spider.insert_one({key: '正在爬取'})
 
         html, proxieslist = get_html(url + "/community", proxieslist)
         if html == '':
@@ -268,6 +273,7 @@ if __name__ == '__main__':
             else:
                 done = pool.submit(get_parseInfo, key, url1, area_name, proxieslist)
                 l.append(done)
+            print(len(l))
             proxieslist = [obj.result() for obj in l][-1]
         has_spider.insert_one({key: '已爬取'})
     print('爬取完成')

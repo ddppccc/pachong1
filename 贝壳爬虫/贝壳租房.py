@@ -19,10 +19,12 @@ from requests.adapters import HTTPAdapter
 
 import pymongo
 from urllib import parse
-
+Year = time.localtime(time.time()).tm_year
+Month = time.localtime(time.time()).tm_mon
 
 MONGODB_CONFIG = {
-   "host": "8.135.119.198",
+   # "host": "8.135.119.198",
+   "host": "8.135.108.43",
    "port": "27017",
    "user": "hladmin",
    "password": parse.quote("Hlxkd3,dk3*3@"),
@@ -35,14 +37,14 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['贝壳shen']['ZuFang']
+            retryWrites="false")['贝壳']['租房_数据_202111']
 
 url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['贝壳shen']['ZuFang_url']
+            retryWrites="false")['贝壳']['租房_url_202111']
 
 
 s = requests.Session()
@@ -60,19 +62,13 @@ headers = {
 
     }
 def get_proxy():
-    try:
-        return s.get('http://47.106.223.4:50002/get/').json().get('proxy')
-    except:
-        num = 3
-        while num:
-            try:
-                return s.get('http://47.106.223.4:50002/get/').json().get('proxy')
-            except:
-                print('暂无ip，等待20秒')
-                time.sleep(20)
-
-                num -= 1
-        print('暂无ip')
+    while True:
+        try:
+            # return requests.get('http://1.116.204.248:5000/proxy').text
+            return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+        except:
+            print('暂无ip，等待20秒')
+            time.sleep(20)
 
 def fetch_html(url):
     '''获取页面代码'''
@@ -114,6 +110,7 @@ def get_city():
     # print(city)
     return city
     # {'合肥': 'https://hf.ke.com/ershoufang/',...}
+
 # def get_html(url):
 #     headers = {
 #         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
@@ -134,7 +131,7 @@ def get_city():
 #     return tree
 
 
-def get_qx(url0):
+def get_qx(url0, proxieslist):
     """
     根据城市名获得行政区
     :param city_name:
@@ -143,7 +140,7 @@ def get_qx(url0):
     # url0 = 'https://{}.ke.com/ershoufang/'.format(city_code_map[city_name])
 
 
-    tree0 = get_html(url0)
+    tree0, proxieslist = get_html(url0, proxieslist)
     urls = {}
     href = tree0.xpath('//ul[@data-target="area"]/li[@class="filter__item--level2  "]/a')
     for ss in href:
@@ -151,7 +148,7 @@ def get_qx(url0):
         ur = ''.join(ss.xpath('./@href'))
 
         url1 = ''.join(re.findall('(.+)/zufang', url0)) + ur
-        tree1 = get_html(url1)
+        tree1, proxieslist = get_html(url1, proxieslist)
         urlList = []
         href1 = tree1.xpath('//ul[@class="filter__ul"]/li[@class="filter__item--level4 "]/a/@href')
 
@@ -160,7 +157,7 @@ def get_qx(url0):
         for ur2 in href1:
             it2 = {}
             url2 = ''.join(re.findall('(.+)/zufang', url0)) + ur2
-            tree2 = get_html(url2)
+            tree2, proxieslist = get_html(url2, proxieslist)
             try:
                 length1 = int(''.join(tree2.xpath('//p[@class="content__title"]/span[@class="content__title--hl"]/text()')))
             except:
@@ -170,7 +167,7 @@ def get_qx(url0):
                 for ur3 in href2:
                     it3 = {}
                     url3 = ''.join(re.findall('(.+)/zufang', url0)) + ur3
-                    tree3 = get_html(url3)
+                    tree3, proxieslist = get_html(url3, proxieslist)
                     try:
                         length2 = int(''.join(tree3.xpath('//p[@class="content__title"]/span[@class="content__title--hl"]/text()')))
                     except:
@@ -183,7 +180,7 @@ def get_qx(url0):
                         for ur4 in url4ls:
                             it4 = {}
                             url4 = ''.join(re.findall('(.+)/zufang', url0)) + ur4
-                            tree4 = get_html(url4)
+                            tree4, proxieslist = get_html(url4, proxieslist)
                             try:
                                 length3 = int(''.join(tree4.xpath('//p[@class="content__title"]/span[@class="content__title--hl"]/text()')))
                             except:
@@ -196,7 +193,7 @@ def get_qx(url0):
                                 href4 = tree4.xpath('//ul[@data-target="area"]/li[@class="filter__item--level3  "]/a/@href')
                                 for ur5 in href4:
                                     url5 = ''.join(re.findall('(.+)/zufang', url0)) + ur5
-                                    tree5 = get_html(url5)
+                                    tree5, proxieslist = get_html(url5, proxieslist)
                                     try:
                                         length5 = int(''.join(tree5.xpath('//p[@class="content__title"]/span[@class="content__title--hl"]/text()')))
                                     except:
@@ -224,7 +221,7 @@ def get_qx(url0):
                 urlList.append(it2)
                 urls[qx] = urlList
 
-    return urls
+    return urls, proxieslist
 
 
 
@@ -299,10 +296,10 @@ def get_data(city,qx,houses,url):
         items['地址'] = ''.join(house.xpath('./div[@class="content__list--item--main"]/p[@class="content__list--item--des"]/a/text()'))
         items['小区url'] = ''.join(house.xpath('./div[@class="content__list--item--main"]/p[@class="content__list--item--des"]/a[3]/@href'))
         items['小区'] = ''.join(house.xpath('./div[@class="content__list--item--main"]/p[@class="content__list--item--des"]/a[3]/text()'))
-        items['抓取年份'] = 2021
-        items['抓取月份'] = 5
-        items['抓取时间'] = '2021-05-27'
-        # items['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+        items['抓取年份'] = Year
+        items['抓取月份'] = Month
+        # items['抓取时间'] = '2021-05-27'
+        items['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         print(items)
         info_base.insert_one(items)
         # url_data.insert_one({'url':items['标题url']})
@@ -310,23 +307,51 @@ def get_data(city,qx,houses,url):
 
 
 
-def get_html(url):
-    for i in range(10):
-        proxies = {"https": get_proxy()}
+# def get_html(url):
+#     while True:
+#         proxies = {"https": get_proxy()}
+#         try:
+#             response = requests.get(url, headers=headers,proxies=proxies, timeout=10)
+#             encod = response.apparent_encoding
+#             if encod.upper() in ['GB2312', 'WINDOWS-1254']:
+#                 encod = 'gbk'
+#             response.encoding = encod
+#             html = etree.HTML(response.text)
+#             print('获取成功')
+#             return html
+#         except Exception as e:
+#             print('get_html错误',proxies, e)
+#             time.sleep(2)
+def get_html(url, proxieslist):
+    s = 0
+    while True:
         try:
-            response = requests.get(url, headers=headers,proxies=proxies, timeout=10)
+            if len(proxieslist) > 0:
+                proxies = proxieslist
+            else:
+                proxy = get_proxy()
+                proxies = {"https": proxy}
+            response = requests.get(url, headers=headers, proxies=proxies, timeout=10)
             encod = response.apparent_encoding
             if encod.upper() in ['GB2312', 'WINDOWS-1254']:
                 encod = 'gbk'
             response.encoding = encod
+            if '人机认证' in response.text:
+                print('该IP需要人机验证: ', proxieslist)
+                proxieslist = []
+                continue
             html = etree.HTML(response.text)
-            print('获取成功')
-            return html
+            proxieslist = proxies
+            print(s, proxies, '获取成功')
+            return html, proxieslist
         except Exception as e:
-            print('get_html错误',proxies, e)
-            time.sleep(2)
+            s += 1
+            proxieslist = []
 
+            # print('get_html错误', e)
+            continue
     return
+
 
 
 def delete_proxy(proxy):
@@ -338,21 +363,24 @@ def delete_proxy(proxy):
 
 
 def run():
+    proxieslist = {}
     l = []
     citycod = get_city()
     for city in citycod:
 
-        if url_data.find_one({city: '正在爬取'}):
-            print("这个城市正在抓或者已经抓过了: %s" % city)
+        if url_data.find_one({city: '已爬取'}):
+            print("这个城市已经抓过了: %s" % city)
             continue
-        elif url_data.find_one({city: '已爬取'}):
-            print("这个城市正在抓或者已经抓过了: %s" % city)
+        elif url_data.find_one({city: '正在爬取'}):
+            print("这个城市正在爬取: %s" % city)
             continue
         url_data.insert_one({city: '正在爬取'})
 
 
         cityurl = citycod[city]
-        qx = get_qx('http://'+cityurl+'.ke.com/zufang/')
+        if cityurl == 'i':
+            continue
+        qx, proxieslist = get_qx('http://'+cityurl+'.ke.com/zufang/', proxieslist)
         for region_name, base_urlss in qx.items():  # {区县：[{url:数据条数},...] , ......}
             for base_urls in base_urlss:  # base_urlss：  [{url:数据条数},...]
                 base_url = list(base_urls.keys())[0]  # url
@@ -360,9 +388,11 @@ def run():
                 for i in range(1, base_urls[base_url]):  # 遍历有数据的页
                     url = ''.join(re.findall('(.+zufang/.+/)', base_url)) + "pg" + str(i) + ''.join(
                         re.findall('zufang/.+/(.+)', base_url))
-                    response = get_html(url)
-
-                    houses = response.xpath('//div[@class="content__list--item"]')
+                    response, proxieslist = get_html(url, proxieslist)
+                    try:
+                        houses = response.xpath('//div[@class="content__list--item"]')
+                    except:
+                        continue
                     if houses:
                         # print('运行', url)
                         # if url_data.find_one({'url': url}):
@@ -406,7 +436,7 @@ def run():
 
 
 if __name__ == '__main__':
-    pool = ThreadPoolExecutor(5)
+    pool = ThreadPoolExecutor()
     # get_city()
     # url = 'https://hf.ke.com/ershoufang/'
     # get_qx('合肥',url)

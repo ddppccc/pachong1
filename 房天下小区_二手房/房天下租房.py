@@ -25,13 +25,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
     MONGODB_CONFIG['password'],
     MONGODB_CONFIG['host'],
     MONGODB_CONFIG['port']),
-    retryWrites="false")['房天下租房shen']['租房_数据_202107']
+    retryWrites="false")['房天下租房shen']['租房_数据_202111']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
     MONGODB_CONFIG['user'],
     MONGODB_CONFIG['password'],
     MONGODB_CONFIG['host'],
     MONGODB_CONFIG['port']),
-    retryWrites="false")['房天下租房shen']['租房_去重_202107']
+    retryWrites="false")['房天下租房shen']['租房_去重_202111']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -93,11 +93,15 @@ def get_html(url, proxieslist):
             if encod.upper() in ['GB2312', 'WINDOWS-1254']:
                 encod = 'gbk'
             response.encoding = encod
+            tree = etree.HTML(response.text)
+            if '房天下' in tree.xpath("//title/text()")[0] and '出租' in tree.xpath("//title/text()")[0]:
+                proxieslist = proxies
+                print(s, proxies, '获取成功')
+                return response, proxieslist
             if '人机认证' in response.text:
                 print('该IP需要人机验证: ', proxieslist)
                 proxieslist = []
                 continue
-            tree = etree.HTML(response.text)
             if '访问验证' in ''.join(tree.xpath('//title/text()')):
                 print('出现访问验证')
                 proxieslist = []
@@ -394,10 +398,10 @@ class Esf_FTX:
             if has_spider.count({city: '已爬取3'}):
                 print('已爬取：', city)
                 continue
-            elif has_spider.count({city: '正在爬取ww22qq'}):
+            elif has_spider.count({city: '正在爬取'}):
                 print('正在爬取：', city)
                 continue
-            has_spider.insert_one({city:'正在爬取ww22qq'})
+            has_spider.insert_one({city:'正在爬取'})
 
             exists_region = []
 
@@ -428,7 +432,7 @@ class Esf_FTX:
 
 if __name__ == '__main__':
 
-    url11 = 'https://zu.fang.com/house-a01/c210000-d20-g21/'
+    # url11 = 'https://zu.fang.com/house-a01/c210000-d20-g21/'
 
 
     # TODO 二手房启动程序

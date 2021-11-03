@@ -1,11 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="52456d3c-de90-418d-8fc7-0e93c91e33e8" name="Default Changelist" comment="" />
+    <list default="true" id="52456d3c-de90-418d-8fc7-0e93c91e33e8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/安居客/安居客-新房.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/安居客/安居客商铺出租.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/房大办公/房大办公.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/携程酒店/New_getdata.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/赢商网/赢商网get.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/高新企业公示/高新企业公示.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/安居客/安居客-小区.py" beforeDir="false" afterPath="$PROJECT_DIR$/安居客/安居客-小区.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/小红书/小红书_类型_线程.py" beforeDir="false" afterPath="$PROJECT_DIR$/小红书/小红书_类型_线程.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/房天下小区_二手房/房天下租房.py" beforeDir="false" afterPath="$PROJECT_DIR$/房天下小区_二手房/房天下租房.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/贝壳爬虫/Community.py" beforeDir="false" afterPath="$PROJECT_DIR$/贝壳爬虫/Community.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/贝壳爬虫/esf_spider_bak.py" beforeDir="false" afterPath="$PROJECT_DIR$/贝壳爬虫/esf_spider_bak.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/贝壳爬虫/成交.py" beforeDir="false" afterPath="$PROJECT_DIR$/贝壳爬虫/成交.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/贝壳爬虫/新房.py" beforeDir="false" afterPath="$PROJECT_DIR$/贝壳爬虫/新房.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/贝壳爬虫/贝壳租房.py" beforeDir="false" afterPath="$PROJECT_DIR$/贝壳爬虫/贝壳租房.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -21,7 +44,22 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="52456d3c-de90-418d-8fc7-0e93c91e33e8" name="Default Changelist" comment="" />
@@ -31,10 +69,18 @@
       <updated>1611027027527</updated>
       <workItem from="1611027030570" duration="1979000" />
       <workItem from="1611303182000" duration="368000" />
+      <workItem from="1634525561404" duration="150000" />
+      <workItem from="1635908804367" duration="618000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="740" y="280" key="FileChooserDialogImpl" timestamp="1634525709638">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="740" y="280" key="FileChooserDialogImpl/0.0.1920.1050@0.0.1920.1050" timestamp="1634525709638" />
   </component>
 </project>
