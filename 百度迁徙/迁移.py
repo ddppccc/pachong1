@@ -25,58 +25,58 @@ qianruCity_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁入到城市_数据_202109']
+            retryWrites="false")['百度迁徙']['迁入到城市_数据_202110']
 qianruCity_has = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁入到城市_去重_202109']
+            retryWrites="false")['百度迁徙']['迁入到城市_去重_202110']
 
 qianchuCity_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁出城市_数据_202109']
+            retryWrites="false")['百度迁徙']['迁出城市_数据_202110']
 qianchuCity_has = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁出城市_去重_202109']
+            retryWrites="false")['百度迁徙']['迁出城市_去重_202110']
 
 qianruProvince_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁入到省份_数据_202109']
+            retryWrites="false")['百度迁徙']['迁入到省份_数据_202110']
 qianruProvince_has = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁入到省份_去重_202109']
+            retryWrites="false")['百度迁徙']['迁入到省份_去重_202110']
 
 qianchuProvince_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁出省份_数据_202109']
+            retryWrites="false")['百度迁徙']['迁出省份_数据_202110']
 qianchuProvince_has = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁出省份_去重_202109']
+            retryWrites="false")['百度迁徙']['迁出省份_去重_202110']
 hascity = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁入迁出_城市去重_202109']
+            retryWrites="false")['百度迁徙']['迁入迁出_城市去重_202110']
 
 def clear():
     while True:
@@ -115,6 +115,12 @@ def qy_city(cityCode, date, dtType):
             return json.loads(s)['data']['list']
         except Exception as e:
             print("qy_city运行出错: ",cityCode, date, dtType, e)
+            try:
+                if 'date is not valid' in res.text:
+                    print('日期无效')
+                    return
+            except:
+                pass
             continue
 
 # 迁入到省
@@ -143,10 +149,17 @@ def qy_province(cityCode, date, dtType):
             s = re.findall('4728266\((.*)\)', res.text)[0]
             # print(json.loads(s)['data']['list'])
             qianruProvince_has.insert_one({'标题url':url})
+
             return json.loads(s)['data']['list']
         except Exception as e:
             print("qy_province运行出错: ",cityCode, date, dtType, e)
-            continue
+            try:
+                if 'date is not valid' in res.text:
+                    print('日期无效')
+                    return
+            except:
+                continue
+
 
 # 迁出到市
 def qc_city(cityCode, date, dtType):
@@ -178,6 +191,11 @@ def qc_city(cityCode, date, dtType):
         except Exception as e:
 
             print("qc_city运行出错: ",cityCode, date, dtType, e)
+            try:
+                if 'date is not valid' in res.text:
+                    print('日期无效')
+                    return
+            except:pass
             continue
 
 # 迁出到省
@@ -209,6 +227,12 @@ def qc_province(cityCode, date, dtType):
             return json.loads(s)['data']['list']
         except Exception as e:
             print("qc_province运行出错: ",cityCode, date, dtType, e)
+            try:
+                if 'date is not valid' in res.text:
+                    print('日期无效')
+                    return
+            except:
+                pass
             continue
 
 
@@ -223,6 +247,7 @@ def run(dateList, start_date, end_date):
         #     city=random.choice(cityList)
 
         for city in cityList:
+            # if city != '哈尔滨':continue
 
             if hascity.find_one({'已爬取城市': city}):
                 print('该城市已抓取')
@@ -347,11 +372,11 @@ if __name__ == '__main__':
     t1 = threading.Thread(target=clear)
     t1.setDaemon(True)
     t1.start()
-    start_date = '2021-08-02'
-    end_date = '2021-09-03'
+    start_date = '2021-09-04'
+    end_date = '2021-10-25'
     year=2021
-    month=9
-    day=3
+    month=10
+    day=25
     print(start_date, end_date)
     dateList = create_assist_date(start_date, end_date)
     run(dateList, start_date, end_date)
