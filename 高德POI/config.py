@@ -1168,9 +1168,15 @@ gaode = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
 # 网格表
 pos = gaode.pos_new
 # 数据表，用于存入抓取到的数据
-poi = gaode.poi
+poi = gaode.poi_202110
 # 已抓取过的网格表
-use_pos = gaode.use_pos_new
+use_pos = gaode.use_pos_new_202110
 
 
 api_url = "https://restapi.amap.com/v3/place/polygon?extensions=all&output=json"
+
+
+if __name__ == '__main__':
+
+    print(gaode.poi_202107.find_one().keys())
+    print(gaode.poi_202110.find_one().keys())

@@ -4,7 +4,6 @@ import requests
 import time
 from requests.adapters import HTTPAdapter
 from bson.objectid import ObjectId
-
 s = requests.Session()
 s.mount('http://', HTTPAdapter(max_retries=3))#设置重试次数为3次
 s.mount('https://', HTTPAdapter(max_retries=3))
@@ -79,7 +78,8 @@ def get_pos(id_list=[]):
                 try:
                     config.use_pos.insert_one(current_pos)
                     return current_pos
-                except:
+                except Exception as e:
+                    print(e)
                     return get_pos(id_list)
         else:
             return None
@@ -94,7 +94,7 @@ def sava_data(data):
     for i in data['pois']:
         is_exists = config.poi.find_one({"_id": i["id"]})
         if not is_exists:
-            i.update({"_id": i["id"]})
+            # i.update({"_id": i["id"]})
             print(i)
             config.poi.insert_one(i)
         num += 1
@@ -238,6 +238,8 @@ def handle_pos(pos=""):
 
 
 if __name__ == '__main__':
+    # config.pos.update_many({}, {"$set": {"status": 1}})
+    # print(config.pos.count_documents({"status": 1}))
     flag = True
     while flag:
         start_time = time.time()
@@ -245,8 +247,8 @@ if __name__ == '__main__':
         print('当前网格', current_pos)
         if current_pos:
             _sum = handle_process5X5(current_pos)
-            config.pos.update({"_id": current_pos["_id"]}, {"$set": {"status": 0}})
-            config.use_pos.remove(current_pos)
+            config.pos.update_one({"_id": current_pos["_id"]}, {"$set": {"status": 0}})
+            config.use_pos.delete_one(current_pos)
             print('该地址获取条数', _sum)
         else:
             flag = False
