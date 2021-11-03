@@ -1,0 +1,9 @@
+1628492608338	geckodriver	INFO	Listening on 127.0.0.1:62358
+1628492611104	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\chenjiyi\\AppData\\Local\\Temp\\rust_mozprofileWaCn19"
+1628492663933	geckodriver	INFO	Listening on 127.0.0.1:51019
+1628492666967	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\chenjiyi\\AppData\\Local\\Temp\\rust_mozprofileKortq4"
+1628492667357	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\chenjiyi\\AppData\\Local\\Temp\\rust_mozprofileKortq4\\search.json.mozlz4", (void 0)))
+1628492671100	Marionette	INFO	Listening on port 62961
+1628492671204	Marionette	WARN	TLS certificate errors will be ignored for this session
+1628492672870	Marionette	WARN	Ignoring event 'DOMContentLoaded' because document has an invalid readyState of 'complete'.
