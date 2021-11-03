@@ -25,58 +25,58 @@ qianruCity_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁入到城市_数据_202107']
+            retryWrites="false")['百度迁徙']['迁入到城市_数据_202109']
 qianruCity_has = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁入到城市_去重_202107']
+            retryWrites="false")['百度迁徙']['迁入到城市_去重_202109']
 
 qianchuCity_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁出城市_数据_202107']
+            retryWrites="false")['百度迁徙']['迁出城市_数据_202109']
 qianchuCity_has = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁出城市_去重_202107']
+            retryWrites="false")['百度迁徙']['迁出城市_去重_202109']
 
 qianruProvince_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁入到省份_数据_202107']
+            retryWrites="false")['百度迁徙']['迁入到省份_数据_202109']
 qianruProvince_has = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁入到省份_去重_202107']
+            retryWrites="false")['百度迁徙']['迁入到省份_去重_202109']
 
 qianchuProvince_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁出省份_数据_202107']
+            retryWrites="false")['百度迁徙']['迁出省份_数据_202109']
 qianchuProvince_has = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁出省份_去重_202107']
+            retryWrites="false")['百度迁徙']['迁出省份_去重_202109']
 hascity = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁入迁出_城市去重_202107']
+            retryWrites="false")['百度迁徙']['迁入迁出_城市去重_202109']
 
 def clear():
     while True:
@@ -347,11 +347,11 @@ if __name__ == '__main__':
     t1 = threading.Thread(target=clear)
     t1.setDaemon(True)
     t1.start()
-    start_date = '2021-06-07'
-    end_date = '2021-07-01'
+    start_date = '2021-08-02'
+    end_date = '2021-09-03'
     year=2021
-    month=7
-    day=1
+    month=9
+    day=3
     print(start_date, end_date)
     dateList = create_assist_date(start_date, end_date)
     run(dateList, start_date, end_date)

@@ -285,7 +285,7 @@ def run(startdate, enddate, df_map):
 
 if __name__ == '__main__':
     # startdate, enddate = '2011-1-1', '2020-11-1'
-    startdate, enddate = '2021-06-07', '2021-07-01'
+    startdate, enddate = '2021-07-02', '2021-08-05'
     df_map = pd.read_excel('城市_区县_映射表.xlsx')
     # threadPool = ThreadPoolExecutor(max_workers=12)
     # future = threadPool.submit(run ,startdate,enddate,df_map)

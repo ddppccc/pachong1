@@ -29,13 +29,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['土地市场网招拍挂']['出让公告_数据_202107']
+            retryWrites="false")['土地市场网招拍挂']['出让公告_数据_202109']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['土地市场网招拍挂']['出让公告_去重_202107']
+            retryWrites="false")['土地市场网招拍挂']['出让公告_去重_202109']
 
 
 # 获取详情页面

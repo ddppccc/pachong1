@@ -23,13 +23,15 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度指数']['info']
+            retryWrites="false")['百度指数']['百度搜索指数_数据_202109']
 
 if __name__ == "__main__":
-
+    year = 2021
+    month = 9
+    day = 2
     # 百度关键词
     keywords = ['招聘', '招工', '房价', '股票', '失业金', '买房', '卖房', '租房']
-    start_date = '2021-01-01'
+    start_date = '2021-08-07'
     end_date = datetime.datetime.now().strftime("%Y-%m-%d")
 
 
@@ -51,6 +53,9 @@ if __name__ == "__main__":
             for index in baidu_index.get_index():
                 index['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
                 index['城市'] = city
+                index['抓取年份'] = year
+                index['抓取月份'] = month
+                index['抓取日期'] = day
                 if info_base.count_documents({'keyword':index['keyword'],'type':index['type'],'date':index['date'],'城市':city}) == 0:
                     info_base.insert_one(index)
 
