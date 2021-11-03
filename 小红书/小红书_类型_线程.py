@@ -26,18 +26,24 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['小红书']['数据_202107']
+            retryWrites="false")['小红书']['数据_202110']
 url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['小红书']['url_202107']
+            retryWrites="false")['小红书']['url_202110']
 
 def get_proxy():
-    return requests.get("http://47.106.223.4:50002/get/").json().get('proxy')
-    # return requests.get("http://192.168.88.51:5010/get/").json().get('proxy')
-    # return requests.get("http://127.0.0.1:5010/get/").json().get('proxy')
+    try:
+        return requests.get('http://1.116.204.248:5000/proxy').text
+        # return requests.get("http://47.106.223.4:50002/get/").json().get('proxy')
+        # return requests.get("http://192.168.88.51:5010/get/").json().get('proxy')
+        # return requests.get("http://127.0.0.1:5010/get/").json().get('proxy')
+    except:
+        print('暂无ip，等待20秒')
+        time.sleep(20)
+
 
 
 def delete_proxy(proxy):

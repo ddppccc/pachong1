@@ -10,8 +10,8 @@ from lxml import etree
 from requests.adapters import HTTPAdapter
 
 from beike_map import get_regionscj, get_esf_code_map
-from city_spider import cities
-import multiprocessing
+# from city_spider import cities
+# import multiprocessing
 from urllib import parse
 import pymongo
 
@@ -29,19 +29,13 @@ headers = {
 
 
 def get_proxy():
-    try:
-        return s.get('http://47.106.223.4:50002/get/').json().get('proxy')
-    except:
-        num = 3
-        while num:
-            try:
-                return s.get('http://47.106.223.4:50002/get/').json().get('proxy')
-            except:
-                print('暂无ip，等待20秒')
-                time.sleep(20)
-
-                num -= 1
-        print('暂无ip')
+    while True:
+        try:
+            # return requests.get('http://1.116.204.248:5000/proxy').text
+            return requests.get('http://47.106.223.4:50002/get/').json().get('proxy')
+        except:
+            print('暂无ip，等待20秒')
+            time.sleep(20)
 
 
 def check_data(x):
@@ -80,14 +74,14 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['贝壳shen']['ChengJiao']
+            retryWrites="false")['贝壳']['成交_数据_202111']
 
 url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['贝壳shen']['cily_url']
+            retryWrites="false")['贝壳']['成交_url_202111']
 # 建立连接
 # info_base = pymongo.MongoClient('mongodb://localhost:27017/')['贝壳']['ChengJiao']
 
@@ -156,7 +150,26 @@ def get_next_register(url):
         next_dist[distUrl] = dist
     return next_data, next_dist
 
-def get_html(url):
+# def get_html(url):
+#     headers = {
+#         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
+#         "Accept-Encoding": "gzip, deflate, br",
+#         "Accept-Language": "zh-CN,zh;q=0.9",
+#         "Cache-Control": "max-age=0",
+#         "Connection": "keep-alive",
+#         # "Host": "www.ke.com",
+#         # "Referer": "https://sz.ke.com/",
+#         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"}
+#     prox = get_proxy()
+#     proxies = {'http': 'http://%s' % prox, 'https': 'https://%s' % prox}
+#     res = s.get(url, headers=headers, proxies=proxies, timeout=(5, 10))
+#     # res = requests.get(url, headers=headers)
+#     res.encoding = 'utf-8'
+#     # print(res.text)
+#     tree = etree.HTML(res.text)
+#     return tree
+
+def get_html(url, proxieslist):
     headers = {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
         "Accept-Encoding": "gzip, deflate, br",
@@ -166,16 +179,39 @@ def get_html(url):
         # "Host": "www.ke.com",
         # "Referer": "https://sz.ke.com/",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"}
-    prox = get_proxy()
-    proxies = {'http': 'http://%s' % prox, 'https': 'https://%s' % prox}
-    res = s.get(url, headers=headers, proxies=proxies, timeout=(5, 10))
-    # res = requests.get(url, headers=headers)
-    res.encoding = 'utf-8'
-    # print(res.text)
-    tree = etree.HTML(res.text)
-    return tree
+    s = 0
+    while True:
+        try:
+            if len(proxieslist) > 0:
+                proxies = proxieslist
+            else:
+                proxy = get_proxy()
+                proxies = {"https": proxy}
+            response = requests.get(url, headers=headers, proxies=proxies, timeout=(5, 10))
+            encod = response.apparent_encoding
+            if encod.upper() in ['GB2312', 'WINDOWS-1254']:
+                encod = 'gbk'
+            response.encoding = encod
+            if '人机认证' in response.text:
+                print('该IP需要人机验证: ', proxieslist)
+                proxieslist = []
+                continue
+            html = etree.HTML(response.text)
+            proxieslist = proxies
+            print(s, proxies, '获取成功')
+            return html, proxieslist
+        except Exception as e:
+            s += 1
+            proxieslist = []
+
+            # print('get_html错误', e)
+            continue
+    return
+
+
+
 # 获取每一页的信息, 保存
-def get_data(url, city):
+def get_data(url, city, proxieslist):
     num = 1
     while num > 0:
         try:
@@ -188,7 +224,7 @@ def get_data(url, city):
             #
             # html = s.get(url, proxies=proixy, headers=headers)
             # html.encoding = html.apparent_encoding
-            tree = get_html(url)
+            tree, proxieslist = get_html(url, proxieslist)
             num -= 1
         except Exception as e:
             print(url, "出错195", e)
@@ -253,14 +289,12 @@ def get_data(url, city):
             df = pd.DataFrame(data=data)
             if df.shape[0] != 0:
                 print(df.shape)
-                df['交易时间'] = df['交易时间'].map(check_data)
-                df = df[["城市", "区县", "标题", "标题url", "朝向", "装修", "交易时间", "总价", "单价", "楼层", "建筑类型",
-                         "招拍挂", "其他信息", "id", "建筑年份"]]
-                # write_to_table(df, 'public', "chengjiao")
             if flag == 1:
-                return 1
+                return proxieslist
+        else:
+            print('当前页面无数据')
         break
-    return 0
+    return proxieslist
 
 
 
@@ -271,13 +305,13 @@ def get_data(url, city):
 
 
 # 构造每个页面的url
-def get_page_data(page, url, city, dis=None):
+def get_page_data(page, url, city, proxieslist, dis=None):
     number = math.ceil(int(page) / 30)
     # g_list = []
     for i in range(1, number + 1):
         urls = url + "pg%s/" % i
         print(urls)
-        get_data(urls, city)
+        proxieslist = get_data(urls, city, proxieslist)
 
         # if get_data(urls, city, district, dealTime) == 1:
         #     return
@@ -289,10 +323,11 @@ def get_page_data(page, url, city, dis=None):
     #     g_list.append(g)
     #     print("城市: %s, 区县: %s  %s, 总页数: %s, 当前页数: %s" % (city, district,dis, number, i))
     # gevent.joinall(g_list)
+    return proxieslist
 
 
 # 获取每一个行政区,
-def get_html_page(url, city, district):
+def get_html_page(url, city, district, proxieslist):
     try:
         html = s.get(url, headers=headers)
         html.encoding = html.apparent_encoding
@@ -306,7 +341,7 @@ def get_html_page(url, city, district):
 
     if int(chengjiao_number) == 0:
         print(district, '没有数据')
-        return
+        return proxieslist
     # elif int(chengjiao_number) > 3000:    # 第一次跑判断为获取全部数据
     # elif int(chengjiao_number) > 3000000:  # 忽略次分支              在 beike_map.py 中修改过，所以 chengjiao_number 永远小于 2000
     #     next_data, next_dist = get_next_register(url)
@@ -316,12 +351,13 @@ def get_html_page(url, city, district):
     #     return
     else:
         print('当前行政区: %s, %s, 数量: %s' % (city, district, chengjiao_number))
-        get_page_data(chengjiao_number, url, city, district)
+        proxieslist = get_page_data(chengjiao_number, url, city, proxieslist, district)
+        return proxieslist
 
 
 def run():
     #df = get_deal_time_1()
-
+    proxieslist = {}
     # 生成最新的二手房映射表
     city_map = get_esf_code_map()
     print("city_map: ", city_map)
@@ -329,11 +365,15 @@ def run():
 
     for city_name in city_map:  # 城市名   多个程序一起跑时更改 city_name
         try:
-            if info_base.find_one({"城市": city_name[0]}):
-                print("这个城市正在抓或者已经抓过了: %s" % city_name)
+            if url_data.count({city_name: '已爬取'}):
+                print('已爬取')
                 continue
+            elif url_data.count({city_name: '正在爬取'}):
+                print('正在爬取')
+                continue
+            url_data.insert_one({city_name: '正在爬取'})
 
-            register, CHENGJIAO = get_regionscj(city_name, city_map)
+            register, CHENGJIAO = get_regionscj(city_name, city_map, proxieslist)
             print("当前城市: %s, \n抓取到的分区: %s, \n" % (city_name, register))
             if not CHENGJIAO:  # 没有成交字段
                 print("%s: 没有成交字段," % city_name)
@@ -343,7 +383,7 @@ def run():
             # p_list = []
             for district, disturls in register.items():
                 for disturl in disturls:
-                    get_html_page(disturl, city_name, district)
+                    proxieslist = get_html_page(disturl, city_name, district, proxieslist)
 
             #     dealTime = get_deal_time_2(df, district) # 获取最近成交时间
             #
@@ -354,6 +394,7 @@ def run():
             #     p.join()
 
             print(city_name)
+            url_data.insert_one({city_name: '已爬取'})
         except Exception as  e:
             print('aaaaaaaaaaaa',e)
 
