@@ -81,7 +81,7 @@ proxyMeta = "http://%(user)s:%(pass)s@%(host)s:%(port)s" % {
 }
 def get_proxy():
     try:
-        return requests.get('http://1.116.204.248:6000/proxy2').text
+        return requests.get('http://1.116.204.248:5454/proxy2').text
     except:
         num = 3
         while num:
