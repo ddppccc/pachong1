@@ -248,7 +248,7 @@ def get_data(city, qx, proxieslist, url):
                 houseInfo = "".join(house.xpath("./div/div[2]/div[2]/text()")).replace(" ", "").replace("\n", "")
 
                 # 户型
-                items['户型'] = "".join(re.findall('\d室\d{0,1}厅{0,1}', ''.join(
+                items['户型'] = "".join(re.findall('\d+室\d{0,1}厅{0,1}', ''.join(
                     [type_info for type_info in houseInfo.split('|') if '室' in type_info])))
                 if len(items['户型']) == 0:
                     items['户型'] = np.NaN
