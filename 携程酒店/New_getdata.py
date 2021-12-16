@@ -623,22 +623,26 @@ class GET:
             start = time.time()
             city = dic['data'].split('|')[0]
             cityId = dic['data'].split('|')[-1]
-            if url_data.count_documents({city: '已爬取'}):
-                print('当前城市已爬取:', dic['display'])
-                continue
-            elif url_data.count_documents({city: '正在爬取'}):
-                print('当前城市正在爬取:', dic['display'])
-                continue
-            url_data.insert_one({city: '正在爬取'})
+            # if url_data.count_documents({city: '已爬取'}):
+            #     print('当前城市已爬取:', dic['display'])
+            #     continue
+            # elif url_data.count_documents({city: '正在爬取'}):
+            #     print('当前城市正在爬取:', dic['display'])
+            #     continue
+            # url_data.insert_one({city: '正在爬取'})
 
             html = requests.get('https://hotels.ctrip.com/hotel/' + city + cityId + '/p1',
                                 headers=self.header,
                                 proxies=self.proxies, timeout=5).text
             # html = requests.get('https://hotels.ctrip.com/hotel/Mile4243/p4', headers=self.header).text
             tree = etree.HTML(html)
-            strs = ''.join(tree.xpath('//div[@style="font-size: 16px;"]/text()'))
+            strs = ''.join(tree.xpath('//div[@class="filter-title clearfix"]/div/text()'))
             sums = ''.join(re.findall('(\d+?)', strs))
-            pgsum = int(sums)/15 + 2
+            sum2 = int(sums)
+            if sum2 % 15 == 0:
+                pgsum = sum2 // 15 + 1
+            else:
+                pgsum = sum2 // 15 + 2
 
             self.get_lb(city, cityId, pgsum)
             df = pd.DataFrame(self.monny_list)

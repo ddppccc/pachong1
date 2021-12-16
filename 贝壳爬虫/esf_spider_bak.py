@@ -33,14 +33,14 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
     MONGODB_CONFIG['password'],
     MONGODB_CONFIG['host'],
     MONGODB_CONFIG['port']),
-    retryWrites="false")['贝壳']['二手房_数据_202111']
+    retryWrites="false")['贝壳']['二手房_数据_202112']
 
 url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
     MONGODB_CONFIG['user'],
     MONGODB_CONFIG['password'],
     MONGODB_CONFIG['host'],
     MONGODB_CONFIG['port']),
-    retryWrites="false")['贝壳']['二手房_url_202111']
+    retryWrites="false")['贝壳']['二手房_url_202112']
 
 s = requests.Session()
 s.mount('http://', HTTPAdapter(max_retries=3))  # 设置重试次数为3次
@@ -248,7 +248,7 @@ def get_data(city, qx, proxieslist, url):
                 houseInfo = "".join(house.xpath("./div/div[2]/div[2]/text()")).replace(" ", "").replace("\n", "")
 
                 # 户型
-                items['户型'] = "".join(re.findall('\d室\d{0,1}厅{0,1}', ''.join(
+                items['户型'] = "".join(re.findall('\d+室\d{0,1}厅{0,1}', ''.join(
                     [type_info for type_info in houseInfo.split('|') if '室' in type_info])))
                 if len(items['户型']) == 0:
                     items['户型'] = np.NaN
@@ -294,8 +294,10 @@ def get_data(city, qx, proxieslist, url):
 
                 # 总价
                 totalPrice = house.xpath(
-                    "./div[@class='info clear']/div[@class='address']/div[@class='priceInfo']/div[@class='totalPrice']/span/text()")
-                totalPrice = "".join(re.findall('(\d)', str(totalPrice)))
+                    "./div[@class='info clear']/div[@class='address']/div[@class='priceInfo']/div[@class='totalPrice totalPrice2']/span/text()")
+                totalPrice = "".join(re.findall('(\d+\.?\d+)', str(totalPrice)))
+                if totalPrice == "":
+                    totalPrice = "".join(re.findall('(\d)', str(totalPrice)))
                 try:
                     items['总价'] = float(totalPrice)
                 except:
@@ -304,7 +306,9 @@ def get_data(city, qx, proxieslist, url):
                 # 单价
                 unitPrace = house.xpath(
                     "./div[@class='info clear']/div[@class='address']/div[@class='priceInfo']/div[@class='unitPrice']/span/text()")
-                unitPrace = "".join(re.findall('(\d+\.?\d+)元', str(unitPrace)))
+                unitPrace = "".join(re.findall('(\d+\.?\d+)', str(unitPrace)))
+                if unitPrace == "":
+                    unitPrace = "".join(re.findall('(\d)', str(unitPrace)))
                 try:
                     items['单价'] = float(unitPrace)
                 except:
@@ -398,7 +402,7 @@ def run():
         print('开始：', city)
         url_data.insert_one({city: '正在爬取'})
         cityurl = citycod[city]
-        qx = get_qx('http://' + cityurl + '.ke.com/ershoufang/', proxieslist)
+        qx = get_qx('http://' + cityurl + '.ke.com/ershoufang/sf1sf2sf3sf4sf5/', proxieslist)
         for region_name, base_urlss in qx.items():  # {区县：[{url:数据条数},...] , ......}
             for base_urls in base_urlss:  # base_urlss：  [{url:数据条数},...]
                 base_url = list(base_urls.keys())[0]  # url
@@ -438,6 +442,8 @@ def run():
 
 if __name__ == '__main__':
     pool = ThreadPoolExecutor()
+    # url_data.delete_many({})
+    # info_base.delete_many({})
     # get_city()
     # url = 'https://hf.ke.com/ershoufang/'
     # get_qx('合肥',url)
