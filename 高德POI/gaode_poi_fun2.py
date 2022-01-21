@@ -5,6 +5,7 @@ import time
 from requests.adapters import HTTPAdapter
 from bson.objectid import ObjectId
 s = requests.Session()
+from 高德乱码处理 import if_contain_symbol,update_data
 s.mount('http://', HTTPAdapter(max_retries=3))#设置重试次数为3次
 s.mount('https://', HTTPAdapter(max_retries=3))
 import requests
@@ -95,8 +96,11 @@ def sava_data(data):
         is_exists = config.poi.find_one({"_id": i["id"]})
         if not is_exists:
             # i.update({"_id": i["id"]})
+            if if_contain_symbol(i):
+                i = update_data(i)
             print(i)
-            config.poi.insert_one(i)
+            if i:
+                config.poi.insert_one(i)
         num += 1
     return num
     #return len(data.get('pois', []))

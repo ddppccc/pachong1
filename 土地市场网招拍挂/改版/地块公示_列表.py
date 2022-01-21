@@ -18,7 +18,7 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['土地市场网招拍挂']['地块公示_列表_202110']
+            retryWrites="false")['土地市场网招拍挂']['地块公示_列表_202111']
 def get_time_range_list(startdate, enddate):
     """
         切分时间段
@@ -89,8 +89,8 @@ __jdu=16208714644421613284524; shshshfpa=d4f0280a-3bc6-af72-3c11-78a09dbedcf4-16
 
 
 if __name__ == '__main__':
-    start='2021-09-24'               #0924-1027共130199页数据 已完成1-967
-    end='2021-10-27'
+    start='2021-10-27'               #0924-1027共130199页数据 已完成1-967
+    end='2021-11-15'
     getdata(start,end)
     # list=get_time_range_list(start, end)
     # print(list)

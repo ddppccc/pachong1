@@ -20,13 +20,13 @@ page_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['土地市场网招拍挂']['地块公示_列表_202110']
+            retryWrites="false")['土地市场网招拍挂']['地块公示_列表_202111']
 info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['土地市场网招拍挂']['地块公示_数据_202110']
+            retryWrites="false")['土地市场网招拍挂']['地块公示_数据_202111']
 headers={
 
     'Host': 'api.landchina.com',

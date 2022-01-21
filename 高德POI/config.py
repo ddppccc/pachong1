@@ -1156,7 +1156,8 @@ gaode_key = [
     "705d303822d6685c2b05915464483a9c",
     "9411ece7ba7c9ff934a093219215b47d",
     "de3514f87e2d145179e4adbd0cb01b1d",
-    "f7e4985b165ebcb8d9976d0af95de9ff"
+    "f7e4985b165ebcb8d9976d0af95de9ff",
+    "41ff39111bc41cda0a35359099e0e238",
 ]
 
 gaode = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
@@ -1168,9 +1169,9 @@ gaode = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
 # 网格表
 pos = gaode.pos_new
 # 数据表，用于存入抓取到的数据
-poi = gaode.poi_202110
+poi = gaode.poi_202201
 # 已抓取过的网格表
-use_pos = gaode.use_pos_new_202110
+use_pos = gaode.use_pos_new_202201
 
 
 api_url = "https://restapi.amap.com/v3/place/polygon?extensions=all&output=json"

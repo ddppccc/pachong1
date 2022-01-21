@@ -100,7 +100,7 @@ if __name__ == '__main__':
                 if if_contain_symbol(source):  # 判断是否乱码
 
                     newsource = update_data(source)  # 获取正常编码数据
-
-                    update_database(source, newsource)  # 数据库更新数据
-                    print('成功更新',num)
-                    num+=1
+                    if newsource:
+                        update_database(source, newsource)  # 数据库更新数据
+                        print('成功更新',num)
+                        num+=1

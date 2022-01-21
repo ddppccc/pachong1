@@ -82,6 +82,7 @@ proxyMeta = "http://%(user)s:%(pass)s@%(host)s:%(port)s" % {
 def get_proxy():
     try:
         return requests.get('http://1.116.204.248:5454/proxy2').text
+        # return requests.get('http://1.116.204.248:5000/proxy').text
     except:
         num = 3
         while num:
@@ -898,3 +899,11 @@ city_url = {
     '巴州':'https://bazhong.anjuke.com',
 
 }
+
+
+
+t=''''''
+u=''''''
+
+if __name__ == '__main__':
+    print('dasdas')
