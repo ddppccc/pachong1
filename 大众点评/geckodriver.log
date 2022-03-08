@@ -1,0 +1,18 @@
+1627003460177	geckodriver	INFO	Listening on 127.0.0.1:59408
+1627003462988	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\chenjiyi\\AppData\\Local\\Temp\\rust_mozprofile6Ne3Z6"
+1627003470052	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\chenjiyi\\AppData\\Local\\Temp\\rust_mozprofile6Ne3Z6\\search.json.mozlz4", (void 0)))
+1627003486047	Marionette	INFO	Listening on port 59417
+1627003486999	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: http://1.116.204.248:1234/test/, line 65: ReferenceError: environment is not defined
+1627003491325	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'loading'.
+1627003547332	geckodriver	INFO	Listening on 127.0.0.1:59512
+1627003550396	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\chenjiyi\\AppData\\Local\\Temp\\rust_mozprofileMcaaqm"
+1627003551617	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\chenjiyi\\AppData\\Local\\Temp\\rust_mozprofileMcaaqm\\search.json.mozlz4", (void 0)))
+1627003556228	Marionette	INFO	Listening on port 59527
+1627003556284	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: http://1.116.204.248:1234/test/, line 65: ReferenceError: environment is not defined
+1627003560592	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'loading'.
+JavaScript error: http://1.116.204.248:1234/test/, line 65: ReferenceError: environment is not defined
+1627003579085	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'loading'.
