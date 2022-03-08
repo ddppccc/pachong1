@@ -7,7 +7,7 @@ def gethash(driver,keys):
     # driver.get(url)
     driver.execute_script('document.close()')
     driver.execute_script("document.write(strenc('%s'))" % keys)
-    time.sleep(2)
+    time.sleep(0.2)
     js = driver.find_elements_by_xpath('/html/body')[0].text
     # print(js)
     return js
