@@ -1,0 +1,18 @@
+import pandas as pd
+import numpy as np
+
+def boll(region_df, date, indexName):
+    region_df['date'] = pd.to_datetime(data["date"], format='%Y-%m-%d')
+    region_df = region_df.sort_values('date')
+    region_df['time'] = [x.strftime("%Y-%m") for x in region_df['date']].copy()
+    
+    df = region_df.pivot_table(index=['city_name','time'], values=indexName, aggfunc=np.mean).reset_index() #日数据 统计成月度
+    df[indexName] = df[indexName].interpolate(limit_area='inside')
+    df['布林中轨'] = df[indexName].rolling(19).mean()
+    df['std'] = df[indexName].rolling(19).std()
+    df['布林上轨'] = df['布林中轨'] + df['std']*2
+    df['布林下轨'] = df['布林中轨'] - df['std']*2
+    df = df.rename(columns={indexName:'mf', '布林中轨':'blzg', '布林上轨':'blsg', '布林下轨':'blxg'})
+    return df[['city_name','time','mf','blzg','blsg','blxg']]
+
+
