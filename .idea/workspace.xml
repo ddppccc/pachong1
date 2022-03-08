@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="52456d3c-de90-418d-8fc7-0e93c91e33e8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/pachong.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/pachong.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/贝壳爬虫/esf_spider_bak.py" beforeDir="false" afterPath="$PROJECT_DIR$/贝壳爬虫/esf_spider_bak.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/百度指数/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/百度指数/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/百度指数/demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/百度指数/demo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/百度迁徙/迁移.py" beforeDir="false" afterPath="$PROJECT_DIR$/百度迁徙/迁移.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/高德POI/gaode_poi_fun2.py" beforeDir="false" afterPath="$PROJECT_DIR$/高德POI/gaode_poi_fun2.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +36,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.酒店_2020-11_最新可用">
+  <component name="RunManager" selected="Python.gaode_poi_fun2">
     <configuration name="New_getdata" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pachong" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -80,6 +81,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="gaode_poi_fun2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="pachong" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/高德POI" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/高德POI/gaode_poi_fun2.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="index" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pachong" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -104,6 +126,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.gaode_poi_fun2" />
         <item itemvalue="Python.酒店_2020-11_最新可用" />
         <item itemvalue="Python.index" />
         <item itemvalue="Python.New_getdata" />
@@ -122,7 +145,7 @@
       </list>
     </option>
   </component>
-  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -169,76 +192,6 @@
     <MESSAGE value="bk_esf" />
     <option name="LAST_COMMIT_MESSAGE" value="bk_esf" />
   </component>
-  <component name="WindowStateProjectService">
-    <state x="668" y="138" key="#New_getdata" timestamp="1637740247846">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="668" y="138" key="#New_getdata/0.0.1920.1050@0.0.1920.1050" timestamp="1637740247846" />
-    <state x="689" y="328" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1638783935738">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="689" y="328" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1050@0.0.1920.1050" timestamp="1638783935738" />
-    <state x="668" y="138" key="#index" timestamp="1637741005687">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="668" y="138" key="#index/0.0.1920.1050@0.0.1920.1050" timestamp="1637741005687" />
-    <state x="560" y="117" key="CommitChangelistDialog2" timestamp="1638783879984">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="560" y="117" key="CommitChangelistDialog2/0.0.1920.1050@0.0.1920.1050" timestamp="1638783879984" />
-    <state width="1563" height="466" key="DebuggerActiveHint" timestamp="1638150200977">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="1563" height="466" key="DebuggerActiveHint/0.0.1920.1050@0.0.1920.1050" timestamp="1638150200977" />
-    <state x="740" y="280" key="FileChooserDialogImpl" timestamp="1638435501314">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="740" y="280" key="FileChooserDialogImpl/0.0.1920.1050@0.0.1920.1050" timestamp="1638435501314" />
-    <state width="1860" height="269" key="GridCell.Tab.0.bottom" timestamp="1638339263201">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="1860" height="269" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1638339263201" />
-    <state width="1860" height="269" key="GridCell.Tab.0.center" timestamp="1638339263201">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="1860" height="269" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1638339263201" />
-    <state width="1860" height="269" key="GridCell.Tab.0.left" timestamp="1638339263201">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="1860" height="269" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1638339263201" />
-    <state width="1860" height="269" key="GridCell.Tab.0.right" timestamp="1638339263201">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="1860" height="269" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1638339263201" />
-    <state width="1860" height="269" key="GridCell.Tab.1.bottom" timestamp="1638339263201">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="1860" height="269" key="GridCell.Tab.1.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1638339263201" />
-    <state width="1860" height="269" key="GridCell.Tab.1.center" timestamp="1638339263201">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="1860" height="269" key="GridCell.Tab.1.center/0.0.1920.1050@0.0.1920.1050" timestamp="1638339263201" />
-    <state width="1860" height="269" key="GridCell.Tab.1.left" timestamp="1638339263201">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="1860" height="269" key="GridCell.Tab.1.left/0.0.1920.1050@0.0.1920.1050" timestamp="1638339263201" />
-    <state width="1860" height="269" key="GridCell.Tab.1.right" timestamp="1638339263201">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="1860" height="269" key="GridCell.Tab.1.right/0.0.1920.1050@0.0.1920.1050" timestamp="1638339263201" />
-    <state x="461" y="167" key="SettingsEditor" timestamp="1637741082795">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="461" y="167" key="SettingsEditor/0.0.1920.1050@0.0.1920.1050" timestamp="1637741082795" />
-    <state x="552" y="258" key="Vcs.Push.Dialog.v2" timestamp="1638783926516">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="552" y="258" key="Vcs.Push.Dialog.v2/0.0.1920.1050@0.0.1920.1050" timestamp="1638783926516" />
-    <state width="960" height="525" key="XDebugger.FullValuePopup" timestamp="1637740437332">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="960" height="525" key="XDebugger.FullValuePopup/0.0.1920.1050@0.0.1920.1050" timestamp="1637740437332" />
-  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
@@ -254,10 +207,5 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/pachong$_2020_11_.coverage" NAME="酒店_2020-11_最新可用 Coverage Results" MODIFIED="1638150154041" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/携程酒店" />
-    <SUITE FILE_PATH="coverage/pachong$New_getdata.coverage" NAME="New_getdata Coverage Results" MODIFIED="1637740701788" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/携程酒店" />
-    <SUITE FILE_PATH="coverage/pachong$index.coverage" NAME="index Coverage Results" MODIFIED="1637741118907" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/携程酒店" />
   </component>
 </project>

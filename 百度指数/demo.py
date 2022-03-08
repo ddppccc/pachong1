@@ -31,8 +31,8 @@ if __name__ == "__main__":
     day = 22
     # 百度关键词
     keywords = ['招聘', '招工', '房价', '股票', '失业金', '买房', '卖房', '租房']
-    start_date = '2021-08-07'
-    end_date = datetime.datetime.now().strftime("%Y-%m-%d")
+    start_date = '2021-09-07'
+    end_date = '2022-03-07'
 
 
     for number in [22, 23]:     # TODO 每次递增
