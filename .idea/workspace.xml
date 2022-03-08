@@ -3,10 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="52456d3c-de90-418d-8fc7-0e93c91e33e8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/百度指数/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/百度指数/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/百度指数/demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/百度指数/demo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/百度迁徙/迁移.py" beforeDir="false" afterPath="$PROJECT_DIR$/百度迁徙/迁移.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/高德POI/gaode_poi_fun2.py" beforeDir="false" afterPath="$PROJECT_DIR$/高德POI/gaode_poi_fun2.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,7 +32,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.gaode_poi_fun2">
+  <component name="RunManager" selected="Python.酒店_2020-11_最新可用">
     <configuration name="New_getdata" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pachong" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -81,27 +77,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="gaode_poi_fun2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="pachong" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/高德POI" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/高德POI/gaode_poi_fun2.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="index" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pachong" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -126,7 +101,6 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.gaode_poi_fun2" />
         <item itemvalue="Python.酒店_2020-11_最新可用" />
         <item itemvalue="Python.index" />
         <item itemvalue="Python.New_getdata" />
@@ -181,7 +155,14 @@
       <option name="project" value="LOCAL" />
       <updated>1638783882739</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="bk_esf">
+      <created>1646702822925</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1646702822925</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -197,12 +178,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/携程酒店/New_getdata.py</url>
-          <line>656</line>
+          <line>660</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/携程酒店/New_getdata.py</url>
-          <line>646</line>
+          <line>650</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
