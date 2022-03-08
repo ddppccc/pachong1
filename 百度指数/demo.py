@@ -26,6 +26,7 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             retryWrites="false")['百度指数']['百度搜索指数_数据_202110']
 
 if __name__ == "__main__":
+    # 4545
     year = 2021
     month = 10
     day = 22
