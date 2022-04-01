@@ -2,7 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="52456d3c-de90-418d-8fc7-0e93c91e33e8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/同花顺/chromedriver.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/同花顺/cookie.txt" beforeDir="false" afterPath="$PROJECT_DIR$/同花顺/cookie.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/同花顺/web.py" beforeDir="false" afterPath="$PROJECT_DIR$/同花顺/web.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/同花顺/概念股.py" beforeDir="false" afterPath="$PROJECT_DIR$/同花顺/概念股.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/土地市场网招拍挂/gethash.py" beforeDir="false" afterPath="$PROJECT_DIR$/土地市场网招拍挂/gethash.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/土地市场网招拍挂/供地结果_列表.py" beforeDir="false" afterPath="$PROJECT_DIR$/土地市场网招拍挂/供地结果_列表.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/土地市场网招拍挂/供地结果_详情.py" beforeDir="false" afterPath="$PROJECT_DIR$/土地市场网招拍挂/供地结果_详情.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/房天下小区_二手房/config2.py" beforeDir="false" afterPath="$PROJECT_DIR$/房天下小区_二手房/config2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/房天下小区_二手房/小区_重构.py" beforeDir="false" afterPath="$PROJECT_DIR$/房天下小区_二手房/小区_重构.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/房天下小区_二手房/新房_重构.py" beforeDir="false" afterPath="$PROJECT_DIR$/房天下小区_二手房/新房_重构.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/百度指数/demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/百度指数/demo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/高德POI/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/高德POI/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/高德POI/gaode_poi_fun2.py" beforeDir="false" afterPath="$PROJECT_DIR$/高德POI/gaode_poi_fun2.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,24 +42,49 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/同花顺" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.酒店_2020-11_最新可用">
-    <configuration name="New_getdata" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\pachong\同花顺" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.概念股">
+    <configuration name="概念股" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pachong" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\haokaixin\AppData\Local\Programs\Python\Python36\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/携程酒店" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/同花顺" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/携程酒店/New_getdata.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/同花顺/概念股.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="小区_重构" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="pachong" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/房天下小区_二手房" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/房天下小区_二手房/小区_重构.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -69,6 +107,48 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/携程酒店/酒店_2020-11_最新可用.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="供地结果_列表" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="pachong" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/土地市场网招拍挂" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/土地市场网招拍挂/供地结果_列表.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="gaode_poi_fun2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="pachong" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/高德POI" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/高德POI/gaode_poi_fun2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -101,9 +181,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.概念股" />
+        <item itemvalue="Python.gaode_poi_fun2" />
+        <item itemvalue="Python.小区_重构" />
         <item itemvalue="Python.酒店_2020-11_最新可用" />
         <item itemvalue="Python.index" />
-        <item itemvalue="Python.New_getdata" />
       </list>
     </recent_temporary>
   </component>
@@ -162,7 +244,49 @@
       <option name="project" value="LOCAL" />
       <updated>1646702822925</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="bk_esf">
+      <created>1646721763387</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1646721763387</updated>
+    </task>
+    <task id="LOCAL-00005" summary="bk_esf">
+      <created>1646721804288</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1646721804288</updated>
+    </task>
+    <task id="LOCAL-00006" summary="bk_esf">
+      <created>1646721828504</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1646721828504</updated>
+    </task>
+    <task id="LOCAL-00007" summary="bk_esf">
+      <created>1646721916119</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1646721916119</updated>
+    </task>
+    <task id="LOCAL-00008" summary="bk_esf">
+      <created>1646721949421</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1646721949421</updated>
+    </task>
+    <task id="LOCAL-00009" summary="bk_esf">
+      <created>1646721984391</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1646721984391</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -185,6 +309,11 @@
           <url>file://$PROJECT_DIR$/携程酒店/New_getdata.py</url>
           <line>650</line>
           <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/同花顺/概念股.py</url>
+          <line>119</line>
+          <option name="timeStamp" value="24" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

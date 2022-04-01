@@ -20,13 +20,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['同花顺']['概念行业板块_数据_202110']
+            retryWrites="false")['同花顺']['概念行业板块_数据_202204']
 has_info = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['同花顺']['概念行业板块_去重_202110']
+            retryWrites="false")['同花顺']['概念行业板块_去重_202204']
 
 def headers():
     with open('cookie.txt', 'r') as f:
@@ -113,6 +113,7 @@ def getdata(types,dicts):
 
 
 if __name__ == '__main__':
+    # info_base.delete_many({})
     keys = {
         '概念板块': gainiandict,
         '同花顺行业': bankuaidict}

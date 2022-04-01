@@ -13,6 +13,8 @@ from concurrent.futures.thread import ThreadPoolExecutor
 from config2 import get_proxy
 # from city_map import make_url,city_map,citylist
 from config.config import baidu_chang_gaode
+
+
 def get_ua():
     user_agents = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
@@ -36,26 +38,28 @@ def get_ua():
     ]
     user_agent = random.choice(user_agents)
     return user_agent
+
+
 MONGODB_CONFIG = {
-   "host": "8.135.119.198",
-   "port": "27017",
-   "user": "hladmin",
-   "password": parse.quote("Hlxkd3,dk3*3@"),
-   "db": "dianping",
-   "collections": "dianping_collections",
+    "host": "8.135.119.198",
+    "port": "27017",
+    "user": "hladmin",
+    "password": parse.quote("Hlxkd3,dk3*3@"),
+    "db": "dianping",
+    "collections": "dianping_collections",
 }
 info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
-            MONGODB_CONFIG['user'],
-            MONGODB_CONFIG['password'],
-            MONGODB_CONFIG['host'],
-            MONGODB_CONFIG['port']),
-            retryWrites="false")['房天下']['小区_数据_202202']
+    MONGODB_CONFIG['user'],
+    MONGODB_CONFIG['password'],
+    MONGODB_CONFIG['host'],
+    MONGODB_CONFIG['port']),
+    retryWrites="false")['房天下']['小区_数据_202203']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
-            MONGODB_CONFIG['user'],
-            MONGODB_CONFIG['password'],
-            MONGODB_CONFIG['host'],
-            MONGODB_CONFIG['port']),
-            retryWrites="false")['房天下']['小区_去重_202202']
+    MONGODB_CONFIG['user'],
+    MONGODB_CONFIG['password'],
+    MONGODB_CONFIG['host'],
+    MONGODB_CONFIG['port']),
+    retryWrites="false")['房天下']['小区_去重_202203']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -65,29 +69,35 @@ headers = {
     "upgrade-insecure-requests": "1",
     "User-Agent": get_ua()
 }
+
+
 def getCity_Code():
-    item={}
+    item = {}
     response = requests.get('https://www.fang.com/SoufunFamily.htm', headers=headers, timeout=(5, 5))
     response.encoding = 'gbk'
     html = etree.HTML(response.text)
-    lists=html.xpath('//div[@class="onCont"]/table//a')
+    lists = html.xpath('//div[@class="onCont"]/table//a')  # 获取城市列表 第一个鞍山
     for i in lists:
-        city=i.xpath('./text()')[0]
-        url=i.xpath('./@href')[0]
-        code=url.split('.')[0][7:]
+        city = i.xpath('./text()')[0]  # 鞍山
+        url = i.xpath('./@href')[0]  # 获取城市地区    鞍山的url
+        code = url.split('.')[0][7:]  # anshan
         # print(city,code,url)
-        if city in ['波士顿','保加利亚','昌吉','德国','海外','西雅图','广德','旧金山','洛杉矶','日本','塞浦路斯','西雅图','西班牙','希腊','悉尼','芝加哥','马来西亚','澳大利亚','美国','纽约','葡萄牙','安陆','蒙城']:
+        if city in ['波士顿', '保加利亚', '昌吉', '德国', '海外', '西雅图', '广德', '旧金山', '洛杉矶', '日本', '塞浦路斯', '西雅图', '西班牙', '希腊', '悉尼',
+                    '芝加哥', '马来西亚', '澳大利亚', '美国', '纽约', '葡萄牙', '安陆', '蒙城']:
             continue
-        item[city]=code
+        item[city] = code
     print(item)
     return item
+
 
 IpPool = [
     # "192.168.1.104:5010",
     # "118.24.52.95:5010",
     # "47.106.223.4:50002",
-    'demo.spiderpy.cn',
+    'demo.spiderpy.cn',           #ip代理池
 ]
+
+
 # def get_proxy():
 #     try:
 #         return requests.get(f'http://{random.choice(IpPool)}/get/').json().get('proxy')
@@ -102,10 +112,10 @@ IpPool = [
 #
 #                 num -= 1
 #         print('暂无ip')
-def get_html(url):
-    proxies = {"https": get_proxy()}
+def get_html(url):  # 发起请求
+    proxies = {"https": get_proxy()}  #
     try:
-        response = requests.get(url, headers=headers,proxies=proxies, timeout=10)
+        response = requests.get(url, headers=headers, proxies=proxies, timeout=10)  # 请求各个城市的url
         # response = requests.get(url, headers=headers, timeout=10)
         encod = response.apparent_encoding
         if encod.upper() in ['GB2312', 'WINDOWS-1254']:
@@ -121,7 +131,22 @@ def get_html(url):
         return get_html(url)
 
 
-def get_info_community(url, **kwargs):
+def get_zb(city_code, housId):
+    url = 'https://ditu.fang.com/?c=channel&a=xiaoquNew&newcode=%s&city=%s&width=1200&height=455&resizePage=///house/web/map_resize.html&category=residence&esf=1' % (
+        housId, city_code)         #替换%s的内容 获取各个城市坐标位置url
+    res = get_html(url)
+    if not res:
+        return '', ''
+    tree = etree.HTML(res.text)
+    location = tree.xpath('/html/body/script[1]/text()')[0].replace('var mainBuilding=', '')[:-1]    #地理编码信息
+    true = True
+    false = False
+    dicts = eval(location)               #  改动处将 json 转为字典类型
+    coordx, coordy = dicts['coordx'], dicts['coordy']         #x,y坐标
+    return coordx, coordy
+
+
+def get_info_community(url, **kwargs):  # url为小区详情页url
     """
     获取详情页信息
     """
@@ -142,9 +167,36 @@ def get_info_community(url, **kwargs):
         return "退出当前详情访问"
     html = etree.HTML(res.text)
 
-    dd_list = html.xpath("//h3[@class='f16'][contains(text(), '基本信息')]/../../div[@class='pdX16']//li")
+    # ‘//*[@id="dsy_D01_03"]/div[1]/a’   主页二手房的xpath
+
+    ###dd_list = html.xpath("//h3[@class='f16'][contains(text(), '基本信息')]/../../div[@class='pdX16']//li")   #请求url为详情页·的url  ?
+    dd_list = html.xpath("/html/body/div[3]/div[4]/div[1]/div/div/ul/li")  # 详情页定位 基本信息 均价，地址
     item_info = {}
-    item_dd = { dd.xpath('string(.)').split('：', 1)[0].replace(' ', ''): dd.xpath('string(.)').split('：', 1)[-1].replace(' ', '') for dd in dd_list}
+    # item_dd = { dd.xpath('string(.)').split('：', 1)[0].replace(' ', ''): dd.xpath('string(.)').split('：', 1)[-1].replace(' ', '') for dd in dd_list}
+    item_dd = {}
+    for dd in dd_list:
+        # key = dd.xpath('string(.)').split('：', 1)[0].replace(' ', '')
+        # value = dd.xpath('string(.)').split('：', 1)[-1].replace(' ','')
+        # item_dd[key] = value
+        try:
+            key = dd.xpath('./span/text()')[0].replace(' ', '')     #键
+            item_dd[key] = dd.xpath('./p/text()')[0]                 #键值
+        except:
+            continue
+
+        # item_info['产权描述'] = dd.xpath('./span/text()')
+        # item_info['物业类型'] = dd.xpath('./div/ul/li[6]/p/text()')
+        # item_info['建筑类型'] = dd.xpath('./div/ul/li[8]/p/text()')
+        # item_info['建筑面积'] = dd.xpath('./div/ul/li[9]/p/text()')
+        #
+        # item_info['房屋总数'] = dd.xpath('./div/ul/li[11]/p/text()')
+        # item_info['楼栋总数'] = dd.xpath('./div/ul/li[12]/p/text')
+        # item_info['绿化率'] = dd.xpath('./div/ul/li[13]/p/text()')
+        # item_info['容积率'] = dd.xpath('./div/ul/li[14]/p/text()')
+        # item_info['物业费'] = dd.xpath('./div/ul/li[15]/p/text()')
+        # item_info['停车位'] = dd.xpath('./div[2]/div/ul/li[6]/p/text()')
+        #
+        # item_info['占地面积'] = dd.xpath('./div/ul/li[10]/p/text()')
 
     item_info['产权描述'] = item_dd.get('产权描述', None)
     item_info['物业类型'] = item_dd.get('物业类型', None)
@@ -157,20 +209,19 @@ def get_info_community(url, **kwargs):
     item_info['容积率'] = item_dd.get('容积率', None)
     item_info['物业费'] = item_dd.get('物业费', None)
     item_info['停车位'] = item_dd.get('停车位', None)
+    item_info['占地面积'] = item_dd.get('占地面积', None)
+    # /html/body/div[3]/div[4]/div[1]/div[1]./div/ul/li[4]
 
-    description = "".join(html.xpath("/html/head/meta[@name='description']/@content"))
-    item_info['占地面积'] = "".join(re.findall("占地面积(\d+\.?\d+)平方米，", description))
-    location = "".join(html.xpath("/html/head/meta[@name='location']/@content"))
+    ### description = "".join(html.xpath("/html/head/meta[@name='description']/@content"))
+    ###item_info['占地面积'] = "".join(re.findall("占地面积(\d+\.?\d+)平方米，", description))
 
-    try:
-        long, lat = re.findall("coord=(\d+\.?\d+),(\d+\.?\d+)", location)[0]
-    except:
-        long, lat = '', ''
+    # location = "".join(html.xpath("/html/head/meta[@name='location']/@content"))
+
+    long, lat = get_zb(kwargs['city_code'], kwargs['code'])
     kwargs['item_dict']['latitude'], kwargs['item_dict']['longitude'] = baidu_chang_gaode(lat, long)
-    kwargs['item_dict'].update(item_info)
-    kwargs['item'].append(kwargs['item_dict'])
+    kwargs['item_dict'].update(item_info)            #进行修改处
+    kwargs['item'].append(kwargs['item_dict'])       #修改处
     return kwargs['item']
-
 
 
 def get_regions(city_name, GetType):
@@ -181,14 +232,14 @@ def get_regions(city_name, GetType):
         :param city_name:
         :return: {'guangming': '光明'}
         """
-        # 二手房
+        # 二手房页面
         if GetType == '二手房':
             url = 'https://{}.esf.fang.com/'.format(city_map[city_name])
             if city_name == '北京':
                 url = 'https://esf.fang.com/'
             print('\n将在 %s 爬取行政区' % url)
             res = get_html(url)
-            html=etree.HTML(res.text)
+            html = etree.HTML(res.text)
 
             regions_xpath = "//span[contains(text(), '区域')]//following-sibling::ul//a"
             regions = dict(zip(html.xpath(regions_xpath + '/@href'), html.xpath(regions_xpath + '/text()')))
@@ -199,7 +250,7 @@ def get_regions(city_name, GetType):
             return regions
 
 
-        else:  # 小区
+        else:  # 小区页面
             url = 'https://{}.esf.fang.com/housing/'.format(city_map[city_name])
             if city_name == '北京':
                 url = 'https://esf.fang.com/housing/'
@@ -208,7 +259,7 @@ def get_regions(city_name, GetType):
             print('\n将在 %s 爬取行政区' % url)
 
             res = get_html(url)
-            html=etree.HTML(res.text)
+            html = etree.HTML(res.text)
 
             regions_xpath = "//*[@id='houselist_B03_02']/div[@class='qxName']/a"
             regions = dict(zip(html.xpath(regions_xpath + '/@href'), html.xpath(regions_xpath + '/text()')))
@@ -219,6 +270,8 @@ def get_regions(city_name, GetType):
                 continue
             return regions
     return {}
+
+
 def make_url(city_name, url_fmt, GetType, city_code='suoxie'):
     for i in range(10):
         # 获取城市中文名称
@@ -226,17 +279,17 @@ def make_url(city_name, url_fmt, GetType, city_code='suoxie'):
         # 函数用于过滤序列，过滤掉不符合条件的元素，返回由符合条件元素组成的新列表。
         # 该接收两个参数，第一个为函数，第二个为序列，序列的每个元素作为参数传递给函数进行判，然后将值为True的返回到新列表中
         city_name = list(filter(lambda x: city_name in x, city_map))[0]
-    
+
         # 获取城市名称拼音
         code = city_map.get(city_name)
-    
+
         print(code, code)
         if city_name == '绍兴' and GetType == '小区':
             code = 'shaoxing'
         if code:
             # 获取城市的行政区划分列表
             regions = {url_fmt.format(code, key): value for key, value in get_regions(city_name, GetType).items()}
-    
+
             print(city_name, code, '\n提取到的分区: ', regions)
             return regions
         elif city_name == '北京':
@@ -245,14 +298,16 @@ def make_url(city_name, url_fmt, GetType, city_code='suoxie'):
             if GetType != '二手房':
                 regions = {'https://{}esf.fang.com/housing/{}/'.format(code, key): value for key, value in
                            get_regions(city_name, GetType).items()}
-    
+
             if not regions:
-                continue 
+                continue
             print(city_name, code, '\n提取到的分区: ', regions)
             return regions
         else:
             return {}
     return {}
+
+
 def get_dist(city, GetType):
     """
     生成行政区字典
@@ -268,6 +323,7 @@ def get_dist(city, GetType):
             continue
     print('获取区域失败')
 
+
 def get_data(url, baseUrl, city, dist, pageNumber, currPage, item):
     """
     解析每一个页面
@@ -281,7 +337,7 @@ def get_data(url, baseUrl, city, dist, pageNumber, currPage, item):
     """
     number_tz = 0
     while True:
-        if has_spider.find_one({'标题':url}):
+        if has_spider.find_one({'标题': url}):
             print('该页数据已爬取，下一页')
             return
 
@@ -300,7 +356,7 @@ def get_data(url, baseUrl, city, dist, pageNumber, currPage, item):
             print('获取house_box出错')
             return
         try:
-            x=house_box[0]
+            x = house_box[0]
         except Exception as e:
             print(e, url)
             if number_tz > 3:
@@ -313,12 +369,14 @@ def get_data(url, baseUrl, city, dist, pageNumber, currPage, item):
             item_dict = {}
             try:
                 item_dict["小区"] = house.xpath('./dl/dd/p[1]/a[1]/text()')[0]
-            except:continue
+            except:
+                continue
             city_code = baseUrl.split('.')[0].split('//')[1]
             code = json.loads(house.xpath("./@data-bgcomare")[0]).get('newcode')
-
-            item_dict['小区url'] = "https://m.fang.com/xiaoqu/{city_code}/{community_code}.html".format(
+            item_dict['小区url'] = 'https://{city_code}.esf.fang.com/loupan/{community_code}/housedetail.htm'.format(
                 city_code=city_code, community_code=code)
+            # item_dict['小区url'] = "https://m.fang.com/xiaoqu/{city_code}/{community_code}.html".format(
+            #     city_code=city_code, community_code=code)        #城市编码，地址 小区url
             item_dict['类型'] = house.xpath('./dl/dd/p[1]/span[1]/text()')[0]
             if item_dict['类型'] not in ['住宅', '别墅']:
                 continue
@@ -334,7 +392,8 @@ def get_data(url, baseUrl, city, dist, pageNumber, currPage, item):
             item_dict['在租套数'] = house.xpath('./dl/dd/ul/li[2]/a/text()')[0].strip()
             try:
                 item_dict['建筑年份'] = re.findall("\d+", house.xpath('./dl/dd/ul/li[3]/text()')[0])[0]
-            except: item_dict['建筑年份'] = None
+            except:
+                item_dict['建筑年份'] = None
             if city == '海南省':
                 item_dict['城市'] = dist
             else:
@@ -359,15 +418,15 @@ def get_data(url, baseUrl, city, dist, pageNumber, currPage, item):
             community_url = item_dict['小区url']
             item_dict['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
             # print("城市-区县: {}-{}, 小区: {}, 小区url: {}".format(city, dist, item_dict['小区'], item_dict['小区url']))
-            get_info_community(community_url, Referer=item_dict['小区url'], item=item, item_dict=item_dict)
-
+            get_info_community(community_url, Referer=item_dict['小区url'], item=item, item_dict=item_dict, code=code,
+                               city_code=city_code)
 
             info_base.insert_one(item_dict)
+            info_base.update_one({'小区url': item_dict['小区url']}, {'$set':item_dict})
             # sum.append(1)
             # print(len(sum),item_dict)
 
-
-        print("城市：%s %s, 状态：有数据，共%s页，当前第%d页,  %s" % (city, dist, pageNumber, currPage, url),len(house_box))
+        print("城市：%s %s, 状态：有数据，共%s页，当前第%d页,  %s" % (city, dist, pageNumber, currPage, url), len(house_box))
         has_spider.insert_one({'标题': url})
         break
 
@@ -414,7 +473,6 @@ def get_street_page(city, street_url, GetType, **kwargs):
             pools.append(done)
         [obj.result() for obj in pools]
         break
-
 
 
 def get_page(city, dist_dict, GetType):
@@ -467,7 +525,7 @@ def get_page(city, dist_dict, GetType):
                     break
                 continue
             if page_number > 99:
-            # if True:
+                # if True:
                 print(page_number)
                 print('当前页数大于100页, 分页抓取')
                 # 获取街道信息
@@ -476,7 +534,7 @@ def get_page(city, dist_dict, GetType):
                 print(street_dict)
                 for street, str_url in street_dict.items():
                     street_url = base_url + str_url
-                    print('街道',street, street_url)
+                    print('街道', street, street_url)
 
                     get_street_page(city, street_url, GetType, street=street,
                                     Referer=dist_url, dist=dist, base_url=base_url)
@@ -499,17 +557,18 @@ def get_page(city, dist_dict, GetType):
 
 
 if __name__ == '__main__':
+    # get_info_community('https://sh.esf.fang.com/loupan/1210012000/housedetail.htm', city_code='sh', code='1210012000')
     # TODO 小区启动程序
     # TODO 直接 month为要抓取的月份
     # TODO 每月启动前,清空 log/lose_dist, log/小区  中的文件
     year = 2022
     month = 2
-    with open('city_map.json','r', encoding='utf-8') as f:
+    with open('city_map.json', 'r', encoding='utf-8') as f:
         city_map = json.load(f)
     # city_map=getCity_Code()
     pool = ThreadPoolExecutor(30)
     name = []
-    sum=[]
+    sum = []
     # print(info_base.count_documents({}))
     while city_map:
         data = random.sample(city_map.items(), 1)
@@ -527,13 +586,14 @@ if __name__ == '__main__':
             city_code = 'shaoxing'
 
         # 罗定, 望城  无用效的城市
-        if city in ['波士顿','保加利亚','昌吉','德国','海外','西雅图','广德','旧金山','洛杉矶','日本','塞浦路斯','西雅图',
-                    '西班牙','希腊','悉尼','芝加哥','马来西亚','澳大利亚','美国','纽约','葡萄牙','安陆','蒙城']:
+        if city in ['波士顿', '保加利亚', '昌吉', '德国', '海外', '西雅图', '广德', '旧金山', '洛杉矶', '日本', '塞浦路斯', '西雅图',
+                    '西班牙', '希腊', '悉尼', '芝加哥', '马来西亚', '澳大利亚', '美国', '纽约', '葡萄牙', '安陆', '蒙城']:
             del city_map[city]
             continue
-        if city in ["罗定", "望城", '安宁', '霸州', '博罗', '长岛', '昌都', '长寿','万州', '文安', '吴江', '新建'
-                    '定州', '丰都', '奉化', '涪陵', '合川', '惠东', '江都', '江津', '金坛', '莱芜', '临安', '黔江',
-                    '綦江', '三河', '上虞', '顺德', '香港','东兴']:
+        if city in ["罗定", "望城", '安宁', '霸州', '博罗', '长岛', '昌都', '长寿', '万州', '文安', '吴江', '新建'
+                                                                                      '定州', '丰都', '奉化', '涪陵', '合川',
+                    '惠东', '江都', '江津', '金坛', '莱芜', '临安', '黔江',
+                    '綦江', '三河', '上虞', '顺德', '香港', '东兴']:
             del city_map[city]
             continue
         if has_spider.find_one({'抓取完成城市': city}):
@@ -549,4 +609,3 @@ if __name__ == '__main__':
         get_page(city, dist, GetType="小区")
         has_spider.insert_one({'抓取完成城市': city})
     pool.shutdown()
-

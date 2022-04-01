@@ -39,7 +39,7 @@ def getcookie(url):
     #     })
     #   """
     # })
-    driver=webdriver.Chrome(options=option)
+    driver=webdriver.Chrome(options=option)     #-------------------------------------------------------------------
     driver.get(url)
     # data='Hm_lvt_78c58f01938e4d85eaf619eae71b4ed1=1628473097; Hm_lpvt_78c58f01938e4d85eaf619eae71b4ed1=1628473097;'
     # time.sleep(2)

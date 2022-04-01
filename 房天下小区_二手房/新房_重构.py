@@ -27,13 +27,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['房天下']['新房_数据_202202']
+            retryWrites="false")['房天下']['新房_数据_202203']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['房天下']['新房_去重_202202']
+            retryWrites="false")['房天下']['新房_去重_202203']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -233,7 +233,7 @@ def get_data(url, city,page_number,page, data):
         dataDict['抓取年份'] = year
         dataDict['抓取月份'] = month
         dataDict['数据来源'] = "房天下"
-        dataDict["id"] = uuid.uuid1(node=random.randint(100, 99999999))
+        # dataDict["id"] = uuid.uuid1(node=random.randint(100, 99999999))
         dataDict['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         # get_detail_url(dataDict['标题url'], dataDict['标题'], dataDict, data)
         # 获取详情页内容
@@ -359,8 +359,8 @@ if __name__ == '__main__':
     # TODO 直接 month为要抓取的月份
     # print(info_base.count_documents({'城市':'北京'}))
     year = 2022
-    month = 2
-    day = 23
+    month = 3
+    day = 11
     # city_map=getCity_Code()
     pool = ThreadPoolExecutor(30)
 
