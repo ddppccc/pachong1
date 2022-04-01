@@ -1,6 +1,7 @@
 import time
 
 import requests
+import time
 def get_proxy():
     try:
         return requests.get('http://1.116.204.248:5454/proxy2').text

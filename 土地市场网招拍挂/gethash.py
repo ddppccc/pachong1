@@ -1,9 +1,9 @@
 import time
 from selenium import webdriver
 url='http://1.116.204.248:1234/zpg/'
-def gethash(keys):
+def gethash(keys):                                 #删除一些元素
     print(keys)
-    driver = webdriver.Chrome('E:/chromedriver.exe')         #
+    driver = webdriver.Chrome('D:/chromedriver.exe')      #驱动存在的文件目录
     driver.get(url)
     driver.execute_script('document.close()')
     driver.execute_script("document.write(strenc('%s'))" % keys)

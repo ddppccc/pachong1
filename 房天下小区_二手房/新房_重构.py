@@ -146,7 +146,7 @@ def get_community_area(url, title):
 def get_detail_url(url, title, dataDict, data):
     for i in range(3):
         Infodata = dict()
-        proxies = {"https": get_proxy()}
+        # proxies = {"https": get_proxy()}
         try:
             # response = requests.get(url, headers=headers,proxies=proxies, timeout=10)
             response = get_html(url)
@@ -233,7 +233,7 @@ def get_data(url, city,page_number,page, data):
         dataDict['抓取年份'] = year
         dataDict['抓取月份'] = month
         dataDict['数据来源'] = "房天下"
-        # dataDict["id"] = uuid.uuid1(node=random.randint(100, 99999999)) 3.11
+        # dataDict["id"] = uuid.uuid1(node=random.randint(100, 99999999))
         dataDict['抓取时间'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         # get_detail_url(dataDict['标题url'], dataDict['标题'], dataDict, data)
         # 获取详情页内容
@@ -358,7 +358,6 @@ if __name__ == '__main__':
     # TODO 新房启动程序
     # TODO 直接 month为要抓取的月份
     # print(info_base.count_documents({'城市':'北京'}))
-    #抓取的时间
     year = 2022
     month = 3
     day = 11
@@ -368,6 +367,7 @@ if __name__ == '__main__':
     # for i in ['眉山']:
     #     x=info_base.delete_many({'城市':i})
     #     print(x.deleted_count,'个文档已删除')
+
 
     run()
     pool.shutdown()

@@ -23,13 +23,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度指数']['百度搜索指数_数据_202110']  #10月份
+            retryWrites="false")['百度指数']['百度搜索指数_数据_202110']
 
 if __name__ == "__main__":
-    # 4545 爬取的时间
-    year = 2021
-    month = 10
-    day = 22
+    # 4545
+    year = 2022
+    month = 3
+    day = 9
     # 百度关键词
     keywords = ['招聘', '招工', '房价', '股票', '失业金', '买房', '卖房', '租房']
     start_date = '2021-09-07'
