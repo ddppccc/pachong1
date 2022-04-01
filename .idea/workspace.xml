@@ -2,20 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="52456d3c-de90-418d-8fc7-0e93c91e33e8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/同花顺/chromedriver.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/同花顺/cookie.txt" beforeDir="false" afterPath="$PROJECT_DIR$/同花顺/cookie.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/同花顺/web.py" beforeDir="false" afterPath="$PROJECT_DIR$/同花顺/web.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/同花顺/概念股.py" beforeDir="false" afterPath="$PROJECT_DIR$/同花顺/概念股.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/土地市场网招拍挂/gethash.py" beforeDir="false" afterPath="$PROJECT_DIR$/土地市场网招拍挂/gethash.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/土地市场网招拍挂/供地结果_列表.py" beforeDir="false" afterPath="$PROJECT_DIR$/土地市场网招拍挂/供地结果_列表.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/土地市场网招拍挂/供地结果_详情.py" beforeDir="false" afterPath="$PROJECT_DIR$/土地市场网招拍挂/供地结果_详情.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/房天下小区_二手房/config2.py" beforeDir="false" afterPath="$PROJECT_DIR$/房天下小区_二手房/config2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/房天下小区_二手房/小区_重构.py" beforeDir="false" afterPath="$PROJECT_DIR$/房天下小区_二手房/小区_重构.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/房天下小区_二手房/新房_重构.py" beforeDir="false" afterPath="$PROJECT_DIR$/房天下小区_二手房/新房_重构.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/百度指数/demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/百度指数/demo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/高德POI/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/高德POI/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/高德POI/gaode_poi_fun2.py" beforeDir="false" afterPath="$PROJECT_DIR$/高德POI/gaode_poi_fun2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/房天下小区_二手房/二手房_重构.py" beforeDir="false" afterPath="$PROJECT_DIR$/房天下小区_二手房/二手房_重构.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -286,7 +275,14 @@
       <option name="project" value="LOCAL" />
       <updated>1646721984391</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="bk_esf">
+      <created>1648777642426</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1648777642427</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -311,9 +307,29 @@
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/同花顺/概念股.py</url>
-          <line>119</line>
-          <option name="timeStamp" value="24" />
+          <url>file://$PROJECT_DIR$/房天下小区_二手房/二手房_重构.py</url>
+          <line>396</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/房天下小区_二手房/二手房_重构.py</url>
+          <line>398</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/房天下小区_二手房/二手房_重构.py</url>
+          <line>467</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/房天下小区_二手房/二手房_重构.py</url>
+          <line>282</line>
+          <option name="timeStamp" value="28" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/房天下小区_二手房/二手房_重构.py</url>
+          <line>449</line>
+          <option name="timeStamp" value="30" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

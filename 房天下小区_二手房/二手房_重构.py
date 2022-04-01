@@ -22,13 +22,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['房天下']['二手房_数据_202203']
+            retryWrites="false")['房天下']['二手房_数据_202204']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['房天下']['二手房_去重_202203']
+            retryWrites="false")['房天下']['二手房_去重_202204']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -404,7 +404,7 @@ if __name__ == '__main__':
     # TODO 请删除 log>lose_dist 中的缓存记录
     # TODO 修改 Month为当前要抓取的月份
     Year = 2022
-    Month = 3
+    Month = 4
     pool = ThreadPoolExecutor(30)
     # print(info_base.count_documents({}))
     with open('city_map.json','r', encoding='utf-8') as f:
