@@ -23,10 +23,10 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度指数']['百度搜索指数_数据_202110']
+            retryWrites="false")['百度指数']['百度搜索指数_数据_202110']  #10月份
 
 if __name__ == "__main__":
-    # 4545
+    # 4545 爬取的时间
     year = 2021
     month = 10
     day = 22

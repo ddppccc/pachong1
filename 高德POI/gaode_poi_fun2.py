@@ -242,6 +242,8 @@ def handle_pos(pos=""):
 
 
 if __name__ == '__main__':
+
+
     # 跑前运行一遍
     # config.pos.update_many({}, {"$set": {"status": 1}})
     # print(config.pos.count_documents({"status": 1}))

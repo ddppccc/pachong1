@@ -143,10 +143,10 @@ def run(start_date, end_date):
 if __name__ == '__main__':
     # TODO 时间
     start_date = '2021-09-04'
-    end_date = '2021-10-25'
-    year = 2021#  时间不管
-    month = 10
-    day = 25
+    end_date = '2022-03-04'
+    year = 2022#  时间不管
+    month = 3
+    day = 4
     print(start_date, end_date)
     dateList = create_assist_date(start_date, end_date)
     run(start_date, end_date)

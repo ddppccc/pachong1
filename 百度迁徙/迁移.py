@@ -373,10 +373,10 @@ if __name__ == '__main__':
     t1.setDaemon(True)
     t1.start()
     start_date = '2021-10-25'
-    end_date = '2021-10-25'
+    end_date = '2022-03-07'
     year=2022
     month=3
-    day=8
+    day=7
     print(start_date, end_date)
     dateList = create_assist_date(start_date, end_date)
     run(dateList, start_date, end_date)

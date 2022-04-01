@@ -1,10 +1,10 @@
 import time
 from selenium import webdriver
 url='http://1.116.204.248:1234/zpg/'
-def gethash(driver,keys):
-    # print(keys)
-    # driver = webdriver.Chrome()
-    # driver.get(url)
+def gethash(keys):
+    print(keys)
+    driver = webdriver.Chrome('E:/chromedriver.exe')         #
+    driver.get(url)
     driver.execute_script('document.close()')
     driver.execute_script("document.write(strenc('%s'))" % keys)
     time.sleep(0.2)

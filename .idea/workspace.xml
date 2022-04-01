@@ -2,7 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="52456d3c-de90-418d-8fc7-0e93c91e33e8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/土地市场网招拍挂/chromedriver.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/pachong.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/pachong.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/同花顺/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/同花顺/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/同花顺/概念股.py" beforeDir="false" afterPath="$PROJECT_DIR$/同花顺/概念股.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/土地市场网招拍挂/gethash.py" beforeDir="false" afterPath="$PROJECT_DIR$/土地市场网招拍挂/gethash.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/土地市场网招拍挂/供地结果_列表.py" beforeDir="false" afterPath="$PROJECT_DIR$/土地市场网招拍挂/供地结果_列表.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/房天下小区_二手房/config2.py" beforeDir="false" afterPath="$PROJECT_DIR$/房天下小区_二手房/config2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/房天下小区_二手房/新房_重构.py" beforeDir="false" afterPath="$PROJECT_DIR$/房天下小区_二手房/新房_重构.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/百度指数/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/百度指数/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/百度指数/.idea/百度指数.iml" beforeDir="false" afterPath="$PROJECT_DIR$/百度指数/.idea/百度指数.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/百度指数/demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/百度指数/demo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/百度迁徙/迁移.py" beforeDir="false" afterPath="$PROJECT_DIR$/百度迁徙/迁移.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/百度迁徙/迁移指数_同期对比.py" beforeDir="false" afterPath="$PROJECT_DIR$/百度迁徙/迁移指数_同期对比.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/高德POI/.idea/高德POI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/高德POI/.idea/高德POI.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/高德POI/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/高德POI/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/高德POI/gaode_poi_fun2.py" beforeDir="false" afterPath="$PROJECT_DIR$/高德POI/gaode_poi_fun2.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,6 +31,17 @@
       <list>
         <option value="Python Script" />
       </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
     </option>
   </component>
   <component name="Git.Settings">
@@ -29,24 +57,51 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/土地市场网招拍挂" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.酒店_2020-11_最新可用">
-    <configuration name="New_getdata" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\pachong\土地市场网招拍挂" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.供地结果_列表">
+    <configuration name="迁移指数_同期对比" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pachong" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\haokaixin\AppData\Local\Programs\Python\Python36\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/携程酒店" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/百度迁徙" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/携程酒店/New_getdata.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/百度迁徙/迁移指数_同期对比.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="供地结果_列表" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="pachong" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/土地市场网招拍挂" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/土地市场网招拍挂/供地结果_列表.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -77,20 +132,64 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="index" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="供地结果_列表" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pachong" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\haokaixin\AppData\Local\Programs\Python\Python36\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/携程酒店" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/土地市场网招拍挂" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/携程酒店/index.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/土地市场网招拍挂/供地结果_列表.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="errorhandler" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="pachong" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/AppData/Local/Programs/Python/Python39/Lib/site-packages/selenium/webdriver/remote" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/AppData/Local/Programs/Python/Python39/Lib/site-packages/selenium/webdriver/remote/errorhandler.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="gethash" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="pachong" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/土地市场网招拍挂" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/土地市场网招拍挂/gethash.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -101,9 +200,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.供地结果_列表" />
+        <item itemvalue="Python.errorhandler" />
+        <item itemvalue="Python.gethash" />
+        <item itemvalue="Python.迁移指数_同期对比" />
         <item itemvalue="Python.酒店_2020-11_最新可用" />
-        <item itemvalue="Python.index" />
-        <item itemvalue="Python.New_getdata" />
       </list>
     </recent_temporary>
   </component>
@@ -140,6 +241,19 @@
       <workItem from="1638435480644" duration="28000" />
       <workItem from="1638438212061" duration="1322000" />
       <workItem from="1638755048647" duration="5927000" />
+      <workItem from="1646730273929" duration="3383000" />
+      <workItem from="1646788574713" duration="2212000" />
+      <workItem from="1646792258054" duration="1528000" />
+      <workItem from="1646794550140" duration="106000" />
+      <workItem from="1646795693019" duration="7729000" />
+      <workItem from="1646819079943" duration="6170000" />
+      <workItem from="1646962439102" duration="3856000" />
+      <workItem from="1646980637904" duration="3491000" />
+      <workItem from="1647221194433" duration="6461000" />
+      <workItem from="1647393190936" duration="9676000" />
+      <workItem from="1647567196154" duration="7322000" />
+      <workItem from="1647840702994" duration="37815000" />
+      <workItem from="1648781268772" duration="439000" />
     </task>
     <task id="LOCAL-00001" summary="备份">
       <created>1635909443347</created>
@@ -162,16 +276,46 @@
       <option name="project" value="LOCAL" />
       <updated>1646702822925</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Default Changelist">
+      <created>1646732012792</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1646732012792</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="备份" />
     <MESSAGE value="bk_esf" />
-    <option name="LAST_COMMIT_MESSAGE" value="bk_esf" />
+    <MESSAGE value="Default Changelist" />
+    <option name="LAST_COMMIT_MESSAGE" value="Default Changelist" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -188,5 +332,10 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/pachong$gethash.coverage" NAME="gethash 覆盖结果" MODIFIED="1647852285198" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/土地市场网招拍挂" />
+    <SUITE FILE_PATH="coverage/pachong$errorhandler.coverage" NAME="errorhandler 覆盖结果" MODIFIED="1648779592306" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/AppData/Local/Programs/Python/Python39/Lib/site-packages/selenium/webdriver/remote" />
+    <SUITE FILE_PATH="coverage/pachong$_.coverage" NAME="供地结果_列表 覆盖结果" MODIFIED="1648781486020" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/土地市场网招拍挂" />
   </component>
 </project>

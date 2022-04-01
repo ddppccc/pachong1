@@ -20,7 +20,7 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['同花顺']['概念行业板块_数据_202110']
+            retryWrites="false")['同花顺']['概念行业板块_数据_202211']
 has_info = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
