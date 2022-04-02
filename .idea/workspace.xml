@@ -4,7 +4,10 @@
     <list default="true" id="52456d3c-de90-418d-8fc7-0e93c91e33e8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/同花顺/cookie.txt" beforeDir="false" afterPath="$PROJECT_DIR$/同花顺/cookie.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/房天下小区_二手房/二手房_重构.py" beforeDir="false" afterPath="$PROJECT_DIR$/房天下小区_二手房/二手房_重构.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/安居客/二手房_重构.py" beforeDir="false" afterPath="$PROJECT_DIR$/安居客/二手房_重构.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/百度指数/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/百度指数/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/百度指数/demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/百度指数/demo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/百度迁徙/迁移.py" beforeDir="false" afterPath="$PROJECT_DIR$/百度迁徙/迁移.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,16 +34,11 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/同花顺" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../crawler_dataclean" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\pachong\同花顺" />
-    </key>
-  </component>
-  <component name="RunManager" selected="Python.概念股">
-    <configuration name="概念股" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.迁移">
+    <configuration name="迁移" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pachong" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -48,11 +46,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/同花顺" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/百度迁徙" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/同花顺/概念股.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/百度迁徙/迁移.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -125,7 +123,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="gaode_poi_fun2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="demo" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pachong" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -133,11 +131,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/高德POI" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/百度指数" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/高德POI/gaode_poi_fun2.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/百度指数/demo.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -170,8 +168,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.概念股" />
-        <item itemvalue="Python.gaode_poi_fun2" />
+        <item itemvalue="Python.迁移" />
+        <item itemvalue="Python.demo" />
         <item itemvalue="Python.小区_重构" />
         <item itemvalue="Python.酒店_2020-11_最新可用" />
         <item itemvalue="Python.index" />
@@ -275,14 +273,7 @@
       <option name="project" value="LOCAL" />
       <updated>1646721984391</updated>
     </task>
-    <task id="LOCAL-00010" summary="bk_esf">
-      <created>1648777642426</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1648777642427</updated>
-    </task>
-    <option name="localTasksCounter" value="11" />
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -305,31 +296,6 @@
           <url>file://$PROJECT_DIR$/携程酒店/New_getdata.py</url>
           <line>650</line>
           <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/房天下小区_二手房/二手房_重构.py</url>
-          <line>396</line>
-          <option name="timeStamp" value="25" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/房天下小区_二手房/二手房_重构.py</url>
-          <line>398</line>
-          <option name="timeStamp" value="26" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/房天下小区_二手房/二手房_重构.py</url>
-          <line>467</line>
-          <option name="timeStamp" value="27" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/房天下小区_二手房/二手房_重构.py</url>
-          <line>282</line>
-          <option name="timeStamp" value="28" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/房天下小区_二手房/二手房_重构.py</url>
-          <line>449</line>
-          <option name="timeStamp" value="30" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

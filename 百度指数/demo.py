@@ -23,17 +23,17 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度指数']['百度搜索指数_数据_202110']
+            retryWrites="false")['百度指数']['百度搜索指数_数据_202204']
 
 if __name__ == "__main__":
     # 4545
     year = 2022
-    month = 3
-    day = 9
+    month = 4
+    day = 1
     # 百度关键词
     keywords = ['招聘', '招工', '房价', '股票', '失业金', '买房', '卖房', '租房']
-    start_date = '2021-09-07'
-    end_date = '2022-03-07'
+    start_date = '2022-03-04'    #-----间隔区间-----------------------------------------上次时间
+    end_date = '2022-04-01'
 
 
     for number in [22, 23]:     # TODO 每次递增
