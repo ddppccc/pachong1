@@ -1,3 +1,5 @@
+import time
+
 import requests
 import time
 def get_proxy():
