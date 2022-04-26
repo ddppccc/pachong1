@@ -130,22 +130,29 @@ def getdata(date, regionname, regioncode, page=1):
         try:
             time.sleep(1)
             res = requests.post(url, json=postdata, proxies=proxies, headers=headers)
-            if res.json()['data']['pageNum'] != page:
-                continue
-            if regionname not in res.text: continue
-            print('当前页', page)
-            print('总页数', res.json()['data']['pages'])
+            with open('log.txt', 'w', encoding='utf8') as f:
+                t = f.readline()
+            if date + regionname + str(regioncode) + 'page' + str(page) not in t:
 
-            for data in res.json()['data']['list']:
-                try:
-                    print(data)
-                except:
-                    pass
-                if info_base.find({'tdZl': data['tdZl'], 'xzqFullName': data['xzqFullName'], 'tdYt': data['tdYt']}):    #------------------------
-                    print('当前数据已存在', data)      #   停住了才修改的 ，会使速度变慢
+                if res.json()['data']['pageNum'] != page:
                     continue
-                info_base.insert_one(data)
-            print('数据量', len(res.json()['data']['list']))
+                if regionname not in res.text: continue
+                print('当前页', page)
+                print('总页数', res.json()['data']['pages'])
+
+                for data in res.json()['data']['list']:
+                    try:
+                        print(data)
+                    except:
+                        pass
+                    # if info_base.find({'tdZl': data['tdZl'], 'xzqFullName': data['xzqFullName'],
+                    #                    'tdYt': data['tdYt']}):  # ------------------------
+                    #     print('当前数据已存在', data)  # 停住了才修改的 ，会使速度变慢
+                    #     continue
+                    info_base.insert_one(data)
+                print('数据量', len(res.json()['data']['list']))
+                with open('log.txt', 'a', encoding='utf8') as f:
+                    f.write(date + regionname + str(regioncode) + 'page' + str(page) + '\n')
             if page < res.json()['data']['pages']:
                 page += 1
                 return getdata(date, regionname, regioncode, page)
@@ -162,10 +169,13 @@ if __name__ == '__main__':
 
     for k, v in regiondict.items():
         for date in daterange:
-            getdata(date, k, v)
-            with open('log.txt', 'a', encoding='utf8') as f:
-                f.write(k + date[0] + '\n')
-
+            with open('log.txt', 'w', encoding='utf8') as f:
+                t = f.readline()
+            if k + date[0] in t:
+                continue
+                getdata(date, k, v)
+                with open('log.txt', 'a', encoding='utf8') as f:
+                    f.write(k + date[0] + '\n')
     # for i in range(1,601):
     #     getdata(i)
     #     print(i,'已完成')
