@@ -9,25 +9,23 @@ import warnings
 from gethash import gethash,getdriver
 warnings.filterwarnings("ignore")
 MONGODB_CONFIG = {
-   "host": "8.135.119.198",
-   "port": "27017",
-   "user": "hladmin",
-   "password": parse.quote("Hlxkd3,dk3*3@"),
-   "db": "dianping",
-   "collections": "dianping_collections",
+    "host": "192.168.1.28",
+    "port": "27017",
+    "user": "admin",
+    "password": '123123',
 }
 page_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['土地市场网招拍挂']['供地结果_列表_202203']
+            retryWrites="false")['土地市场网招拍挂']['供地结果_列表_202204']
 info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['土地市场网招拍挂']['供地结果_详情_202203']
+            retryWrites="false")['土地市场网招拍挂']['供地结果_详情_202204']
 headers={
 
     'Host': 'api.landchina.com',
@@ -49,6 +47,7 @@ headers={
     'Accept-Language': "'zh-CN,zh;q=0.9'",
 }
 def get_proxy():
+    return 'http://H041YJYT015P8T3D:0B6839D706F30F56@http-dyn.abuyun.com:9020'
     try:
         return requests.get('http://1.116.204.248:5454/proxy2').text
         # return requests.get('http://1.116.204.248:5000/proxy').text
@@ -64,9 +63,9 @@ def get_proxy():
         print('暂无ip')
 
 def getdata(data):
-    if info_base.find_one({'gdGuid':data['gdGuid']}):
-        print(data['gdGuid'],'已存在..')
-        return
+    # if info_base.find_one({'gdGuid':data['gdGuid']}):
+    #     print(data['gdGuid'],'已存在..')
+    #     return
     proxy = get_proxy()
     proxies = {
         "https": proxy,
@@ -77,7 +76,7 @@ def getdata(data):
         postdata={'gdGuid': data['gdGuid']}
         time.sleep(1)
         keys = headers['User-Agent'] + str(datetime.datetime.now().day) + 'list'
-        headers['Hash'] = gethash(driver,keys)
+        headers['Hash'] = gethash(keys)
         try:
             res=requests.post(url,headers=headers,proxies=proxies,json=postdata,verify=False)
         except:
@@ -91,24 +90,34 @@ def getdata(data):
 
         item={}
         item['gdGuid'] = data['gdGuid']
+        print(res.json())
         item['项目名称'] = res.json()['data']['xmMc']
         item['行政区'] = res.json()['data']['xzqFullName']
         item['项目位置'] = res.json()['data']['tdZl']
-        item['面积'] = res.json()['relate'][0]['mj']
+        try:
+            item['面积'] = res.json()['relate'][0]['mj']
+        except:
+            item['面积'] =None
         item['土地来源'] = res.json()['data']['tdLy']
         try:
             item['土地用途'] = res.json()['data']['tdYt']
         except:
             item['土地用途'] = ''
         item['供地方式'] = res.json()['data']['gyFs']
-        item['土地使用年限'] = res.json()['data']['crNx']
+        try:
+            item['土地使用年限'] = res.json()['data']['crNx']
+        except:
+            item['土地使用年限'] =None
         item['行业分类'] = res.json()['data']['hyFl']
         item['土地级别'] = res.json()['data']['tdJb']
         try:
             item['成交价格'] = res.json()['data']['je']
         except:
             item['成交价格'] = ''
-        item['土地使用权人'] = res.json()['data']['srr']
+        try:
+            item['土地使用权人'] = res.json()['data']['srr']
+        except:
+            item['土地使用权人'] =None
         try:
             item['容积率下限'] = res.json()['data']['minRjl']
         except:
@@ -147,8 +156,10 @@ def getdata(data):
                 item['约定竣工时间'] = '--'
         item['实际开工时间']= '--'
         item['实际竣工时间']= '--'
-
-        item['批准单位'] = res.json()['data']['pzJg']
+        try:
+            item['批准单位'] = res.json()['data']['pzJg']
+        except:
+            item['批准单位']='--'
         if item['项目位置'] != data['tdZl']:
             continue
         try:
@@ -158,11 +169,23 @@ def getdata(data):
             print(item)
         except:
             pass
-        info_base.insert_one(item)
+        try:
+            info_base.insert_one(item)
+        except:
+            pass
         break
 
 if __name__ == '__main__':
-    driver=getdriver()
+    with open('详情页去重.txt', encoding='utf8') as f:
+        bj = f.readlines()
+    # driver=getdriver()
     for d in page_base.find():
+        # ###################################
+        if d['gdGuid']+'\n' in bj:
+            continue
         # print(d)
         getdata(d)
+        bj.append(d['gdGuid']+'\n')
+        with open('详情页去重.txt', 'a', encoding='utf8') as f:
+            f.write(d['gdGuid']+'\n')
+

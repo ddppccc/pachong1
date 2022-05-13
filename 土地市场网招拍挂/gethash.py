@@ -1,14 +1,17 @@
 import time
 from selenium import webdriver
-url='http://1.116.204.248:1234/zpg/'
+url='http://192.168.1.197/zpg/'
 def gethash(keys):                                 #删除一些元素
-    print(keys)
-    driver = webdriver.Chrome('D:/chromedriver.exe')      #驱动存在的文件目录
+    # print(keys)
+    # option = webdriver.ChromeOptions()
+    # option.headless = True
+    driver = webdriver.Chrome('E:\谷歌驱动\chromedriver.exe', )    # options=option   #驱动存在的文件目录
     driver.get(url)
     driver.execute_script('document.close()')
     driver.execute_script("document.write(strenc('%s'))" % keys)
     time.sleep(0.2)
     js = driver.find_elements_by_xpath('/html/body')[0].text
+    driver.close()
     # print(js)
     return js
     

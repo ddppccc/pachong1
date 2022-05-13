@@ -3,38 +3,41 @@ import datetime
 import time
 from gethash import gethash
 import pymongo
+import os
 from urllib import parse
 
 MONGODB_CONFIG = {
-    "host": "8.135.119.198",
+    "host": "192.168.1.28",
     "port": "27017",
-    "user": "hladmin",
-    "password": parse.quote("Hlxkd3,dk3*3@"),
-    "db": "dianping",
-    "collections": "dianping_collections",
+    "user": "admin",
+    "password": '123123',
 }
 info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
     MONGODB_CONFIG['user'],
     MONGODB_CONFIG['password'],
     MONGODB_CONFIG['host'],
     MONGODB_CONFIG['port']),
-    retryWrites="false")['土地市场网招拍挂']['供地结果_列表_202203']  # 抓取的月份
+    retryWrites="false")['土地市场网招拍挂']['供地结果_列表_202204']  # 抓取的月份
 
 
 def get_proxy():
-    try:
-        return requests.get('http://1.116.204.248:5454/proxy2').text
-        # return requests.get('http://1.116.204.248:5000/proxy').text
-    except:
-        num = 3
-        while num:
-            try:
-                return requests.get('http://1.116.204.248:5000/proxy').text
-            except:
-                print('暂无ip，等待20秒')
-                time.sleep(20)
-                num -= 1
-        print('暂无ip')
+    while True:
+        try:
+            ip = requests.get('http://47.111.226.234:8000/getip2/').text
+            if '403' in ip:
+                continue
+            return ip
+            # return requests.get('http://1.116.204.248:5000/proxy').text
+        except:
+            # num = 3
+            # while num:
+            #     try:
+            #         return requests.get('http://1.116.204.248:5000/proxy').text
+            #     except:
+            #         print('暂无ip，等待20秒')
+            #         time.sleep(20)
+            #         num -= 1
+            print('暂无ip')
 
 
 headers = {
@@ -57,42 +60,48 @@ headers = {
     "Accept-Language": "zh-CN,zh;q=0.9"
 }
 regiondict = {
-    "北京市": "11",
-    "天津市": "12",
-    "河北省": "13",
-    "山西省": "14",
-    "内蒙古": "15",
-    "辽宁省": "21",
-    "吉林省": "22",
-    "黑龙江省": "23",
-    "上海市": "31",
-    "江苏省": "32",
-    "浙江省": "33",
-    "安徽省": "34",
-    "福建省": "35",
-    "江西省": "36",
-    "山东省": "37",
-    "河南省": "41",
-    "湖北省": "42",
-    "湖南省": "43",
+    # "北京市": "11",
+    # "天津市": "12",
+    # "河北省": "13",
+    # "山西省": "14",
+    # "内蒙古": "15",
+    # "辽宁省": "21",
+    # "吉林省": "22",
+    # "黑龙江省": "23",
+    # "上海市": "31",
+    # "江苏省": "32",
+    # "浙江省": "33",
+    # "安徽省": "34",
+    # "福建省": "35",
+    # "江西省": "36",
+    # "山东省": "37",
+    # "河南省": "41",
+    # "湖北省": "42",
+    # "湖南省": "43",
     "广东省": "44",
-    "广西壮族": "45",
-    "海南省": "46",
-    "重庆市": "50",
-    "四川省": "51",
-    "贵州省": "52",
-    "云南省": "53",
-    "西藏": "54",
-    "陕西省": "61",
-    "甘肃省": "62",
-    "青海省": "63",
-    "宁夏回族": "64",
-    "新疆维吾尔": "65",
-    "新疆兵团": "66",
+    # "广西壮族": "45",
+    # "海南省": "46",
+    # "重庆市": "50",
+    # "四川省": "51",
+    # "贵州省": "52",
+    # "云南省": "53",
+    # "西藏": "54",
+    # "陕西省": "61",
+    # "甘肃省": "62",
+    # "青海省": "63",
+    # "宁夏回族": "64",
+    # "新疆维吾尔": "65",
+    # "新疆兵团": "66",
 }
+def get_eData(keys):
+    command = os.popen("node sy " + keys)
+    result = command.read().replace('\n', '')
+    command.close()  # 关闭Node.js
+    return result
 keys = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36' + str(
     datetime.datetime.now().day) + 'list'
-headers['Hash'] = gethash(keys)
+headers['Hash'] = get_eData(keys)
+# headers['Hash'] = gethash(keys)
 
 
 def get_time_range_list(startdate, enddate):
@@ -130,9 +139,16 @@ def getdata(date, regionname, regioncode, page=1):
         try:
             time.sleep(1)
             res = requests.post(url, json=postdata, proxies=proxies, headers=headers)
-            with open('log.txt', 'w', encoding='utf8') as f:
+            # res = requests.post(url, json=postdata, proxies=proxies, headers=headers)
+            # print(res.json())
+            with open('log.txt', encoding='utf8') as f:
                 t = f.readline()
-            if date + regionname + str(regioncode) + 'page' + str(page) not in t:
+            try:
+                bj = date[0] + regionname + str(regioncode) + 'page' + str(page)
+            except:
+                pass
+            print(bj)
+            if bj not in t:
 
                 if res.json()['data']['pageNum'] != page:
                     continue
@@ -152,30 +168,33 @@ def getdata(date, regionname, regioncode, page=1):
                     info_base.insert_one(data)
                 print('数据量', len(res.json()['data']['list']))
                 with open('log.txt', 'a', encoding='utf8') as f:
-                    f.write(date + regionname + str(regioncode) + 'page' + str(page) + '\n')
+                    f.write(date[0] + regionname + str(regioncode) + 'page' + str(page) + '\n')
             if page < res.json()['data']['pages']:
                 page += 1
-                return getdata(date, regionname, regioncode, page)
+                return getdata(date[0], regionname, regioncode, page)
             break
         except Exception as e:
-            print(e)
+            pass
 
 
 if __name__ == '__main__':
     start = '2017-01-01'
-    end = '2021-12-31'
+    end = '2022-04-30'
+
+    # print(len(regiondict))
     daterange = get_time_range_list(start, end)
     print(daterange)
 
     for k, v in regiondict.items():
+        # if k != '西藏': continue
         for date in daterange:
-            with open('log.txt', 'w', encoding='utf8') as f:
+            with open('log.txt', encoding='utf8') as f:
                 t = f.readline()
             if k + date[0] in t:
                 continue
-                getdata(date, k, v)
-                with open('log.txt', 'a', encoding='utf8') as f:
-                    f.write(k + date[0] + '\n')
+            getdata(date, k, v)
+            # with open('log.txt', 'a', encoding='utf8') as f:
+            #     f.write(k + date[0] + '\n')
     # for i in range(1,601):
     #     getdata(i)
     #     print(i,'已完成')
