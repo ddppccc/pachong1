@@ -13,12 +13,10 @@ from config import get_proxy,get_ua,city_url
 from urllib import parse
 # from 乱码检测 import if_contain_symbol
 MONGODB_CONFIG = {
-   "host": "8.135.119.198",
-   "port": "27017",
-   "user": "hladmin",
-   "password": parse.quote("Hlxkd3,dk3*3@"),
-   "db": "dianping",
-   "collections": "dianping_collections",
+    "host": "192.168.1.28",
+    "port": "27017",
+    "user": "admin",
+    "password": '123123',
 }
 
 info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
@@ -26,13 +24,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['安居客']['二手房_数据_202204']
+            retryWrites="false")['安居客']['二手房_数据_202206']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['安居客']['二手房_去重_202204']
+            retryWrites="false")['安居客']['二手房_去重_202206']
 
 
 # city_url = {
@@ -319,7 +317,9 @@ def getliltedist(city,dist,dist_url):
             time.sleep(2)
             continue
 
-        tables=html.xpath('//*[@id="__layout"]/div/section/section[2]/section/div[1]/section/ul[2]/li/a')[1:]
+        tables = html.xpath('//*[@id="__layout"]/div/section/section[2]/section/div[1]/section/ul[2]/li/a')[1:]
+        if tables == []:
+            tables = html.xpath('//*[@id="__layout"]/div/section/section[2]//section/div[1]/section/ul[2]/li/a')[1:]
 
         # for li in tables:
         #     url=li.xpath('./@href')[0].strip()
@@ -364,6 +364,11 @@ if __name__ == '__main__':
     t1 = threading.Thread(target=clear)
     t1.setDaemon(True)
     t1.start()
+
+#调出函数进行调试----------------------------------------------------------------------------------------------------------
+    # getliltedist('象山', '象山周边', 'https://xiangshanxian.anjuke.com/sale/xiangshanqita')
+
+
     # x=has_spider.delete_many({})
     # print(x.deleted_count,'个文档已删除')
     # print(info_base.count_documents({}))
@@ -385,7 +390,7 @@ if __name__ == '__main__':
         if city in badcity:
             del city_url[city]
             continue
-        if has_spider.find_one({'已爬取城市': city}):
+        if has_spider.find_one({'已爬取城市12': city}):   #--------------------------------------跳出判断条件
             print(city,'该城市已抓取')
             del city_url[city]
             continue
@@ -397,24 +402,25 @@ if __name__ == '__main__':
 
 
         while dists:
+            # 区域抓取
 
             data2 = random.sample(dists.items(), 1)
             dist, dist_url = data2[0][0], data2[0][1]
-            if has_spider.find_one({'区域url': dist_url}):
+            if has_spider.find_one({'区域url12': dist_url}):  #--------------------------------------跳出判断条件
                 print('该区域已抓取')
                 del dists[dist]
                 continue
             try:
                 getliltedist(city,dist,dist_url)
-                if not has_spider.find_one({'区域url': dist_url}):
-                    has_spider.insert_one({'区域url': dist_url})
+                if not has_spider.find_one({'区域url12': dist_url}): #--------------------------------------跳出判断条件
+                    has_spider.insert_one({'区域url12': dist_url})   #--------------------------------------跳出判断条件
                 del dists[dist]
             except Exception as e:
                 print(e)
 
                 del dists[dist]
                 continue
-        if not has_spider.find_one({'已爬取城市': city}):
-            has_spider.insert_one({'已爬取城市': city})
+        if not has_spider.find_one({'已爬取城市12': city}):    #--------------------------------------跳出判断条件
+            has_spider.insert_one({'已爬取城市12': city})       #--------------------------------------跳出判断条件
         del city_url[city]
     pool.shutdown()

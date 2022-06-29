@@ -15,12 +15,10 @@ from urllib import parse
 from bjregion import bjregion_zu,bjlilteregion
 
 MONGODB_CONFIG = {
-   "host": "8.135.119.198",
-   "port": "27017",
-   "user": "hladmin",
-   "password": parse.quote("Hlxkd3,dk3*3@"),
-   "db": "dianping",
-   "collections": "dianping_collections",
+    "host": "192.168.1.28",
+    "port": "27017",
+    "user": "admin",
+    "password": '123123',
 }
 
 info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
@@ -28,13 +26,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['安居客']['租房_数据_202203']
+                retryWrites="false")['安居客']['租房_数据_202206']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['安居客']['租房_去重_202203']
+            retryWrites="false")['安居客']['租房_去重_202206']
 
 
 
@@ -77,26 +75,27 @@ def clear():
         time.sleep(600)
         os.system('cls')
 def get_html(url):
-    for i in range(10):
+    while True:                        #for i in range(10):--------------------------------------------------FOR 改成了死循环
         proxies = {"https": get_proxy()}
         try:
             response = requests.get(url, headers=headers,proxies=proxies, timeout=10)
-            # response = requests.get(url, headers=headers, timeout=10)
-            encod = response.apparent_encoding
-            if encod.upper() in ['GB2312', 'WINDOWS-1254']:
-                encod = 'gbk'
-            response.encoding = encod
-            html = etree.HTML(response.text)
-            return html,response
+            if response.status_code==200:
+                # response = requests.get(url, headers=headers, timeout=10)
+                encod = response.apparent_encoding
+                if encod.upper() in ['GB2312', 'WINDOWS-1254']:
+                    encod = 'gbk'
+                response.encoding = encod
+                html = etree.HTML(response.text)
+                return html,response
         except Exception as e:
             # print('get_html错误',proxies, e)
             time.sleep(2)
 
     return
 
-def get_parseInfo(city,dist,liltename, url):
+def get_parseInfo(city,dist,liltename111, url):
     tag=0
-    # print(city,dist,liltename, url)
+    # print(city,dist,liltename111, url)
     while True:
         tag += 1
         html, response = get_html(url)
@@ -128,7 +127,7 @@ def get_parseInfo(city,dist,liltename, url):
             next_page_url = html.xpath('string(//div[@class="multi-page"]/a[@class="aNxt"]/@href)')
             if next_page_url:
                 print('该页数据已爬取，下一页')
-                get_parseInfo(city,dist,liltename, next_page_url)
+                get_parseInfo(city,dist,liltename111, next_page_url)
             else:
                 title = html.xpath('/html/head/title/text()')
                 print('最后一页', title)
@@ -174,15 +173,15 @@ def get_parseInfo(city,dist,liltename, url):
                 # print(item)
                 # if if_contain_symbol(item['小区']): continue
                 info_base.insert_one(item)
-            print('城市：%s %s %s,当前第%s页,获取数据量%d' % (city, dist, liltename, page, len(house_div)), url)
+            print('城市：%s %s %s,当前第%s页,获取数据量%d' % (city, dist, liltename111, page, len(house_div)), url)
             has_spider.insert_one({'标题':url})
 
             next_page_url = html.xpath('string(.//div[@class="multi-page"]/a[@class="aNxt"]/@href)')
             if next_page_url:
-                get_parseInfo(city,dist,liltename,next_page_url)
+                get_parseInfo(city,dist,liltename111,next_page_url)
             else:
-                if not has_spider.find_one({'liltename': url}):
-                    has_spider.insert_one({'liltename': url})
+                if not has_spider.find_one({'liltename111': url}):
+                    has_spider.insert_one({'liltename111': url})
                 return
         break
 def get_zu_url(index_url):
@@ -239,13 +238,13 @@ def getliltedist(city,dist,dist_url):
     # if city=='北京':
     #     dist_url='https://anjuke.com'+dist_url.split('anjuke.com')[-1]
     #     l = []
-    #     for liltename, url in bjlilteregion.get(dist).items():
+    #     for liltename111, url in bjlilteregion.get(dist).items():
     #
-    #         if has_spider.find_one({'liltename': url}):
+    #         if has_spider.find_one({'liltename111': url}):
     #             print('该地区已抓取')
     #             continue
-    #         # print(liltename,url)
-    #         done = pool.submit(get_parseInfo, city, dist, liltename, url)
+    #         # print(liltename111,url)
+    #         done = pool.submit(get_parseInfo, city, dist, liltename111, url)
     #         l.append(done)
     #     [obj.result() for obj in l]
     #     return
@@ -273,13 +272,13 @@ def getliltedist(city,dist,dist_url):
         if city == '北京ds':
             tables = []
             l = []
-            for liltename,url in bjlilteregion.get(dist).items():
+            for liltename111,url in bjlilteregion.get(dist).items():
 
-                if has_spider.find_one({'liltename': url}):
+                if has_spider.find_one({'liltename111': url}):
                     print('该地区已抓取')
                     continue
-                # print(liltename,url)
-                done = pool.submit(get_parseInfo, city, dist, liltename, url)
+                # print(liltename111,url)
+                done = pool.submit(get_parseInfo, city, dist, liltename111, url)
                 l.append(done)
             [obj.result() for obj in l]
         else:
@@ -288,20 +287,20 @@ def getliltedist(city,dist,dist_url):
 
         # for li in tables:
         #     url=li.xpath('./@href')[0]
-        #     liltename = li.xpath('./text()')[0]
-        #     print(liltename, url)
-            # get_parseInfo(city,dist,liltename, url)
+        #     liltename111 = li.xpath('./text()')[0]
+        #     print(liltename111, url)
+            # get_parseInfo(city,dist,liltename111, url)
 
 
         l = []
         for li in tables:
             url = li.xpath('./@href')[0]
-            liltename=li.xpath('./text()')[0].strip()
-            if has_spider.find_one({'liltename':url}):
+            liltename111=li.xpath('./text()')[0].strip()
+            if has_spider.find_one({'liltename111':url}):
                 print('该地区已抓取')
                 continue
-            # print(liltename,url)
-            done = pool.submit(get_parseInfo,city,dist,liltename, url)
+            # print(liltename111,url)
+            done = pool.submit(get_parseInfo,city,dist,liltename111, url)
             l.append(done)
         [obj.result() for obj in l]
 
@@ -314,6 +313,8 @@ badcity=['阿坝州','大邑','金堂','淳安','富阳','临安','桐庐','铜�
          '保亭','东方市','龙门','永登','榆中','文安','汝阳','宾阳','横县','晋安','上虞',
          '乐亭','滦县','丰县','睢宁','江都','肇源','当涂','巴州']
 if __name__ == '__main__':
+    cityssss = [ '重庆', '合肥', '北京', ]
+
     # print(info_base.count_documents({}))
     city_url = getCity_Url()
     pool = ThreadPoolExecutor(30)
@@ -327,6 +328,9 @@ if __name__ == '__main__':
     while city_url:
         data = random.sample(city_url.items(), 1)
         city, url = data[0][0], data[0][1]
+
+        if city not in cityssss:
+            continue
         # city, url = '重庆', 'https://chongqing.anjuke.com'
 
         # if city not in ['湘潭']:
@@ -337,7 +341,7 @@ if __name__ == '__main__':
         if city in badcity:
             del city_url[city]
             continue
-        if has_spider.find_one({'已爬取城市': city}):
+        if has_spider.find_one({'已爬取城市111': city}):
             print('该城市已抓取')
             del city_url[city]
             continue
@@ -356,21 +360,22 @@ if __name__ == '__main__':
 
             data2 = random.sample(dists.items(), 1)
             dist, dist_url = data2[0][0], data2[0][1]
-
-            if has_spider.find_one({'区域url': dist_url}):
+            print(dist, dist_url)
+            if has_spider.find_one({'区域url1111': dist_url}):
                 print('该区域已抓取')
                 del dists[dist]
                 continue
-            try:
-                getliltedist(city,dist,dist_url)
-                if not has_spider.find_one({'区域url': dist_url}):
-                    has_spider.insert_one({'区域url': dist_url})
-                del dists[dist]
-            except:
-                del dists[dist]
-                continue
-        if not has_spider.find_one({'已爬取城市': city}):
-            has_spider.insert_one({'已爬取城市': city})
+                #=======================================================================================================
+            # try:
+            getliltedist(city,dist,dist_url)
+            if not has_spider.find_one({'区域url1111': dist_url}):
+                has_spider.insert_one({'区域url1111': dist_url})
+            del dists[dist]
+            # except:
+            #     del dists[dist]
+            #     continue
+        if not has_spider.find_one({'已爬取城市111': city}):
+            has_spider.insert_one({'已爬取城市111': city})
         del city_url[city]
     print("已完成...")
     pool.shutdown()
