@@ -26,13 +26,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['小红书']['数据_202107']
+            retryWrites="false")['小红书']['数据_202108']
 url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['小红书']['url_202107']
+            retryWrites="false")['小红书']['url_202108']
 
 def get_proxy():
     return requests.get("http://47.106.223.4:50002/get/").json().get('proxy')
@@ -172,9 +172,9 @@ def get_html(page, label_id, label, lon, lat, proxieslist):
             "Accept-Encoding": "gzip, deflate, br",
             'User-Agent': get_ua()
         }
-        if count > 1:
+        if count > 1:        #没有获取值的时候
             print('结束')
-            return proxieslist
+            return proxieslist     #将会返回前面得到的 proxieslist 值
         try:
             # print("proxy: ",proxy)
 
@@ -186,7 +186,7 @@ def get_html(page, label_id, label, lon, lat, proxieslist):
             res = requests.get(url, headers=headers, proxies=proxies, verify=False, timeout=(2, 5))
             resJson = res.json()
             if not resJson['data']:
-                count += 1
+                count += 1           #没有获取值的时候 count=1 再次执行的时候 直接返回
                 proxieslist = []
                 print('没有data')
                 s += 1
@@ -281,9 +281,6 @@ def run(city, lon, lat, proxieslist):
             p.append(dd)
     proxieslist = [obj.result() for obj in p][-1]
     return proxieslist
-
-
-
 
 
 

@@ -13,70 +13,68 @@ import pymongo
 from urllib import parse
 from multiprocessing import Process,Pool
 MONGODB_CONFIG = {
-   "host": "8.135.119.198",
-   "port": "27017",
-   "user": "hladmin",
-   "password": parse.quote("Hlxkd3,dk3*3@"),
-   "db": "dianping",
-   "collections": "dianping_collections",
+    "host": "192.168.1.28",
+    "port": "27017",
+    "user": "admin",
+    "password": '123123',
 }
 qianruCity_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁入到城市_数据_202204']
+            retryWrites="false")['百度迁徙']['迁入到城市_数据_202206']
 qianruCity_has = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁入到城市_去重_202204']
+            retryWrites="false")['百度迁徙']['迁入到城市_去重_202206']
 
 qianchuCity_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁出城市_数据_202204']
+            retryWrites="false")['百度迁徙']['迁出城市_数据_202206']
 qianchuCity_has = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁出城市_去重_202204']
+            retryWrites="false")['百度迁徙']['迁出城市_去重_202206']
 
 qianruProvince_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁入到省份_数据_202204']
+            retryWrites="false")['百度迁徙']['迁入到省份_数据_202206']
 qianruProvince_has = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁入到省份_去重_202204']
+            retryWrites="false")['百度迁徙']['迁入到省份_去重_202206']
 
 qianchuProvince_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁出省份_数据_202204']
+            retryWrites="false")['百度迁徙']['迁出省份_数据_202206']
 qianchuProvince_has = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁出省份_去重_202204']
+            retryWrites="false")['百度迁徙']['迁出省份_去重_202206']
 hascity = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁入迁出_城市去重_202204']
+            retryWrites="false")['百度迁徙']['迁入迁出_城市去重_202206']
 
 def clear():
     while True:
@@ -247,9 +245,9 @@ def run(dateList, start_date, end_date):
         #     city=random.choice(cityList)
 
         for city in cityList:
-            # if city != '哈尔滨':continue
+            if city == '亳州':continue   #if city != '哈尔滨':continue
 
-            if hascity.find_one({'已爬取城市': city}):
+            if hascity.find_one({'已爬取城市': city}):    #有判断是否有已经抓取的城市，中断可以直接继续程序。
                 print('该城市已抓取')
                 continue
             print(city)
@@ -372,11 +370,11 @@ if __name__ == '__main__':
     t1 = threading.Thread(target=clear)
     t1.setDaemon(True)
     t1.start()
-    start_date = '2022-03-07'
-    end_date = '2022-04-02'
+    start_date = '2022-05-03'              #2022-04-02
+    end_date = '2022-06-05'                #2022-05-05
     year=2022
-    month=4
-    day=2
+    month=6
+    day=22
     print(start_date, end_date)
     dateList = create_assist_date(start_date, end_date)
     run(dateList, start_date, end_date)

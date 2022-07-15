@@ -12,12 +12,10 @@ import pymongo
 from urllib import parse
 
 MONGODB_CONFIG = {
-   "host": "8.135.119.198",
-   "port": "27017",
-   "user": "hladmin",
-   "password": parse.quote("Hlxkd3,dk3*3@"),
-   "db": "dianping",
-   "collections": "dianping_collections",
+    "host": "192.168.1.28",
+    "port": "27017",
+    "user": "admin",
+    "password": '123123',
 }
 
 # 建立连接
@@ -26,31 +24,39 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['小红书']['数据_202110']
+            retryWrites="false")['小红书']['数据_202205/1']
 url_data = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['小红书']['url_202110']
+            retryWrites="false")['小红书']['url_202205/1']
 
 def get_proxy():
-    try:
-        return requests.get('http://1.116.204.248:5000/proxy').text
-        # return requests.get("http://47.106.223.4:50002/get/").json().get('proxy')
-        # return requests.get("http://192.168.88.51:5010/get/").json().get('proxy')
-        # return requests.get("http://127.0.0.1:5010/get/").json().get('proxy')
-    except:
-        print('暂无ip，等待20秒')
-        time.sleep(20)
+    while True:
+        try:
+            ip = requests.get('http://47.111.226.234:8000/getip2/').text
+            if '403' in ip:
+                continue
+            return ip
+            # return requests.get('http://1.116.204.248:5000/proxy').text
+        except:
+            # num = 3
+            # while num:
+            #     try:
+            #         return requests.get('http://1.116.204.248:5000/proxy').text
+            #     except:
+            #         print('暂无ip，等待20秒')
+            #         time.sleep(20)
+            #         num -= 1
+            print('暂无ip')
 
 
-
-def delete_proxy(proxy):
-    html = requests.get("http://47.106.223.4:50002/delete/?proxy={}".format(proxy))
-    # html = requests.get("http://192.168.88.51:5010/delete/?proxy={}".format(proxy))
-    # html = requests.get("http://127.0.0.1:5010/delete/?proxy={}".format(proxy))
-    return html.text
+# def delete_proxy(proxy):
+#     html = requests.get("http://47.106.223.4:50002/delete/?proxy={}".format(proxy))
+#     # html = requests.get("http://192.168.88.51:5010/delete/?proxy={}".format(proxy))
+#     # html = requests.get("http://127.0.0.1:5010/delete/?proxy={}".format(proxy))
+#     return html.text
 
 # 创建UA池
 def get_ua():
@@ -158,11 +164,13 @@ def get_(url, proxieslist):
 #             continue
 #         """
 def get_pg(city, label_id, label, lon, lat, proxieslist):
-    for pg in range(1,200):
+    for pg in range(1,4):
         print(city, '页数: ', pg, label, label_id,)  # 获取到数据
+
         proxieslist = get_html(pg, label_id, label, lon, lat, proxieslist)
         if proxieslist == '最后一页':
             return
+
 def get_html(page, label_id, label, lon, lat, proxieslist):
     s = 0
     url = 'https://www.xiaohongshu.com/web_api/sns/v1/page/poi/5a4b1086800086366cca864e/list?page={page}&page_size=20&req_type=nearby_filters&orig_filter_id={label_id}&latitude={lat}&longitude={lon}&search_id=b3187ee1-bc9f-4cae-a70d-f08aec08550f&sort_by=smart&category_id=&region_id='.format( page=page, label_id=label_id, lat=lat, lon=lon )
@@ -195,7 +203,7 @@ def get_html(page, label_id, label, lon, lat, proxieslist):
                 proxy = get_proxy()
                 proxies = {"https": proxy, "http": proxy}
             res = requests.get(url, headers=headers, proxies=proxies, verify=False, timeout=(2, 5))
-            resJson = res.json()
+            resJson = res.json()              #上海 餐饮笔记页面
             if not resJson['data']:
                 count += 1
                 proxieslist = 0
@@ -667,13 +675,13 @@ if __name__ == '__main__':
             '安康市','延安市','铜川市','海北藏族自治州','果洛藏族自治州','海南藏族自治州','玉树藏族自治州',
             '黄南藏族自治州','九龙','新界','香港岛','伊春市','七台河市','大兴安岭地区','绥化市','鸡西市'
 ''        ]: continue
-        if url_data.count({city: '已爬取'}):
-            print('已爬取')
-            continue
-        elif url_data.count({city: '正在爬取'}):
-            print('正在爬取')
-            continue
-        url_data.insert_one({city: '正在爬取'})
+        # if url_data.count({city: '已爬取'}):
+        #     print('已爬取')
+        #     continue
+        # elif url_data.count({city: '正在爬取'}):
+        #     print('正在爬取')
+        #     continue
+        # url_data.insert_one({city: '正在爬取'})
         proxieslist = run(city, lon, lat, proxieslist)
         url_data.insert_one({city: '已爬取'})
     pool.shutdown()

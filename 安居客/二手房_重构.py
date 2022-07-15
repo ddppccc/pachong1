@@ -24,13 +24,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['安居客']['二手房_数据_202206']
+            retryWrites="false")['安居客']['二手房_数据_202207']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['安居客']['二手房_去重_202206']
+            retryWrites="false")['安居客']['二手房_去重_202207']
 
 
 # city_url = {

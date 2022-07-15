@@ -7,12 +7,10 @@ import pymongo
 from urllib import parse
 from web import getcookie
 MONGODB_CONFIG = {
-   "host": "8.135.119.198",
-   "port": "27017",
-   "user": "hladmin",
-   "password": parse.quote("Hlxkd3,dk3*3@"),
-   "db": "dianping",
-   "collections": "dianping_collections",
+    "host": "192.168.1.28",
+    "port": "27017",
+    "user": "admin",
+    "password": '123123',
 }
 
 info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
@@ -20,13 +18,13 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['同花顺']['概念行业板块_数据_202204']
+            retryWrites="false")['同花顺']['概念行业板块_数据_202207']
 has_info = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['同花顺']['概念行业板块_去重_202204']
+            retryWrites="false")['同花顺']['概念行业板块_去重_202207']
 
 def headers():
     with open('cookie.txt', 'r') as f:
@@ -63,7 +61,7 @@ def getdata(types,dicts):
                 elif types == '同花顺行业':
                     url=f'http://q.10jqka.com.cn/thshy/detail/field/199112/order/desc/page/{str(page)}/ajax/1/code/{code}'
                 else:return
-                res=requests.get(url,headers=headers())
+                res=requests.get(url,headers=headers())    #cookies在headers里面=========================================
                 time.sleep(2)
                 if res.status_code != 200:
                     getcookie(url)
@@ -75,7 +73,7 @@ def getdata(types,dicts):
                 if '暂无成份股数据' in res.text:break
                 if page == 1:
                     try:
-                        pages=html.xpath('//*[@id="m-page"]/span/text()')[0]
+                        pages=html.xpath('//*[@id="m-page"]/span/text()')[0]    #总页数
                         pages=re.findall('\d+/(\d+)',pages)[0]
                         pages=int(pages)
                     except:
@@ -100,9 +98,9 @@ def getdata(types,dicts):
                     item['流通股']=i.xpath('./td[12]/text()')[0]
                     item['流通市值']=i.xpath('./td[13]/text()')[0]
                     item['市盈率']=i.xpath('./td[14]/text()')[0]
-                    # if info_base.find_one(item):
-                    #     print('数据已存在')
-                    #     continue
+                    if info_base.find_one(item):                #后续加的判断 ，开始可以不用================================
+                        print('数据已存在')
+                        continue
                     print(item)
                     info_base.insert_one(item)
                     # try:

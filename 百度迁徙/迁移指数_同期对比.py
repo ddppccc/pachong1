@@ -10,25 +10,23 @@ from config import create_assist_date, c_map, dataType
 from urllib import parse
 from multiprocessing import Process,Pool
 MONGODB_CONFIG = {
-   "host": "8.135.119.198",
-   "port": "27017",
-   "user": "hladmin",
-   "password": parse.quote("Hlxkd3,dk3*3@"),
-   "db": "dianping",
-   "collections": "dianping_collections",
+    "host": "192.168.1.28",
+    "port": "27017",
+    "user": "admin",
+    "password": '123123',
 }
 qianruCity_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁入指数同期对比_数据_202110']
+            retryWrites="false")['百度迁徙']['迁入指数同期对比_数据_202206']
 qianchuCity_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度迁徙']['迁出指数同期对比_数据_202110']
+            retryWrites="false")['百度迁徙']['迁出指数同期对比_数据_202206']
 
 
 # 迁入到市
@@ -142,11 +140,11 @@ def run(start_date, end_date):
 
 if __name__ == '__main__':
     # TODO 时间
-    start_date = '2021-09-04'
-    end_date = '2022-03-04'
+    start_date = '2019-01-12'
+    end_date = '2022-06-06'
     year = 2022#  时间不管
-    month = 3
-    day = 4
+    month = 6
+    day = 22
     print(start_date, end_date)
     dateList = create_assist_date(start_date, end_date)
     run(start_date, end_date)

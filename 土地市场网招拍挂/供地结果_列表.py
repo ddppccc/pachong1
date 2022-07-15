@@ -60,38 +60,38 @@ headers = {
     "Accept-Language": "zh-CN,zh;q=0.9"
 }
 regiondict = {
-    # "北京市": "11",
-    # "天津市": "12",
-    # "河北省": "13",
-    # "山西省": "14",
-    # "内蒙古": "15",
-    # "辽宁省": "21",
-    # "吉林省": "22",
-    # "黑龙江省": "23",
-    # "上海市": "31",
-    # "江苏省": "32",
-    # "浙江省": "33",
-    # "安徽省": "34",
-    # "福建省": "35",
-    # "江西省": "36",
-    # "山东省": "37",
-    # "河南省": "41",
-    # "湖北省": "42",
-    # "湖南省": "43",
+    "北京市": "11",
+    "天津市": "12",
+    "河北省": "13",
+    "山西省": "14",
+    "内蒙古": "15",
+    "辽宁省": "21",
+    "吉林省": "22",
+    "黑龙江省": "23",
+    "上海市": "31",
+    "江苏省": "32",
+    "浙江省": "33",
+    "安徽省": "34",
+    "福建省": "35",
+    "江西省": "36",
+    "山东省": "37",
+    "河南省": "41",
+    "湖北省": "42",
+    "湖南省": "43",
     "广东省": "44",
-    # "广西壮族": "45",
-    # "海南省": "46",
-    # "重庆市": "50",
-    # "四川省": "51",
-    # "贵州省": "52",
-    # "云南省": "53",
-    # "西藏": "54",
-    # "陕西省": "61",
-    # "甘肃省": "62",
-    # "青海省": "63",
-    # "宁夏回族": "64",
-    # "新疆维吾尔": "65",
-    # "新疆兵团": "66",
+    "广西壮族": "45",
+    "海南省": "46",
+    "重庆市": "50",
+    "四川省": "51",
+    "贵州省": "52",
+    "云南省": "53",
+    "西藏": "54",
+    "陕西省": "61",
+    "甘肃省": "62",
+    "青海省": "63",
+    "宁夏回族": "64",
+    "新疆维吾尔": "65",
+    "新疆兵团": "66",
 }
 def get_eData(keys):
     command = os.popen("node sy " + keys)
@@ -142,7 +142,7 @@ def getdata(date, regionname, regioncode, page=1):
             # res = requests.post(url, json=postdata, proxies=proxies, headers=headers)
             # print(res.json())
             with open('log.txt', encoding='utf8') as f:
-                t = f.readline()
+                t = f.read()
             try:
                 bj = date[0] + regionname + str(regioncode) + 'page' + str(page)
             except:
@@ -171,14 +171,14 @@ def getdata(date, regionname, regioncode, page=1):
                     f.write(date[0] + regionname + str(regioncode) + 'page' + str(page) + '\n')
             if page < res.json()['data']['pages']:
                 page += 1
-                return getdata(date[0], regionname, regioncode, page)
-            break
+                return getdata(date, regionname, regioncode, page)
+            break                      #在循环结构中使用break语句，如果执行了break语句，那么就退出循环，接着执行循环结构下面的第一条语句
         except Exception as e:
             pass
 
 
 if __name__ == '__main__':
-    start = '2017-01-01'
+    start = '2021-10-26'
     end = '2022-04-30'
 
     # print(len(regiondict))
@@ -186,7 +186,7 @@ if __name__ == '__main__':
     print(daterange)
 
     for k, v in regiondict.items():
-        # if k != '西藏': continue
+        if k != '广东省': continue
         for date in daterange:
             with open('log.txt', encoding='utf8') as f:
                 t = f.readline()

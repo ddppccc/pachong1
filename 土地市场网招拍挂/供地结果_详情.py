@@ -47,20 +47,26 @@ headers={
     'Accept-Language': "'zh-CN,zh;q=0.9'",
 }
 def get_proxy():
-    return 'http://H041YJYT015P8T3D:0B6839D706F30F56@http-dyn.abuyun.com:9020'
-    try:
-        return requests.get('http://1.116.204.248:5454/proxy2').text
-        # return requests.get('http://1.116.204.248:5000/proxy').text
-    except:
-        num = 3
-        while num:
-            try:
-                return requests.get('http://1.116.204.248:5000/proxy').text
-            except:
-                print('暂无ip，等待20秒')
-                time.sleep(20)
-                num -= 1
-        print('暂无ip')
+    # return 'http://H041YJYT015P8T3D:0B6839D706F30F56@http-dyn.abuyun.com:9020'
+    while True:
+        try:
+            ip = requests.get('http://47.111.226.234:8000/getip2/')
+            # if '403' in ip:
+            #     continue
+            if ip.status_code == 200:
+                return ip.text
+            # return ip
+            # return requests.get('http://1.116.204.248:5000/proxy').text
+        except:
+            # num = 3
+            # while num:
+            #     try:
+            #         return requests.get('http://1.116.204.248:5000/proxy').text
+            #     except:
+            #         print('暂无ip，等待20秒')
+            #         time.sleep(20)
+            #         num -= 1
+            print('暂无ip')
 
 def getdata(data):
     # if info_base.find_one({'gdGuid':data['gdGuid']}):

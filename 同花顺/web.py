@@ -39,14 +39,15 @@ def getcookie(url):
     #     })
     #   """
     # })
-    driver=webdriver.Chrome(options=option)     #-------------------------------------------------------------------
+    path = 'E:\谷歌驱动\chromedriver.exe'
+    driver=webdriver.Chrome(executable_path=path,options=option)     #-------------------------------------------------------------------
     driver.get(url)
     # data='Hm_lvt_78c58f01938e4d85eaf619eae71b4ed1=1628473097; Hm_lpvt_78c58f01938e4d85eaf619eae71b4ed1=1628473097;'
     # time.sleep(2)
     # cookie=driver.get_cookies()
     # print(cookie[-1]['value'])
     # data=data+cookie[-1]['value']
-    time.sleep(1)
+    time.sleep(2)
     try:
         driver.execute_script("document.write(document.cookie)")
         time.sleep(1)
@@ -62,3 +63,13 @@ def getcookie(url):
     # time.sleep(1000)
 if __name__ == '__main__':
     getcookie('https://q.10jqka.com.cn/gn/detail/field/264648/order/desc/page/3/ajax/1/code/300018')
+
+
+
+
+# chrome_options = Options()
+#         chrome_options.add_argument('--headless')
+#         chrome_options.add_argument('--disable-gpu')
+#         chrome_options.add_experimental_option('prefs', {'profile.managed_default_content_settings.images': 2})  # 禁止图片加载，加快速度
+#         path='E:\谷歌驱动\chromedriver.exe'
+#         self.bro = webdriver.Chrome(executable_path=path,options=chrome_options)
