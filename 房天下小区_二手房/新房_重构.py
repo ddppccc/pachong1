@@ -13,27 +13,24 @@ from urllib import parse
 # from city_map import city_map
 from config2 import get_proxy
 from concurrent.futures.thread import ThreadPoolExecutor
-
 MONGODB_CONFIG = {
-   "host": "8.135.119.198",
-   "port": "27017",
-   "user": "hladmin",
-   "password": parse.quote("Hlxkd3,dk3*3@"),
-   "db": "dianping",
-   "collections": "dianping_collections",
+    "host": "192.168.1.28",
+    "port": "27017",
+    "user": "admin",
+    "password": '123123',
 }
 info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['房天下']['新房_数据_202203']
+            retryWrites="false")['房天下']['新房_数据_202207']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['房天下']['新房_去重_202203']
+            retryWrites="false")['房天下']['新房_去重_202207']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -102,7 +99,8 @@ def get_html(url):
             if '访问验证-房天下' in response.text:
                 # print('访问验证-房天下')
                 return get_html(url)
-            return response
+            if response.status_code == 200:      #------------------------加了一个判断 因为ip有问题加了判断-------------------
+                return response
         except Exception as e:
             # print('get_html错误',proxies, url,e)
             time.sleep(2)
@@ -156,7 +154,7 @@ def get_detail_url(url, title, dataDict, data):
             response.encoding = encod
             tree = etree.HTML(response.text)
         except Exception as e:
-            print("get_detail_url error: ",proxies,e)
+            print("get_detail_url error: ",e)
             continue
 
     # 楼盘详情url
@@ -359,8 +357,8 @@ if __name__ == '__main__':
     # TODO 直接 month为要抓取的月份
     # print(info_base.count_documents({'城市':'北京'}))
     year = 2022
-    month = 3
-    day = 11
+    month = 7
+    day = 4
     # city_map=getCity_Code()
     pool = ThreadPoolExecutor(30)
 

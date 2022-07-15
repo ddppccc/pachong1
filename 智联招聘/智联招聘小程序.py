@@ -5,7 +5,26 @@ import pandas as pd
 import requests
 from concurrent.futures.thread import ThreadPoolExecutor
 from map import cities_code, categories_new
+import pymongo
+MONGODB_CONFIG = {
+    "host": "192.168.1.28",
+    "port": "27017",
+    "user": "admin",
+    "password": '123123',
+}
 
+info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['智联']['数据_202207']
+has_info = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['智联']['去重_202207']
 
 def get_proxy():
     return requests.get("http://47.106.223.4:50002/get/").json().get('proxy')
@@ -86,6 +105,7 @@ def parse(page, category, data, **kwargs):
         item['公司规模'] = li.get('companySize')
         item['公司性质'] = li.get('property')
         # print(item)
+        info_base.insert_one(item)     #插入数据库========================================================================
         data.append(item)
 
     if countNumber <= 90 or page * 90 > countNumber:
@@ -145,7 +165,7 @@ if __name__ == '__main__':
     # rt = 'eba215ce887b4a228d507cda54f51b08'
     at = ''
     rt = ''
-    year, month = 2020, 12  # TODO 修改此处 月份
+    year, month = 2022, 7  # TODO 修改此处 月份
     pool = ThreadPoolExecutor(20)
     run(year, month)
     pool.shutdown()

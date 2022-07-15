@@ -10,25 +10,24 @@ from lxml import etree
 from concurrent.futures import ThreadPoolExecutor
 from config2 import get_proxy
 MONGODB_CONFIG = {
-   "host": "8.135.119.198",
-   "port": "27017",
-   "user": "hladmin",
-   "password": parse.quote("Hlxkd3,dk3*3@"),
-   "db": "dianping",
-   "collections": "dianping_collections",
+    "host": "192.168.1.28",
+    "port": "27017",
+    "user": "admin",
+    "password": '123123',
 }
+
 info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['房天下']['二手房_数据_202204']
+            retryWrites="false")['房天下']['二手房_数据_202207']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['房天下']['二手房_去重_202204']
+            retryWrites="false")['房天下']['二手房_去重_202207']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -160,7 +159,7 @@ def make_url(city_name, url_fmt, GetType, city_code='suoxie'):
             return {}
     return {}
 
-def get_dist(city, GetType):
+def get_dist(city, GetType):            #GetType   erhsoufang
     """
     生成行政区字典
     """
@@ -327,7 +326,7 @@ def get_data( baseUrl,gen_url, city, dist, pageNumber, currPage, data=None,litle
             continue
         for house in house_box:
             item_dict = {}
-            item_dict['id'] = uuid.uuid1(node=random.randint(999, 999999))
+            # item_dict['id'] = uuid.uuid1(node=random.randint(999, 999999))--------------
             try:
                 item_dict['标题url'] = baseUrl + house.xpath('.//dt[@class="floatl"]/a/@href')[0]
             except Exception as e:
@@ -404,7 +403,7 @@ if __name__ == '__main__':
     # TODO 请删除 log>lose_dist 中的缓存记录
     # TODO 修改 Month为当前要抓取的月份
     Year = 2022
-    Month = 4
+    Month = 7
     pool = ThreadPoolExecutor(30)
     # print(info_base.count_documents({}))
     with open('city_map.json','r', encoding='utf-8') as f:
@@ -418,7 +417,7 @@ if __name__ == '__main__':
     while city_map:
     # for city,city_code in city_map.items():
         data = random.sample(city_map.items(), 1)
-        city, city_code = data[0][0], data[0][1]
+        city, city_code = data[0][0], data[0][1]     #'泰安'   'taian'
 
         if city in ["罗定", "阿坝州", "农安", "怒江", "盘锦", '香港', '海南省']:
             del city_map[city]
@@ -441,8 +440,8 @@ if __name__ == '__main__':
                     '青龙', '清徐', '清镇', '青州', '邛崃', '栖霞', '泉港', '泉山', '荣昌', '如东', '瑞安', '瑞金', '汝阳']:  # 没有区县数据, 不要
             del city_map[city]
             continue
-
-        # if city not in ['兰州','杭州','廊坊']:
+        #======================================================================================================================================
+        # if city not in ['铜梁', '横县', '乐清', '玉田', '肇州', '永春', '赵县', '攸县', '阿拉善盟', '铜山', '澳门', '镇海', '宜良', '伊川', '迪庆', '甘南', '新丰', '峨眉山', '修文', '鄢陵', '汉川', '北京', '周至', '云阳', '海北', '张北', '玉山', '日喀则', '五指山']:
         #     del city_map[city]
         #     continue
 

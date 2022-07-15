@@ -14,6 +14,7 @@ headers = {
     'Host': 'index.baidu.com',
     'Connection': 'keep-alive',
     'X-Requested-With': 'XMLHttpRequest',
+    'Cipher-Text':'1654412473322_1654483471057_M5GmpvJXwv3T9U3nKmzwN5Tj4L1ASyfr8YSgFy9IspzbiQsTi7txynDw0LDsOHcw2F8QZa7sbcrFXOCXMH1iE6KZqreGlt3h/f36VvnNeD/2+qMaKeOyI7obiojB1p/gRYwicTzndBMMnbWcp4YtlhVBZ6vOAS5nIsNuZZHl4e9/k2VK4p8h72eZMFAlIsY8LgAV7vQ5bwiEEfQmXJ45jtsOsISFwD4++91qZw6nh9WtGGhZ+dXBtTphXIy0wwUtaBailLzlzQ3zp0d++2kYpBu2NyxUPDxRW8S9NQ6PK99SIxI8P6862NPgLbvWINDDVJHSHoOk7xe4sOy11cri3vRq7mdYGujYNGnNJXVgwXMBNSotyIxyipSSGznoWlRW',
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36',
 }
 
@@ -159,6 +160,24 @@ class BaiduIndex:
                 }
                 yield formated_data
             cur_date += datetime.timedelta(days=1)
+    # def get_proxy(self):
+    #     while True:
+    #         try:
+    #             ip = requests.get('http://47.111.226.234:8000/getip2/').text
+    #             if '403' in ip:
+    #                 continue
+    #             return ip
+    #             # return requests.get('http://1.116.204.248:5000/proxy').text
+    #         except:
+    #             # num = 3
+    #             # while num:
+    #             #     try:
+    #             #         return requests.get('http://1.116.204.248:5000/proxy').text
+    #             #     except:
+    #             #         print('暂无ip，等待20秒')
+    #             #         time.sleep(20)
+    #             #         num -= 1
+    #             print('暂无ip')
 
     def _http_get(self, url, parmas):
         """
@@ -169,7 +188,9 @@ class BaiduIndex:
         while True:
             try:
                 headers['Cookie'] = self.cookies
-                response = requests.get(url, headers=headers, timeout=5, params=parmas)
+                # proxy = self.get_proxy()         #--------------------------------------------------改
+                # proxies = {"https": proxy}       #--------------------------------------------加
+                response = requests.get(url, headers=headers, timeout=5, params=parmas,)
                 break
             except Exception as e:
                 print('出错', e)

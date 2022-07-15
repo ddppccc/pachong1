@@ -24,14 +24,14 @@ info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['城际网']['教育数据_04']
+            retryWrites="false")['城际网']['教育数据_05']
 
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['城际网']['杭州教育数据_05-2']
+            retryWrites="false")['城际网']['杭州教育数据_05-3']
 
 import redis
 

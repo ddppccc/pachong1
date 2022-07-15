@@ -8,7 +8,26 @@ import pandas as pd
 from queue import Queue
 from threading import Thread, Lock
 from ip_pool import get_proxy, delete_proxy
+import pymongo
+MONGODB_CONFIG = {
+    "host": "192.168.1.28",
+    "port": "27017",
+    "user": "admin",
+    "password": '123123',
+}
 
+info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['智联']['地理数据_202207']
+has_info = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
+            MONGODB_CONFIG['user'],
+            MONGODB_CONFIG['password'],
+            MONGODB_CONFIG['host'],
+            MONGODB_CONFIG['port']),
+            retryWrites="false")['智联']['地理数据去重_202207']
 
 def get_ua():
     user_agents = [
@@ -176,6 +195,7 @@ def parse(city, data_list: list):
         item['职位技能'] = [i.get('value', '') if i else '' for i in data.get('positionDetail').get('skillLabel')]
         item['职位亮点'] = [i.get('value', '') if i else '' for i in data.get('positionDetail').get('welfareLabel')]
         print(item)
+        info_base.insert_one(item)   #  插入数据库========================================================================
 
         # 保存数据
         path = '{}.csv'.format(city)

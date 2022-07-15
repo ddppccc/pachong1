@@ -41,25 +41,23 @@ def get_ua():
 
 
 MONGODB_CONFIG = {
-    "host": "8.135.119.198",
+    "host": "192.168.1.28",
     "port": "27017",
-    "user": "hladmin",
-    "password": parse.quote("Hlxkd3,dk3*3@"),
-    "db": "dianping",
-    "collections": "dianping_collections",
+    "user": "admin",
+    "password": '123123',
 }
 info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
     MONGODB_CONFIG['user'],
     MONGODB_CONFIG['password'],
     MONGODB_CONFIG['host'],
     MONGODB_CONFIG['port']),
-    retryWrites="false")['房天下']['小区_数据_202203']
+    retryWrites="false")['房天下']['小区_数据_202207']
 has_spider = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
     MONGODB_CONFIG['user'],
     MONGODB_CONFIG['password'],
     MONGODB_CONFIG['host'],
     MONGODB_CONFIG['port']),
-    retryWrites="false")['房天下']['小区_去重_202203']
+    retryWrites="false")['房天下']['小区_去重_202207']
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate, br",
@@ -559,10 +557,10 @@ def get_page(city, dist_dict, GetType):
 if __name__ == '__main__':
     # get_info_community('https://sh.esf.fang.com/loupan/1210012000/housedetail.htm', city_code='sh', code='1210012000')
     # TODO 小区启动程序
-    # TODO 直接 month为要抓取的月份
+    # TODO 直接 month为要抓取的月份     4月份就跑4月
     # TODO 每月启动前,清空 log/lose_dist, log/小区  中的文件
     year = 2022
-    month = 2
+    month = 6
     with open('city_map.json', 'r', encoding='utf-8') as f:
         city_map = json.load(f)
     # city_map=getCity_Code()
@@ -596,6 +594,12 @@ if __name__ == '__main__':
                     '綦江', '三河', '上虞', '顺德', '香港', '东兴']:
             del city_map[city]
             continue
+
+       #改=======================================================================================================没跑的城市
+        # if city not in  ['岳阳','吕梁','太原','漯河','宣城','哈密','太原','昆明','鄂尔多斯','广安','廊坊','成都','阜新','锦州','临汾','北京']:
+        #     continue
+        #========================================================================================
+
         if has_spider.find_one({'抓取完成城市': city}):
             print('该城市已抓取完成')
             del city_map[city]

@@ -11,33 +11,32 @@ import pymongo
 from urllib import parse
 from multiprocessing import Process,Pool
 MONGODB_CONFIG = {
-   "host": "8.135.119.198",
-   "port": "27017",
-   "user": "hladmin",
-   "password": parse.quote("Hlxkd3,dk3*3@"),
-   "db": "dianping",
-   "collections": "dianping_collections",
+    "host": "192.168.1.28",
+    "port": "27017",
+    "user": "admin",
+    "password": '123123',
 }
 info_base = pymongo.MongoClient('mongodb://{}:{}@{}:{}/'.format(
             MONGODB_CONFIG['user'],
             MONGODB_CONFIG['password'],
             MONGODB_CONFIG['host'],
             MONGODB_CONFIG['port']),
-            retryWrites="false")['百度指数']['百度搜索指数_数据_202204']
+            retryWrites="false")['百度指数']['百度搜索指数_数据_202207']
 
 if __name__ == "__main__":
     # 4545
     year = 2022
-    month = 4
-    day = 1
+    month = 7
+    day = 4
     # 百度关键词
-    keywords = ['招聘', '招工', '房价', '股票', '失业金', '买房', '卖房', '租房']
-    start_date = '2022-03-04'    #-----间隔区间-----------------------------------------上次时间
-    end_date = '2022-04-01'
+    keywords = ['招聘', '招工', '房价', '股票', '失业金', '买房', '卖房', '租房']    #['招聘', '招工', '房价', '股票', '失业金', '买房', '卖房', '租房']
+    start_date = '2022-06-05'    #-----间隔区间-2021-01-01----------------------------------------上次时间'2022-03-04' 2022-04-01
+    end_date = '2022-07-04'      #'2022-04-01'     2022-05-05
 
 
     for number in [22, 23]:     # TODO 每次递增
         for city, city_code in CITY_CODE.items():
+            # city = '全国'                    #改----------------------------------------------------------------
             name = '%s_%s.xlsx' % (city, number)
             # if name in os.listdir('原始数据'):
             #     print(name, '存在')

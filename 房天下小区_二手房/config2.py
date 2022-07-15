@@ -3,18 +3,13 @@ import time
 import requests
 import time
 def get_proxy():
-    try:
-        return requests.get('http://1.116.204.248:5454/proxy2').text
-        # return requests.get('http://1.116.204.248:5000/proxy').text
-        # return requests.get('http://demo.spiderpy.cn/get/').json()['proxy']
-        # return requests.get('http://47.106.223.4:50002/get/').json()['proxy']
-    except:
-        num = 3
-        while num:
-            try:
-                return requests.get('http://demo.spiderpy.cn/get/').json()['proxy']
-            except:
-                print('暂无ip，等待20秒')
-                time.sleep(20)
-                num -= 1
-        print('暂无ip')
+    # return 'http://H041YJYT015P8T3D:0B6839D706F30F56@http-dyn.abuyun.com:9020'
+    while True:
+        try:
+            response = requests.get('http://47.111.226.234:8000/getip2/')
+            if response.status_code == 200:
+                return response.text
+            else:
+                time.sleep(1)
+        except:
+            print('暂无ip')

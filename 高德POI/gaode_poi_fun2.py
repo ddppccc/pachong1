@@ -66,6 +66,7 @@ def get_html(code, pos, page=1, retry=0):
 def get_pos(id_list=[]):
     try:
         if id_list:
+            print(config.pos.count({"status": 1}))
             current_pos = config.pos.find_one({"status": 1, "_id": {"$nin": id_list}})
         else:
             current_pos = config.pos.find_one({"status": 1})
@@ -242,9 +243,10 @@ def handle_pos(pos=""):
 
 
 if __name__ == '__main__':
-    # 跑前运行一遍-----------------------------------------------------
+    # 跑前运行一遍---------------------------------------------------------------------------------------------------------------
     # config.pos.update_many({}, {"$set": {"status": 1}})
     # print(config.pos.count_documents({"status": 1}))
+    print(config.pos.find_one())
 
 
     flag = True
